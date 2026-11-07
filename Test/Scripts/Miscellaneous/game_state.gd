@@ -6,7 +6,7 @@ const SAVE_PATH := "user://save.json"
 const MENU_SCENE := "res://Test/Scenes/UIScenes/UIFullScenes/main_menu.tscn"   # adjust paths
 const HUB_SCENE := "res://Test/Scenes/Hub/hub.tscn"
 const RUN_SCENE := "res://Test/Scenes/game.tscn"
-const CHARACTER_FOLDER := "res://Test/Resources/Characters/"
+const CHARACTER_FOLDER := "res://Test/Scripts/Character/"
 const DEFAULT_CHARACTER_ID := "slinger"
 const DEATH_SCREEN_TIME := 1.5
 
