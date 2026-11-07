@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://dd28tfv4lfxsg"]
+
+[ext_resource type="Script" uid="uid://ceyduuxs31kct" path="res://Placeholders/Scripts/bullet.gd" id="1_tqj3t"]
+[ext_resource type="Texture2D" uid="uid://dv3hxxv5nl6hj" path="res://Placeholders/Assets/Sprites/Character/bullet.png" id="2_17mjj"]
+[ext_resource type="Shader" uid="uid://fc4o0ad3p3qt" path="res://Test/Shaders/outline.gdshader" id="2_oycw1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wkdgc"]
+shader = ExtResource("2_oycw1")
+shader_parameter/color = Color(0.5372549, 0.2784314, 0.023529412, 0.33333334)
+shader_parameter/width = 1.0
+shader_parameter/pattern = 2
+shader_parameter/inside = false
+shader_parameter/add_margins = true
+shader_parameter/number_of_images = Vector2(1, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oycw1"]
+size = Vector2(48, 28)
+
+[node name="Bullet" type="CharacterBody2D" unique_id=784687734]
+collision_layer = 0
+collision_mask = 5
+script = ExtResource("1_tqj3t")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=280701600]
+material = SubResource("ShaderMaterial_wkdgc")
+position = Vector2(3.8146973e-06, 1.9073486e-06)
+scale = Vector2(2.4, 3)
+texture = ExtResource("2_17mjj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=14083732]
+position = Vector2(0, 1)
+scale = Vector2(1.1, 0.8)
+shape = SubResource("RectangleShape2D_oycw1")

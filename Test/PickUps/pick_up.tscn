@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://c8ereyi7or1dp"]
+
+[ext_resource type="Script" uid="uid://bgy4lu7plscx2" path="res://Test/PickUps/Pickup.gd" id="1_bfcld"]
+[ext_resource type="Texture2D" uid="uid://chjnsd2rtm71u" path="res://Placeholders/Assets/Sprites/Fruit/fruit.png" id="2_g4wa8"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_s1fef"]
+radius = 32.0
+
+[node name="PickUp" type="Area2D" unique_id=113007271]
+script = ExtResource("1_bfcld")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1692224064]
+texture = ExtResource("2_g4wa8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=574377538]
+shape = SubResource("CircleShape2D_s1fef")

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://dv60ofo4lolaw"]
+
+[ext_resource type="Texture2D" uid="uid://ddbt46re6qlwl" path="res://Test/Assets/Items/SPRITE-item-fantasy.png" id="1_qcrgw"]
+[ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="1_se0q3"]
+
+[resource]
+script = ExtResource("1_se0q3")
+item_name = "Wooden Buckler"
+description = "Hey, at least it will protect you from getting shot by an arrow!"
+icon_sheet = ExtResource("1_qcrgw")
+icon = ExtResource("1_qcrgw")
+max_health_add = 2.0
+metadata/_custom_type_script = "uid://dt4uqd0oigesc"

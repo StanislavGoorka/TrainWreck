@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://rm3vg2erbje8"
+path="res://.godot/imported/Bus Ride.mp3-28871976979e5a059b7100872a42bc72.mp3str"
+
+[deps]
+
+source_file="res://Placeholders/Assets/Audio/Bus Ride.mp3"
+dest_files=["res://.godot/imported/Bus Ride.mp3-28871976979e5a059b7100872a42bc72.mp3str"]
+
+[params]
+
+loop=true
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4

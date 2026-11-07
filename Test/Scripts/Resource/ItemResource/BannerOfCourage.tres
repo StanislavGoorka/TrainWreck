@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://j3cwfx5ruuro"]
+
+[ext_resource type="Texture2D" uid="uid://cigste6jr3t3g" path="res://Test/Assets/Items/SPRITE-ITEM-FANTASY-32.png" id="1_5x0ee"]
+[ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="1_037w4"]
+[ext_resource type="Texture2D" uid="uid://dox2fkhvnjxjk" path="res://Test/Assets/Items/SPRITE-ITEM-FANTASY-16.png" id="2_03xk5"]
+
+[resource]
+script = ExtResource("1_037w4")
+item_name = "Banner Of Courage"
+description = "For the king, for the whole nation!!! Forward!!!"
+rarity = 1
+icon_sheet = ExtResource("1_5x0ee")
+icon_sheet_ui = ExtResource("2_03xk5")
+icon_grid_pos = Vector2i(2, 1)
+fire_rate_add = -0.35
+speed_add = 50.0
+metadata/_custom_type_script = "uid://dt4uqd0oigesc"

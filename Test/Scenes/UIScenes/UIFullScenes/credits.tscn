@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://cglbu2m7jhecl"]
+
+[ext_resource type="Texture2D" uid="uid://45xn5depesix" path="res://Test/Assets/Backgrounds/1.png" id="1_oi5fm"]
+[ext_resource type="Script" uid="uid://bvfhxqr7f1buo" path="res://Placeholders/Scripts/credits.gd" id="1_xk2gx"]
+[ext_resource type="Texture2D" uid="uid://xqkddq5ep7kx" path="res://Test/Assets/Backgrounds/3.png" id="2_xk2gx"]
+[ext_resource type="Theme" uid="uid://8hobcx0vqyfr" path="res://Test/Themes/MenuButton.tres" id="3_kft4w"]
+
+[node name="Credits" type="Control" unique_id=788754117]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 736.0
+script = ExtResource("1_xk2gx")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=511103207]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 736.0
+texture = ExtResource("1_oi5fm")
+
+[node name="TextureRect2" type="TextureRect" parent="." unique_id=657101576]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 736.0
+texture = ExtResource("2_xk2gx")
+
+[node name="CreditNames" type="HBoxContainer" parent="." unique_id=1218551975]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 736.0
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CreditNames" unique_id=19890045]
+layout_mode = 2
+alignment = 1
+
+[node name="Credit" type="Label" parent="CreditNames/VBoxContainer" unique_id=1040667058]
+layout_mode = 2
+theme = ExtResource("3_kft4w")
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 64
+text = "Stepanlange Font by Szymon Furjan"
+horizontal_alignment = 1
+
+[node name="Credit2" type="Label" parent="CreditNames/VBoxContainer" unique_id=825004110]
+layout_mode = 2
+theme = ExtResource("3_kft4w")
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 64
+text = "Sky Backgrounds by Free Game Assets"
+horizontal_alignment = 1
+
+[node name="Credit3" type="Label" parent="CreditNames/VBoxContainer" unique_id=1799904624]
+layout_mode = 2
+
+[node name="MenuButton" type="MenuButton" parent="CreditNames/VBoxContainer" unique_id=190895438]
+layout_mode = 2
+theme = ExtResource("3_kft4w")
+theme_override_font_sizes/font_size = 64
+text = "Back To Menu"
+
+[connection signal="pressed" from="CreditNames/VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]

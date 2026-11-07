@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://dvae3trd2twqh"]
+
+[ext_resource type="Script" uid="uid://ldloslseqltn" path="res://Placeholders/Scripts/UI/parallax_background.gd" id="1_7cui2"]
+[ext_resource type="Texture2D" uid="uid://cjuwtdk6u8uqi" path="res://Test/Assets/Tilesets/BACKGROUND-fantasy1.png" id="2_7cui2"]
+[ext_resource type="Texture2D" uid="uid://cka3fb6d5uv4w" path="res://Test/Assets/Tilesets/BACKGROUND-fantasy2.png" id="3_d7ryn"]
+[ext_resource type="Texture2D" uid="uid://b8mqgf5njfiyt" path="res://Test/Assets/Tilesets/BACKGROUND-fantasy3.png" id="4_yig6n"]
+[ext_resource type="Texture2D" uid="uid://bnn1beklip8l4" path="res://Placeholders/Assets/Backgrounds/Steampunk/4.png" id="5_nxncb"]
+
+[node name="ParallaxBackground" type="ParallaxBackground" unique_id=758316074]
+script = ExtResource("1_7cui2")
+
+[node name="CloudsFar" type="ParallaxLayer" parent="." unique_id=267478738]
+motion_mirroring = Vector2(1440, 0)
+
+[node name="Sprite2D" type="TextureRect" parent="CloudsFar" unique_id=1981121479]
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("2_7cui2")
+expand_mode = 1
+
+[node name="CloudsMid" type="ParallaxLayer" parent="." unique_id=2136638271]
+motion_mirroring = Vector2(1440, 0)
+
+[node name="Sprite2D" type="TextureRect" parent="CloudsMid" unique_id=240225811]
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("3_d7ryn")
+expand_mode = 1
+
+[node name="CloudsNear" type="ParallaxLayer" parent="." unique_id=674045753]
+motion_mirroring = Vector2(1440, 0)
+
+[node name="Sprite2D" type="TextureRect" parent="CloudsNear" unique_id=390306753]
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("4_yig6n")
+expand_mode = 1
+
+[node name="Mountains" type="ParallaxLayer" parent="." unique_id=752482107]
+visible = false
+motion_scale = Vector2(0.9, 0.9)
+motion_mirroring = Vector2(1440, 0)
+
+[node name="Sprite2D" type="TextureRect" parent="Mountains" unique_id=1191160959]
+visible = false
+offset_right = 682.6667
+offset_bottom = 426.6667
+scale = Vector2(3, 3)
+texture = ExtResource("5_nxncb")

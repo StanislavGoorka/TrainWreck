@@ -1,0 +1,13 @@
+[gd_resource type="Theme" format=3 uid="uid://byq2v4ee3f2m0"]
+
+[ext_resource type="FontFile" uid="uid://dp1htgo2tb0yi" path="res://Test/Assets/UI Elements/Fonts/Salmon Typewriter 9 Bold.ttf" id="1_tqexn"]
+
+[resource]
+default_font = ExtResource("1_tqexn")
+default_font_size = 36
+Label/colors/font_color = Color(0.68235296, 0.5568628, 0.8745098, 1)
+Label/colors/font_outline_color = Color(0.45395023, 0.299392, 0.6547841, 1)
+Label/constants/outline_size = 25
+MenuButton/colors/font_color = Color(0.8657011, 0.81612563, 0.9553674, 1)
+MenuButton/colors/font_hover_color = Color(0.6821724, 0.5586715, 0.87377405, 1)
+MenuButton/colors/icon_hover_color = Color(0.34201524, 0.2139503, 0.5048266, 1)

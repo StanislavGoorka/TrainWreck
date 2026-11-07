@@ -1,0 +1,163 @@
+[gd_scene format=3 uid="uid://cog0w8lchwaxn"]
+
+[ext_resource type="Texture2D" uid="uid://chjnsd2rtm71u" path="res://Placeholders/Assets/Sprites/Fruit/fruit.png" id="1_4milh"]
+[ext_resource type="Script" uid="uid://27p2yw820ads" path="res://Test/state_machine.gd" id="1_6oee7"]
+[ext_resource type="Script" uid="uid://ctmq2jnrtih8s" path="res://Test/Enemy/Boss/Boss.gd" id="1_lsggw"]
+[ext_resource type="Script" uid="uid://dcftjpjmeika" path="res://Test/Scripts/States/Walker/idle.gd" id="2_4milh"]
+[ext_resource type="Resource" uid="uid://dolh6mr7gpvku" path="res://Test/Scripts/Resource/BossResource/LaurethBoss.tres" id="2_xcw82"]
+[ext_resource type="Script" uid="uid://chmxhw4mmc7db" path="res://Test/Scripts/States/BossScripts/SpinBossChase.gd" id="3_lsggw"]
+[ext_resource type="Script" uid="uid://c83tfjpayx1km" path="res://Test/Scripts/States/BossScripts/SpinAttack.gd" id="4_xcw82"]
+[ext_resource type="Script" uid="uid://ch4skdnl70o42" path="res://Test/Scripts/States/Walker/death.gd" id="5_sdx0o"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4milh"]
+atlas = ExtResource("1_4milh")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_abole"]
+atlas = ExtResource("1_4milh")
+region = Rect2(16, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q6sbm"]
+atlas = ExtResource("1_4milh")
+region = Rect2(32, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w42kg"]
+atlas = ExtResource("1_4milh")
+region = Rect2(0, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_awl3b"]
+atlas = ExtResource("1_4milh")
+region = Rect2(16, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fqwts"]
+atlas = ExtResource("1_4milh")
+region = Rect2(32, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lsggw"]
+atlas = ExtResource("1_4milh")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xcw82"]
+atlas = ExtResource("1_4milh")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sdx0o"]
+atlas = ExtResource("1_4milh")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_htl4r"]
+atlas = ExtResource("1_4milh")
+region = Rect2(0, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hhvev"]
+atlas = ExtResource("1_4milh")
+region = Rect2(16, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b4o37"]
+atlas = ExtResource("1_4milh")
+region = Rect2(32, 48, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6oee7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4milh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_abole")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q6sbm")
+}],
+"loop": 1,
+"name": &"Chase",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w42kg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_awl3b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fqwts")
+}],
+"loop": 0,
+"name": &"Death",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lsggw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xcw82")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sdx0o")
+}],
+"loop": 1,
+"name": &"Idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_htl4r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hhvev")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b4o37")
+}],
+"loop": 1,
+"name": &"SpinAttack",
+"speed": 3.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4milh"]
+radius = 64.0
+height = 128.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lsggw"]
+radius = 128.0
+
+[node name="Laureth" type="CharacterBody2D" unique_id=826778869 groups=["Enemies"]]
+collision_layer = 4
+script = ExtResource("1_lsggw")
+stats = ExtResource("2_xcw82")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1754313837]
+scale = Vector2(12, 12)
+sprite_frames = SubResource("SpriteFrames_6oee7")
+animation = &"Death"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=434637230]
+shape = SubResource("CapsuleShape2D_4milh")
+
+[node name="SpinHitbox" type="Area2D" parent="." unique_id=1642921772]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpinHitbox" unique_id=220429523]
+shape = SubResource("CircleShape2D_lsggw")
+
+[node name="StateMachine" type="Node" parent="." unique_id=1845714597 node_paths=PackedStringArray("initial_state")]
+script = ExtResource("1_6oee7")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://27p2yw820ads"
+
+[node name="Idle" type="Node" parent="StateMachine" unique_id=1742545795]
+script = ExtResource("2_4milh")
+metadata/_custom_type_script = "uid://bl77pnr08a6od"
+
+[node name="Chase" type="Node" parent="StateMachine" unique_id=1282122354]
+script = ExtResource("3_lsggw")
+metadata/_custom_type_script = "uid://bl77pnr08a6od"
+
+[node name="SpinAttack" type="Node" parent="StateMachine" unique_id=892816329]
+script = ExtResource("4_xcw82")
+metadata/_custom_type_script = "uid://bl77pnr08a6od"
+
+[node name="Dead" type="Node" parent="StateMachine" unique_id=570217616]
+script = ExtResource("5_sdx0o")
+metadata/_custom_type_script = "uid://bl77pnr08a6od"

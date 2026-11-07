@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bm6on0iv6u7gr"]
+
+[ext_resource type="Theme" uid="uid://dqshteojtraa3" path="res://Test/Themes/StatText.tres" id="1_aphiq"]
+[ext_resource type="Script" uid="uid://8x6248boqpwa" path="res://Test/Scripts/UIElements/StatsUI.gd" id="1_ffsdp"]
+[ext_resource type="Texture2D" uid="uid://ctc31k7n4225u" path="res://Test/Assets/UI Elements/Statistics/SPRITE-UI-STATS1.png" id="2_5rf2q"]
+[ext_resource type="Texture2D" uid="uid://bxunqy3bpg784" path="res://Test/Assets/UI Elements/Statistics/SPRITE-UI-STATS2.png" id="3_gf2tq"]
+[ext_resource type="Texture2D" uid="uid://ch6vws6nwariy" path="res://Test/Assets/UI Elements/Statistics/SPRITE-UI-STATS3.png" id="4_mgprd"]
+[ext_resource type="Texture2D" uid="uid://cipuut7qdpesh" path="res://Test/Assets/UI Elements/Statistics/SPRITE-UI-STATS4.png" id="5_4klch"]
+[ext_resource type="Texture2D" uid="uid://b5jy5uajerhsf" path="res://Test/Assets/UI Elements/Statistics/SPRITE-UI-STATS5.png" id="6_vv7qi"]
+[ext_resource type="Texture2D" uid="uid://cn5ftfvhhnr" path="res://Test/Assets/UI Elements/Statistics/SPRITE-UI-STATS6.png" id="7_2ojfx"]
+[ext_resource type="Texture2D" uid="uid://ckqnk3xcgsenw" path="res://Test/Assets/UI Elements/Statistics/SPRITE-UI-STATS7.png" id="8_v5jij"]
+[ext_resource type="Texture2D" uid="uid://cwaw1ljtseg4g" path="res://Test/Assets/UI Elements/Statistics/SPRITE-UI-STATS8.png" id="9_3oad7"]
+
+[node name="StatsUI" type="VBoxContainer" unique_id=729251929]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 0
+theme = ExtResource("1_aphiq")
+script = ExtResource("1_ffsdp")
+speed_icon = ExtResource("2_5rf2q")
+dash_icon = ExtResource("3_gf2tq")
+damage_icon = ExtResource("4_mgprd")
+fire_rate_icon = ExtResource("5_4klch")
+bullet_speed_icon = ExtResource("6_vv7qi")
+range_icon = ExtResource("7_2ojfx")
+luck_icon = ExtResource("8_v5jij")
+special_icon = ExtResource("9_3oad7")

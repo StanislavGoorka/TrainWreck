@@ -1,0 +1,241 @@
+[gd_scene format=3 uid="uid://cjjudcsjw6qys"]
+
+[ext_resource type="Script" uid="uid://ctxat142e680h" path="res://Placeholders/Scripts/UI/pause_menu.gd" id="1_x5kyq"]
+[ext_resource type="Theme" uid="uid://ctf2qg1d64lx" path="res://Test/Themes/ItemDescription.tres" id="2_t2kmu"]
+[ext_resource type="Texture2D" uid="uid://f70icbpy5t67" path="res://Test/Assets/UI Elements/PauseMenu/SPRITE-UI-PAUSE-back.png" id="3_dsota"]
+[ext_resource type="Theme" uid="uid://byq2v4ee3f2m0" path="res://Test/Themes/PauseMenuSection.tres" id="3_ju4qd"]
+[ext_resource type="Texture2D" uid="uid://bfsoxxwpms8o5" path="res://Test/Assets/UI Elements/PauseMenu/SPRITE-UI-PAUSE-front.png" id="4_8i1i2"]
+[ext_resource type="Theme" uid="uid://dxofomqg7r4s4" path="res://Test/Themes/menu_button_new.tres" id="4_ju4qd"]
+[ext_resource type="Texture2D" uid="uid://cg2c0duker602" path="res://Test/Assets/UI Elements/PauseMenu/SPRITE-UI-PAUSE-TAB.png" id="5_t2kmu"]
+[ext_resource type="Script" uid="uid://dm08uo12kcnww" path="res://Test/Scripts/Settings/SettingsPanel.gd" id="6_d4dcs"]
+[ext_resource type="Script" uid="uid://pb2akwxumdwq" path="res://Test/Scripts/UIElements/BookMenu.gd" id="7_h0x1p"]
+[ext_resource type="Script" uid="uid://cssytpnlyc5a3" path="res://Test/Scripts/UIElements/MainSpread.gd" id="8_dsota"]
+[ext_resource type="Script" uid="uid://ccr6udi1ul6be" path="res://Test/Scripts/UIElements/BookSpread.gd" id="9_8i1i2"]
+[ext_resource type="Script" uid="uid://dc2otgx5dxe5a" path="res://Test/Scripts/UIElements/InventorySpread.gd" id="9_h0x1p"]
+[ext_resource type="Theme" uid="uid://d365fbynytqx2" path="res://Test/Themes/BasicTextInGame.tres" id="10_wy0pb"]
+
+[sub_resource type="Animation" id="Animation_j12hn"]
+resource_name = "Blur"
+length = 0.3
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ColorRect:material:shader_parameter/lod")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.15, 0, 0.15, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_kts48"]
+length = 0.65
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = false
+tracks/0/path = NodePath("ColorRect:material:shader_parameter/lod")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.15, 0, 0.15, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ColorRect:color:r")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.0005, 0, 0.0005, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("ColorRect:color:g")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.0005, 0, 0.0005, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("ColorRect:color:b")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.0005, 0, 0.0005, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("ColorRect:color:a")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0.65, -0.0005, 0, 0.0005, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_51ih0"]
+_data = {
+&"Blur": SubResource("Animation_j12hn"),
+&"RESET": SubResource("Animation_kts48")
+}
+
+[node name="PauseMenu" type="Control" unique_id=900594883]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_x5kyq")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1029973792]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.65)
+
+[node name="Book" type="Control" parent="." unique_id=175770057]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme = ExtResource("2_t2kmu")
+script = ExtResource("7_h0x1p")
+background_texture = ExtResource("3_dsota")
+front_texture = ExtResource("4_8i1i2")
+tab_texture = ExtResource("5_t2kmu")
+content_left = 48
+content_top = 72
+content_right = 48
+content_bottom = 48
+gutter = 14
+tab_top_edge = 8
+tab_overlap = 80
+tab_spacing = 16
+tab_raise = 4
+
+[node name="Main" type="HBoxContainer" parent="Book" unique_id=814300955]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme = ExtResource("3_ju4qd")
+script = ExtResource("8_dsota")
+tab_title = "Main"
+tab_tint = Color(0.7658356, 0.33625266, 0.29982257, 1)
+metadata/_custom_type_script = "uid://ccr6udi1ul6be"
+
+[node name="LeftPage" type="MarginContainer" parent="Book/Main" unique_id=641378342]
+layout_mode = 2
+
+[node name="Box" type="VBoxContainer" parent="Book/Main/LeftPage" unique_id=2014425622]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Book/Main/LeftPage/Box" unique_id=445874055]
+layout_mode = 2
+
+[node name="Summary" type="Label" parent="Book/Main/LeftPage/Box" unique_id=829529777]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RightPage" type="MarginContainer" parent="Book/Main" unique_id=1943376753]
+layout_mode = 2
+
+[node name="Buttons" type="VBoxContainer" parent="Book/Main/RightPage" unique_id=764654149]
+layout_mode = 2
+
+[node name="Resume" type="MenuButton" parent="Book/Main/RightPage/Buttons" unique_id=299992980]
+layout_mode = 2
+theme = ExtResource("4_ju4qd")
+theme_override_font_sizes/font_size = 64
+disabled = true
+text = "Resume
+"
+
+[node name="Restart" type="MenuButton" parent="Book/Main/RightPage/Buttons" unique_id=1946232810]
+layout_mode = 2
+theme = ExtResource("4_ju4qd")
+theme_override_font_sizes/font_size = 64
+disabled = true
+text = "Restart"
+
+[node name="Abandon" type="MenuButton" parent="Book/Main/RightPage/Buttons" unique_id=1988844534]
+layout_mode = 2
+theme = ExtResource("4_ju4qd")
+theme_override_font_sizes/font_size = 64
+disabled = true
+text = "Abandon"
+
+[node name="Quit" type="MenuButton" parent="Book/Main/RightPage/Buttons" unique_id=974126121]
+layout_mode = 2
+theme = ExtResource("4_ju4qd")
+theme_override_font_sizes/font_size = 64
+disabled = true
+text = "Quit To Main Menu"
+
+[node name="Inventory" type="HBoxContainer" parent="Book" unique_id=981669184]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme = ExtResource("10_wy0pb")
+script = ExtResource("9_h0x1p")
+tab_title = "Inventory"
+tab_tint = Color(0.15397891, 0.40983173, 0.46320868, 1)
+metadata/_custom_type_script = "uid://ccr6udi1ul6be"
+
+[node name="LeftPage" type="MarginContainer" parent="Book/Inventory" unique_id=1516603511]
+layout_mode = 2
+
+[node name="RightPage" type="MarginContainer" parent="Book/Inventory" unique_id=459830285]
+layout_mode = 2
+
+[node name="Settings" type="HBoxContainer" parent="Book" unique_id=212357067]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme = ExtResource("3_ju4qd")
+script = ExtResource("9_8i1i2")
+tab_title = "Settings"
+tab_tint = Color(0.3348524, 0.5002298, 0.25788674, 1)
+metadata/_custom_type_script = "uid://ccr6udi1ul6be"
+
+[node name="LeftPage" type="MarginContainer" parent="Book/Settings" unique_id=867822852]
+layout_mode = 2
+
+[node name="SettingsPanel" type="MarginContainer" parent="Book/Settings/LeftPage" unique_id=2037478416]
+layout_mode = 2
+script = ExtResource("6_d4dcs")
+show_audio = false
+
+[node name="RightPage" type="MarginContainer" parent="Book/Settings" unique_id=518474055]
+layout_mode = 2
+
+[node name="SettingsPanel" type="MarginContainer" parent="Book/Settings/RightPage" unique_id=847059524]
+layout_mode = 2
+script = ExtResource("6_d4dcs")
+show_graphics = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1137774520]
+libraries/ = SubResource("AnimationLibrary_51ih0")
+
+[connection signal="pressed" from="Book/Main/RightPage/Buttons/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="Book/Main/RightPage/Buttons/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="Book/Main/RightPage/Buttons/Abandon" to="." method="_on_abandon_pressed"]
+[connection signal="pressed" from="Book/Main/RightPage/Buttons/Quit" to="." method="_on_quit_pressed"]

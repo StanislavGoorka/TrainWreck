@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://c6i1q8obn2wpa"]
+
+[ext_resource type="Script" uid="uid://x40daw3r2c4v" path="res://Test/Scripts/UIElements/HealthUI.gd" id="1_5vv6a"]
+[ext_resource type="Texture2D" uid="uid://dinqx46v35n18" path="res://Test/Assets/UI Elements/CharacterRelated/SPRITE-UI-HEALTH-HEART1.png" id="2_bnn4b"]
+[ext_resource type="Texture2D" uid="uid://vvva1ifyhinq" path="res://Test/Assets/UI Elements/CharacterRelated/SPRITE-UI-HEALTH-HEART3.png" id="3_qcj1i"]
+[ext_resource type="Texture2D" uid="uid://b542fc5w3ptu3" path="res://Test/Assets/UI Elements/CharacterRelated/SPRITE-UI-HEALTH-HEART2.png" id="4_r5con"]
+
+[node name="HealthUI" type="HBoxContainer" unique_id=1000841272]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_5vv6a")
+full_heart = ExtResource("2_bnn4b")
+half_heart = ExtResource("3_qcj1i")
+empty_heart = ExtResource("4_r5con")
+hurt_flash_color = Color(0.75219166, 0.89622587, 1, 1)
+hurt_shake_strength = 10.0

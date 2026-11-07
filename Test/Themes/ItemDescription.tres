@@ -1,0 +1,13 @@
+[gd_resource type="Theme" format=3 uid="uid://ctf2qg1d64lx"]
+
+[ext_resource type="FontFile" uid="uid://dxe5eyqewwpab" path="res://Test/Assets/UI Elements/Fonts/Stepalange-x3BLm.otf" id="1_hlspx"]
+
+[resource]
+default_font = ExtResource("1_hlspx")
+default_font_size = 24
+Label/colors/font_color = Color(0.85477847, 0.8945081, 0.98810107, 1)
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/constants/outline_size = 10
+MenuButton/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+MenuButton/colors/font_hover_color = Color(0.8544351, 0.84477836, 0.8471859, 1)
+MenuButton/colors/icon_hover_color = Color(0.250066, 0.527545, 0.476917, 1)

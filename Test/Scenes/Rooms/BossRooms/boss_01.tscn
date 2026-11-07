@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://dfuseey0debj7"]
+
+[ext_resource type="PackedScene" uid="uid://4wohkakfhby0" path="res://Test/Scenes/Rooms/TemplateRooms/room_short.tscn" id="1_uskcv"]
+[ext_resource type="Script" uid="uid://khoodlp5tkt6" path="res://Test/Scripts/RoomRelated/BossRoom.gd" id="2_jx1hf"]
+[ext_resource type="PackedScene" uid="uid://cog0w8lchwaxn" path="res://Test/Scenes/Enemies/Fantasy/Boss/laureth.tscn" id="3_b48fx"]
+[ext_resource type="Script" uid="uid://cpewumyy3ucgl" path="res://Test/Scripts/RoomRelated/EnemySpawnPoint.gd" id="3_uskcv"]
+
+[node name="Room_Short" unique_id=389382859 instance=ExtResource("1_uskcv")]
+script = ExtResource("2_jx1hf")
+reward_pedestal_scene = null
+reward_spawn_delay = 0.8
+
+[node name="EnemySpawnPoint" type="Marker2D" parent="EnemiesSpawn" parent_id_path=PackedInt32Array(1607287628) index="0" unique_id=475027805]
+position = Vector2(1300, 512)
+script = ExtResource("3_uskcv")
+enemy_scene = ExtResource("3_b48fx")
+metadata/_custom_type_script = "uid://cpewumyy3ucgl"

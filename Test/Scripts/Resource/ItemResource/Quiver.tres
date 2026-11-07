@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://tsb36tnvifdv"]
+
+[ext_resource type="Texture2D" uid="uid://dox2fkhvnjxjk" path="res://Test/Assets/Items/SPRITE-ITEM-FANTASY-16.png" id="1_iytys"]
+[ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="2_iytys"]
+[ext_resource type="Texture2D" uid="uid://cigste6jr3t3g" path="res://Test/Assets/Items/SPRITE-ITEM-FANTASY-32.png" id="2_k4qyp"]
+
+[resource]
+script = ExtResource("2_iytys")
+item_name = "Old Quiver"
+description = "It has some scratches, but I can still fit a few arrows there!"
+rarity = 1
+icon_sheet = ExtResource("2_k4qyp")
+icon_sheet_ui = ExtResource("1_iytys")
+icon_grid_pos = Vector2i(0, 1)
+fire_rate_add = -0.2
+metadata/_custom_type_script = "uid://dt4uqd0oigesc"

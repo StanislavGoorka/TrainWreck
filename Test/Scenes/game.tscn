@@ -1,0 +1,143 @@
+[gd_scene format=3 uid="uid://5b8noiahvuwg"]
+
+[ext_resource type="PackedScene" uid="uid://dvae3trd2twqh" path="res://Test/Scenes/InGameElements/parallax_background.tscn" id="1_0sh8k"]
+[ext_resource type="Script" uid="uid://dpf00fypvhxl1" path="res://Placeholders/Scripts/rooms.gd" id="2_udv4l"]
+[ext_resource type="Script" uid="uid://dtnlowemigy7y" path="res://Placeholders/Scripts/camera.gd" id="3_t55o4"]
+[ext_resource type="PackedScene" uid="uid://ch8udrp2yft2f" path="res://Placeholders/Scenes/Characters/character_1.tscn" id="4_2xxq6"]
+[ext_resource type="Script" uid="uid://dbb8qajyxbjuq" path="res://Test/Scripts/UIElements/HUD.gd" id="5_mx71y"]
+[ext_resource type="PackedScene" uid="uid://c6i1q8obn2wpa" path="res://Test/Scenes/UIScenes/UIElements/health_ui.tscn" id="6_cc1mx"]
+[ext_resource type="Theme" uid="uid://dqshteojtraa3" path="res://Test/Themes/StatText.tres" id="7_qotcy"]
+[ext_resource type="Script" uid="uid://s56nie7y0e7q" path="res://Test/Scripts/UIElements/CurrencyUI.gd" id="8_qocw2"]
+[ext_resource type="Texture2D" uid="uid://drm2atggeuhqt" path="res://Placeholders/Assets/Sprites/coinui1.png" id="9_frd4l"]
+[ext_resource type="Texture2D" uid="uid://c780clsn210kh" path="res://Placeholders/Assets/Sprites/coinui4.png" id="10_trvbx"]
+[ext_resource type="PackedScene" uid="uid://bm6on0iv6u7gr" path="res://Test/Scenes/UIScenes/UIElements/stats_ui.tscn" id="11_nhqs1"]
+[ext_resource type="Script" uid="uid://csw6pdudx2x6n" path="res://Test/Scripts/UIElements/MapUI.gd" id="12_fubhx"]
+[ext_resource type="Script" uid="uid://cy30tfj0wh545" path="res://Test/Scripts/UIElements/TimerUI.gd" id="13_qs74i"]
+[ext_resource type="Script" uid="uid://clbaj4qkqisp7" path="res://Test/Scripts/UIElements/ActiveItemsUI.gd" id="14_nq1qe"]
+[ext_resource type="Script" uid="uid://dwn3fhn3bk2ga" path="res://Test/Scripts/UIElements/BossHealthBar.gd" id="15_lbarn"]
+[ext_resource type="Texture2D" uid="uid://dtxv4m051ifkm" path="res://Test/Assets/UI Elements/Enemy Related/SPRITE-UI-BOSSBAR-back.png" id="16_t55o4"]
+[ext_resource type="PackedScene" uid="uid://cjjudcsjw6qys" path="res://Test/Scenes/UIScenes/UIFullScenes/pause_menu.tscn" id="16_wesht"]
+[ext_resource type="Texture2D" uid="uid://dh86f6bcqwcoj" path="res://Test/Assets/UI Elements/Enemy Related/SPRITE-UI-BOSSBAR-health.png" id="17_2xxq6"]
+[ext_resource type="Theme" uid="uid://ctf2qg1d64lx" path="res://Test/Themes/ItemDescription.tres" id="17_8cdps"]
+[ext_resource type="Script" uid="uid://c4jyuf1cwjbd3" path="res://Test/Scripts/UIElements/ItemPopup.gd" id="18_2ljph"]
+[ext_resource type="Script" uid="uid://bai22cyrhldcb" path="res://Test/Scripts/Miscellaneous/Audio Related/MusicTrigger.gd" id="19_bvoat"]
+[ext_resource type="AudioStream" uid="uid://d3terakjvmawt" path="res://Placeholders/Assets/Audio/MUZYKOWO  Experience My Balls  Overwatch Song.mp3" id="20_pklxe"]
+
+[node name="Game" type="Node" unique_id=1869221073]
+
+[node name="ParallaxBackground" parent="." unique_id=123394018 instance=ExtResource("1_0sh8k")]
+
+[node name="Rooms" type="Node2D" parent="." unique_id=1612187204]
+position = Vector2(0, 540)
+script = ExtResource("2_udv4l")
+
+[node name="Camera" type="Camera2D" parent="." unique_id=2137095995]
+position = Vector2(960, 540)
+limit_enabled = false
+script = ExtResource("3_t55o4")
+
+[node name="Character1" parent="." unique_id=1089165954 instance=ExtResource("4_2xxq6")]
+position = Vector2(-150, 216)
+
+[node name="UI" type="CanvasLayer" parent="Character1" unique_id=64718820]
+
+[node name="HUD" type="Control" parent="Character1/UI" unique_id=374537257]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("5_mx71y")
+
+[node name="TopLeft" type="MarginContainer" parent="Character1/UI/HUD" unique_id=1725125280]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Stack" type="VBoxContainer" parent="Character1/UI/HUD/TopLeft" unique_id=1290658140]
+layout_mode = 2
+
+[node name="HealthUI" parent="Character1/UI/HUD/TopLeft/Stack" unique_id=1000841272 instance=ExtResource("6_cc1mx")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="CurrencyUI" type="VBoxContainer" parent="Character1/UI/HUD/TopLeft/Stack" unique_id=922897150]
+layout_mode = 2
+theme = ExtResource("7_qotcy")
+script = ExtResource("8_qocw2")
+coin_icon = ExtResource("9_frd4l")
+key_icon = ExtResource("10_trvbx")
+
+[node name="MiddleLeft" type="MarginContainer" parent="Character1/UI/HUD" unique_id=1440506632]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="StatsUI" parent="Character1/UI/HUD/MiddleLeft" unique_id=729251929 instance=ExtResource("11_nhqs1")]
+layout_mode = 2
+size_flags_vertical = 4
+alignment = 1
+icon_size = Vector2(32, 32)
+
+[node name="TopRight" type="MarginContainer" parent="Character1/UI/HUD" unique_id=875743836]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Stack" type="VBoxContainer" parent="Character1/UI/HUD/TopRight" unique_id=1488031427]
+layout_mode = 2
+
+[node name="MapUI" type="PanelContainer" parent="Character1/UI/HUD/TopRight/Stack" unique_id=1734487897]
+layout_mode = 2
+script = ExtResource("12_fubhx")
+
+[node name="TimerUI" type="Label" parent="Character1/UI/HUD/TopRight/Stack" unique_id=1984526073]
+layout_mode = 2
+theme = ExtResource("7_qotcy")
+script = ExtResource("13_qs74i")
+
+[node name="BottomRight" type="MarginContainer" parent="Character1/UI/HUD" unique_id=1960129397]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ActiveItemsUI" type="GridContainer" parent="Character1/UI/HUD/BottomRight" unique_id=346104409]
+layout_mode = 2
+script = ExtResource("14_nq1qe")
+
+[node name="BottomCenter" type="MarginContainer" parent="Character1/UI/HUD" unique_id=1320823356]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BossHealthBar" type="VBoxContainer" parent="Character1/UI/HUD/BottomCenter" unique_id=728848609]
+layout_mode = 2
+theme = ExtResource("7_qotcy")
+script = ExtResource("15_lbarn")
+frame_texture = ExtResource("16_t55o4")
+fill_texture = ExtResource("17_2xxq6")
+pixel_scale = 1
+
+[node name="PauseMenu" parent="Character1/UI" unique_id=1390571003 instance=ExtResource("16_wesht")]
+anchors_preset = -1
+anchor_top = -0.002
+offset_top = 2.16
+size_flags_vertical = 4
+metadata/_edit_lock_ = true
+
+[node name="ItemPopup" type="Control" parent="Character1/UI" unique_id=1897456917]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme = ExtResource("17_8cdps")
+script = ExtResource("18_2ljph")
+top_margin = 128
+name_font_size = 48
+desc_font_size = 24
+
+[node name="MusicTrigger" type="Node" parent="." unique_id=723991552]
+script = ExtResource("19_bvoat")
+track = ExtResource("20_pklxe")
+fade_time = 0.5
+metadata/_custom_type_script = "uid://bai22cyrhldcb"

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://bcvvkcvgn7a3f"]
+
+[ext_resource type="Texture2D" uid="uid://cigste6jr3t3g" path="res://Test/Assets/Items/SPRITE-ITEM-FANTASY-32.png" id="1_kcd6f"]
+[ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="1_o32aj"]
+[ext_resource type="Texture2D" uid="uid://dox2fkhvnjxjk" path="res://Test/Assets/Items/SPRITE-ITEM-FANTASY-16.png" id="2_i60l5"]
+
+[resource]
+script = ExtResource("1_o32aj")
+pools = 3
+item_name = "Simple Sandwitch "
+description = "It's so weird...yet so delicious...I should add a pickle on top of it"
+rarity = 1
+icon_sheet = ExtResource("1_kcd6f")
+icon_sheet_ui = ExtResource("2_i60l5")
+icon_grid_pos = Vector2i(3, 1)
+max_health_add = 2.0
+metadata/_custom_type_script = "uid://dt4uqd0oigesc"

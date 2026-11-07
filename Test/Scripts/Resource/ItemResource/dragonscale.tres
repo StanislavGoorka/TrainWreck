@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://b4go537qwg3u5"]
+
+[ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="1_jjy0j"]
+[ext_resource type="Texture2D" uid="uid://cigste6jr3t3g" path="res://Test/Assets/Items/SPRITE-ITEM-FANTASY-32.png" id="1_yxetv"]
+[ext_resource type="Texture2D" uid="uid://dox2fkhvnjxjk" path="res://Test/Assets/Items/SPRITE-ITEM-FANTASY-16.png" id="2_y6lxx"]
+
+[resource]
+script = ExtResource("1_jjy0j")
+pools = 3
+item_name = "Dragon Scale"
+description = "I feel much safer wearing it!"
+icon_sheet = ExtResource("1_yxetv")
+icon_sheet_ui = ExtResource("2_y6lxx")
+icon_grid_pos = Vector2i(3, 0)
+metadata/_custom_type_script = "uid://dt4uqd0oigesc"

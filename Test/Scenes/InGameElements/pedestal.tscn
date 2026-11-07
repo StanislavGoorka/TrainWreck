@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://krl3o4aw3ff8"]
+
+[ext_resource type="Script" uid="uid://c3446x7r5mwdb" path="res://Test/Scripts/RoomRelated/pedestal.gd" id="1_c57jg"]
+[ext_resource type="Texture2D" uid="uid://b2sfixhpuu8mt" path="res://Test/Assets/Characters/Gunslinger/standwip2.png" id="2_rqxq7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_s1fef"]
+radius = 32.0
+
+[node name="Pedestal" type="Area2D" unique_id=1550913540]
+collision_mask = 2
+script = ExtResource("1_c57jg")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=169367104]
+position = Vector2(0, -16)
+texture = ExtResource("2_rqxq7")
+
+[node name="ItemSprite2D" type="Sprite2D" parent="." unique_id=760614545]
+position = Vector2(0, -8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=998635955]
+shape = SubResource("CircleShape2D_s1fef")

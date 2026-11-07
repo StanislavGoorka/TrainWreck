@@ -1,0 +1,13 @@
+[gd_resource type="Theme" format=3 uid="uid://8hobcx0vqyfr"]
+
+[ext_resource type="FontFile" uid="uid://dxe5eyqewwpab" path="res://Test/Assets/UI Elements/Fonts/Stepalange-x3BLm.otf" id="1_cn8m5"]
+
+[resource]
+default_font = ExtResource("1_cn8m5")
+default_font_size = 128
+Label/colors/font_color = Color(0.5988846, 0.7683937, 0.8778842, 1)
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/constants/outline_size = 25
+MenuButton/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+MenuButton/colors/font_hover_color = Color(0.301473, 0.5432, 0.392527, 1)
+MenuButton/colors/icon_hover_color = Color(0.250066, 0.527545, 0.476917, 1)

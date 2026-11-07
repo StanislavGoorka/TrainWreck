@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://biohjihgf54t0"]
+
+[ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="1_bt520"]
+[ext_resource type="Texture2D" uid="uid://cigste6jr3t3g" path="res://Test/Assets/Items/SPRITE-ITEM-FANTASY-32.png" id="1_ty7te"]
+[ext_resource type="Texture2D" uid="uid://dox2fkhvnjxjk" path="res://Test/Assets/Items/SPRITE-ITEM-FANTASY-16.png" id="2_06ejw"]
+
+[resource]
+script = ExtResource("1_bt520")
+item_name = "King's Goblet"
+description = "Be careful! Someone might have put some poison in!"
+icon_sheet = ExtResource("1_ty7te")
+icon_sheet_ui = ExtResource("2_06ejw")
+icon_grid_pos = Vector2i(1, 0)
+max_health_add = -2.0
+status_effect = 2
+status_chance = 50.5
+metadata/_custom_type_script = "uid://dt4uqd0oigesc"

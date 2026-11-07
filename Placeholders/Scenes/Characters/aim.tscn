@@ -1,0 +1,96 @@
+[gd_scene format=3 uid="uid://dh84w2ywespdn"]
+
+[ext_resource type="Script" uid="uid://p86fkaqm10le" path="res://Placeholders/Scripts/aim.gd" id="1_eqksy"]
+[ext_resource type="Shader" uid="uid://fc4o0ad3p3qt" path="res://Test/Shaders/outline.gdshader" id="2_ohb8x"]
+[ext_resource type="Texture2D" uid="uid://cfjjvf7yf05w2" path="res://Test/Assets/Characters/Gunslinger/gun0-2-1.png" id="3_ohb8x"]
+[ext_resource type="Script" uid="uid://27p2yw820ads" path="res://Test/state_machine.gd" id="4_5udx5"]
+[ext_resource type="Script" uid="uid://8mfg48xdvh6n" path="res://Placeholders/Scripts/State Machine/State/Weapons/WeaponIdle.gd" id="5_esjft"]
+[ext_resource type="Script" uid="uid://oncxfuuq13rm" path="res://Placeholders/Scripts/State Machine/State/Weapons/WeaponCooldown.gd" id="6_5udx5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ohb8x"]
+shader = ExtResource("2_ohb8x")
+shader_parameter/color = Color(0, 0, 0, 1)
+shader_parameter/width = 1.0
+shader_parameter/pattern = 2
+shader_parameter/inside = false
+shader_parameter/add_margins = false
+shader_parameter/number_of_images = Vector2(1, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wkdgc"]
+atlas = ExtResource("3_ohb8x")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_at6b2"]
+atlas = ExtResource("3_ohb8x")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_khhxn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wkdgc")
+}],
+"loop": 1,
+"name": &"Idle",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_at6b2")
+}, {
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_at6b2")
+}, {
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_at6b2")
+}, {
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_at6b2")
+}, {
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_at6b2")
+}, {
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_at6b2")
+}, {
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_at6b2")
+}],
+"loop": 1,
+"name": &"Shot",
+"speed": 2.0
+}]
+
+[node name="Aim" type="Area2D" unique_id=237858786]
+script = ExtResource("1_eqksy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1849529534]
+
+[node name="WeaponPivot" type="Marker2D" parent="." unique_id=622340161]
+
+[node name="Arrow" type="AnimatedSprite2D" parent="WeaponPivot" unique_id=1780713450]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_ohb8x")
+position = Vector2(32, 0)
+sprite_frames = SubResource("SpriteFrames_khhxn")
+animation = &"Shot"
+
+[node name="ShootingPoint" type="Marker2D" parent="WeaponPivot/Arrow" unique_id=535631115]
+unique_name_in_owner = true
+position = Vector2(24, 0)
+
+[node name="Cooldown" type="Timer" parent="." unique_id=1364721030]
+process_callback = 0
+wait_time = 0.5
+
+[node name="WeaponStateMachine" type="Node" parent="." unique_id=1081529135]
+script = ExtResource("4_5udx5")
+metadata/_custom_type_script = "uid://27p2yw820ads"
+
+[node name="WeaponIdle" type="Node" parent="WeaponStateMachine" unique_id=1511121629]
+script = ExtResource("5_esjft")
+metadata/_custom_type_script = "uid://cecrys0xm8ykt"
+
+[node name="WeaponCooldown" type="Node" parent="WeaponStateMachine" unique_id=2096740189]
+script = ExtResource("6_5udx5")
+metadata/_custom_type_script = "uid://cecrys0xm8ykt"

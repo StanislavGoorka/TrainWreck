@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SpinBossStats" format=3 uid="uid://dolh6mr7gpvku"]
+
+[ext_resource type="Script" uid="uid://5cjwxfobftd2" path="res://Test/Scripts/Resource/ResourceData/BossTypes/SpinBossStats.gd" id="1_bpx8l"]
+
+[resource]
+script = ExtResource("1_bpx8l")
+spin_windup = 1.0
+spin_move_speed_mult = 0.1
+boss_name = "Laureth, Doom Of All Scales"
+max_health = 40.0
+speed = 250.0
+attack_cooldown = 1.0
+metadata/_custom_type_script = "uid://5cjwxfobftd2"

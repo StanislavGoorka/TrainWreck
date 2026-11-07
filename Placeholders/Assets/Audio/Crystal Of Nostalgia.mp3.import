@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://x64bpxtxskp"
+path="res://.godot/imported/Crystal Of Nostalgia.mp3-80c40021724bfed052b4281211b1d4d0.mp3str"
+
+[deps]
+
+source_file="res://Placeholders/Assets/Audio/Crystal Of Nostalgia.mp3"
+dest_files=["res://.godot/imported/Crystal Of Nostalgia.mp3-80c40021724bfed052b4281211b1d4d0.mp3str"]
+
+[params]
+
+loop=true
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,14 @@
+[gd_resource type="Theme" format=3 uid="uid://dxofomqg7r4s4"]
+
+[ext_resource type="FontFile" uid="uid://q2j1l6fmnva4" path="res://Test/Assets/UI Elements/Fonts/NotJamScrawl12.ttf" id="1_gtvqn"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gv6i0"]
+texture_margin_left = 16.0
+texture_margin_top = 16.0
+texture_margin_right = 16.0
+texture_margin_bottom = 16.0
+
+[resource]
+default_font = ExtResource("1_gtvqn")
+default_font_size = 32
+PanelContainer/styles/panel = SubResource("StyleBoxTexture_gv6i0")
