@@ -37,6 +37,14 @@ window/size/borderless=true
 mouse_cursor/custom_image="uid://cs6ecos13qyhh"
 mouse_cursor/tooltip_position_offset=Vector2(0, 0)
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
+
+[gdunit4]
+
+settings/test/test_lookup_folder="tests"
+
 [global_group]
 
 Players="All Of The Characters That Can Be Controlled By The Player"
