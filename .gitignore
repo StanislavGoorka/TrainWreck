@@ -25,3 +25,5 @@ mono_crash.*.json
 # *.pck
 # GdUnit4 test reports
 reports/
+
+.md
