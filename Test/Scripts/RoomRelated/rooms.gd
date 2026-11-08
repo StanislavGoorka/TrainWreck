@@ -45,7 +45,10 @@ func _ready() -> void:
 	generation_seed = randi()
 	seed(generation_seed)
 	print("🔁 Generation Seed:", generation_seed)
-
+	
+	var first_floor: int = maxi(num_levels, GameState.MIN_FLOOR_ROOMS)
+	GameState.total_floors = first_floor - GameState.MIN_FLOOR_ROOMS + 1
+	
 	_build_fade()
 	GameState.floor_changed.connect(_on_floor_changed)
 	_spawn_floor(GameState.current_floor)
@@ -147,15 +150,17 @@ func _on_floor_changed(floor_number: int) -> void:
 	if transitioning:
 		return
 	transitioning = true
-	player.process_mode = Node.PROCESS_MODE_DISABLED   # frozen, and off the physics space
+	GameState.clock_paused = true   # the fade is not counted in the floor time
+	player.process_mode = Node.PROCESS_MODE_DISABLED
 	await _fade(1.0, 0.5)
 
 	_clear_rooms()
 	_spawn_floor(floor_number)
 	await get_tree().process_frame
 
-	player.process_mode = Node.PROCESS_MODE_INHERIT   # the start room's detector sees the player again
+	player.process_mode = Node.PROCESS_MODE_INHERIT
 	await _fade(0.0, 0.5)
+	GameState.clock_paused = false
 	transitioning = false
 
 # --- Fade ----------------------------------------------------------------

@@ -25,10 +25,16 @@ var last_run: Dictionary = {}                   # summary of the run that just e
 
 signal floor_changed(floor_number: int)
 
-const MIN_FLOOR_ROOMS := 4    # start, special, boss, end
-const FINAL_FLOOR := 0        # 0 = endless. Set it to e.g. 8 to win the run on floor 8.
+const MIN_FLOOR_ROOMS := 5     # start, special, boss, end, and at least one more
+const FLOOR_NAMES: Array[String] = []   # optional, e.g. ["Depot", "Cargo Car"]. Empty = "Floor N"
 
 var current_floor: int = 1
+var total_floors: int = 0      # set by rooms.gd when it builds the run, 0 = unknown
+
+var run_time: float = 0.0
+var floor_time: float = 0.0
+var floor_times: Array[float] = []
+var clock_paused: bool = false
 
 
 func _ready() -> void:
@@ -96,16 +102,22 @@ func go_to_hub() -> void:
 func start_run() -> void:
 	game_over = false
 	run_active = true
+	current_floor = 1
+	run_time = 0.0
+	floor_time = 0.0
+	floor_times.clear()
+	clock_paused = false
 	lifetime_stats["runs"] += 1
 	save_game()
 	get_tree().paused = false
-	current_floor = 1
 	get_tree().change_scene_to_file(RUN_SCENE)
 
 func advance_floor() -> void:
-	if FINAL_FLOOR > 0 and current_floor >= FINAL_FLOOR:
-		end_run(true)   # final floor cleared: run complete
+	if is_final_floor():
+		end_run(true)
 		return
+	floor_times.append(floor_time)
+	floor_time = 0.0
 	current_floor += 1
 	floor_changed.emit(current_floor)
 
@@ -114,13 +126,22 @@ func end_run(won: bool, abandoned: bool = false) -> void:
 		return   # also stops repeated death signals from firing this twice
 	run_active = false
 
+	floor_times.append(floor_time)   # the floor the run ended on
+
 	var player := get_tree().get_first_node_in_group("Players") as Player
-	var earned: int = player.currency if player else 0   # placeholder: 1 coin = 1 meta currency
+	var earned: int = player.currency if player else 0
 	add_meta_currency(earned)
 
 	var result_key := "wins" if won else ("abandoned" if abandoned else "deaths")
 	lifetime_stats[result_key] += 1
-	last_run = {"won": won, "abandoned": abandoned, "coins": earned}
+	last_run = {
+		"won": won,
+		"abandoned": abandoned,
+		"coins": earned,
+		"items": player.inventory.size() if player else 0,
+		"run_time": run_time,
+		"floor_times": floor_times.duplicate(),
+	}
 	save_game()
 
 	if abandoned:
@@ -129,9 +150,37 @@ func end_run(won: bool, abandoned: bool = false) -> void:
 
 	game_over = true
 	get_tree().paused = true
-	var screen := GameOverScreen.new()
-	screen.setup(won, last_run)
-	get_tree().root.add_child(screen)
+	if won:
+		var victory := VictoryScreen.new()
+		victory.setup(last_run)
+		get_tree().root.add_child(victory)
+	else:
+		var screen := GameOverScreen.new()
+		screen.setup(false, last_run)
+		get_tree().root.add_child(screen)
+
+func _process(delta: float) -> void:
+	if run_active and not game_over and not clock_paused:
+		run_time += delta
+		floor_time += delta
+
+func is_final_floor() -> bool:
+	return total_floors > 0 and current_floor >= total_floors
+
+func floor_title(n: int) -> String:
+	var title := "Floor %d" % n
+	if n - 1 < FLOOR_NAMES.size() and FLOOR_NAMES[n - 1] != "":
+		title += ": " + FLOOR_NAMES[n - 1]
+	return title
+
+func format_time(seconds: float) -> String:
+	var hours := floori(seconds / 3600.0)
+	var minutes := floori(fmod(seconds, 3600.0) / 60.0)
+	var secs := floori(fmod(seconds, 60.0))
+	if hours > 0:
+		return "%d:%02d:%02d" % [hours, minutes, secs]
+	return "%02d:%02d" % [minutes, secs]
+
 
 func go_to_menu() -> void:
 	game_over = false

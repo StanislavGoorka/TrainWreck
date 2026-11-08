@@ -20,8 +20,18 @@ func _on_enemy_died(enemy) -> void:
 	last_enemy_position = enemy.global_position
 	super(enemy)
 
+@export var victory_delay: float = 2.5   # lets the boss's death animation play first
+
 func _on_room_cleared() -> void:
-	_spawn_reward()
+	if GameState.is_final_floor():
+		_win_run()
+	else:
+		_spawn_reward()
+
+func _win_run() -> void:
+	GameState.clock_paused = true   # the death animation is not counted
+	await get_tree().create_timer(victory_delay).timeout
+	GameState.end_run(true)
 
 func _spawn_reward() -> void:
 	if not reward_pedestal_scene:
