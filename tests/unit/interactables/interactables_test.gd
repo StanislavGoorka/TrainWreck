@@ -1,15 +1,23 @@
-## Interactable (base), NPC (dialogue), CharacterStation and TrainDoor.
+## Interactable (base), NPC (dialogue), CharacterStation, TrainDoor and Portal.
 extends "res://tests/helpers/tw_test_suite.gd"
 
 const RecordingInteractable := preload("res://tests/helpers/recording_interactable.gd")
 
 var player: Player
+var _floor_listener := Callable()
 
 
 func before_test() -> void:
 	super.before_test()
 	player = auto_free(Factory.player())
 	add_child(player)
+
+
+func after_test() -> void:
+	if _floor_listener.is_valid() and GameState.floor_changed.is_connected(_floor_listener):
+		GameState.floor_changed.disconnect(_floor_listener)
+	_floor_listener = Callable()
+	await super.after_test()
 
 
 func _interact_event() -> InputEventAction:
@@ -244,3 +252,69 @@ func test_train_door_is_an_interactable_that_starts_a_run() -> void:
 	assert_object(door).is_instanceof(Interactable)
 	assert_bool(door.has_method("interact")).is_true()
 	# interact() itself changes the scene, which would replace the test runner.
+
+
+# --- Portal ------------------------------------------------------------------------
+
+func _portal() -> Portal:
+	var portal: Portal = auto_free(Portal.new())
+	portal.add_child(Factory.circle_shape(32.0))
+	add_child(portal)
+	return portal
+
+
+func _floor_events() -> Array:
+	var events := []
+	_floor_listener = func(n: int) -> void: events.append(n)
+	GameState.floor_changed.connect(_floor_listener)   # disconnected in after_test()
+	return events
+
+
+func test_portal_is_an_interactable_that_can_be_used_once() -> void:
+	var portal := _portal()
+	assert_object(portal).is_instanceof(Interactable)
+	assert_bool(portal.used).is_false()
+	assert_bool(portal.can_interact()).is_true()
+
+
+func test_using_the_portal_takes_the_player_to_the_next_floor() -> void:
+	GameState.run_active = true
+	GameState.total_floors = 3
+	var events := _floor_events()
+	var portal := _portal()
+	portal._on_body_entered(player)
+	assert_bool(portal.prompt.visible).is_true()
+
+	portal._unhandled_input(_interact_event())
+
+	assert_bool(portal.used).is_true()
+	assert_bool(portal.can_interact()).is_false()
+	assert_int(GameState.current_floor).is_equal(2)
+	assert_array(events).is_equal([2])
+	portal.prompt.tween.custom_step(1.0)
+	assert_bool(portal.prompt.visible).is_false()
+
+
+func test_pressing_the_portal_key_again_during_the_fade_does_nothing() -> void:
+	GameState.run_active = true
+	GameState.total_floors = 5
+	var events := _floor_events()
+	var portal := _portal()
+	portal._on_body_entered(player)
+	portal._unhandled_input(_interact_event())
+	portal._unhandled_input(_interact_event())
+	assert_int(GameState.current_floor).is_equal(2)
+	assert_array(events).is_equal([2])
+
+
+func test_portal_on_the_final_floor_wins_the_run() -> void:
+	GameState.run_active = true
+	GameState.total_floors = 2
+	GameState.current_floor = 2
+	var events := _floor_events()
+	var portal := _portal()
+	portal._on_body_entered(player)
+	portal._unhandled_input(_interact_event())
+	assert_array(events).is_empty()
+	assert_bool(GameState.run_active).is_false()
+	assert_bool(GameState.last_run["won"]).is_true()

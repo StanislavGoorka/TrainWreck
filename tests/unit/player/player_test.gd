@@ -155,13 +155,6 @@ func test_less_max_health_also_removes_health() -> void:
 	assert_float(player.health).is_equal(8.0)
 
 
-func test_recalculation_updates_the_health_bar() -> void:
-	var player := _spawn(Factory.character_stats(10.0))
-	player.add_item(Factory.item({"max_health_add": 2.0}), true)
-	assert_float(player.health_bar.max_value).is_equal(12.0)
-	assert_float(player.health_bar.value).is_equal(12.0)
-
-
 func test_recalculation_emits_health_and_stats_changed() -> void:
 	var player := _spawn(Factory.character_stats(10.0))
 	var health_events := []
@@ -263,11 +256,15 @@ func test_dying_during_a_run_ends_the_run() -> void:
 	var deaths_before: int = int(GameState.lifetime_stats["deaths"])
 	var player := _spawn(Factory.character_stats(1.0))
 	player.currency = 7
+	player.add_item(Factory.item(), true)
 	player.take_damage(5.0)
 	assert_bool(GameState.run_active).is_false()
 	assert_bool(GameState.game_over).is_true()
 	assert_int(int(GameState.lifetime_stats["deaths"])).is_equal(deaths_before + 1)
-	assert_dict(GameState.last_run).is_equal({"won": false, "abandoned": false, "coins": 7})
+	assert_bool(GameState.last_run["won"]).is_false()
+	assert_bool(GameState.last_run["abandoned"]).is_false()
+	assert_int(GameState.last_run["coins"]).is_equal(7)
+	assert_int(GameState.last_run["items"]).is_equal(1)
 
 
 func test_contact_with_enemies_deals_damage_per_enemy() -> void:
@@ -329,11 +326,13 @@ func test_bomb_pickup_adds_bombs() -> void:
 func test_heart_pickup_heals_up_to_max_health() -> void:
 	var player := _spawn(Factory.character_stats(10.0))
 	player.take_damage(5.0)
+	var events := []
+	player.health_changed.connect(func(current: float, max_value: float) -> void: events.append([current, max_value]))
 	player.add_pickup(Factory.pickup(PickupData.PickupType.HEART, 2))
 	assert_float(player.health).is_equal(7.0)
 	player.add_pickup(Factory.pickup(PickupData.PickupType.HEART, 99))
 	assert_float(player.health).is_equal(10.0)
-	assert_float(player.health_bar.value).is_equal(10.0)
+	assert_array(events).is_equal([[7.0, 10.0], [10.0, 10.0]])   # the HUD hearts follow this signal
 
 
 # --- Dash cooldown -----------------------------------------------------------------

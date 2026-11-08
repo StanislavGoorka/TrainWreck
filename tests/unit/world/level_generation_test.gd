@@ -1,9 +1,10 @@
-## The run's level generator (rooms.gd) and the room-snapping camera (camera.gd).
+## The run's level generator (rooms.gd: floors, room order, floor transitions) and the
+## room-snapping camera (camera.gd).
 ## rooms.gd looks the player up at the absolute path /root/Game/Character1, so the
 ## fixture builds exactly that under the tree root.
 extends "res://tests/helpers/tw_test_suite.gd"
 
-const RoomsScript := preload("res://Placeholders/Scripts/rooms.gd")
+const RoomsScript := preload("res://Test/Scripts/RoomRelated/rooms.gd")
 const CameraScript := preload("res://Placeholders/Scripts/camera.gd")
 
 var game: Node
@@ -114,6 +115,105 @@ func test_without_the_player_nothing_is_generated() -> void:
 func test_generation_seed_is_recorded() -> void:
 	var generator := _generate(4)
 	assert_int(generator.generation_seed).is_not_zero()
+
+
+# --- Floors ------------------------------------------------------------------------
+
+func test_too_few_levels_still_build_every_required_room() -> void:
+	var rooms := _rooms(_generate(3))
+	assert_array(rooms).has_size(GameState.MIN_FLOOR_ROOMS)
+	assert_str(_folder(rooms[0])).is_equal(RoomsScript.STARTING_ROOMS_FOLDER)
+	assert_str(_folder(rooms[-2])).is_equal(RoomsScript.BOSS_ROOMS_FOLDER)
+	assert_str(_folder(rooms[-1])).is_equal(RoomsScript.ENDING_ROOMS_FOLDER)
+
+
+func test_generator_sets_the_number_of_floors(levels: int, floors: int, test_parameters := [
+	[3, 1], [5, 1], [6, 2], [8, 4], [10, 6],
+]) -> void:
+	_generate(levels)
+	assert_int(GameState.total_floors).is_equal(floors)
+
+
+func test_every_floor_has_one_room_less_down_to_the_minimum() -> void:
+	var generator := _generate(8)
+	var counts := []
+	for floor_number in range(1, 7):
+		counts.append(generator._floor_room_count(floor_number))
+	assert_array(counts).is_equal([8, 7, 6, 5, 5, 5])
+
+
+func test_last_floor_has_the_minimum_room_count() -> void:
+	var generator := _generate(9)
+	assert_int(generator._floor_room_count(GameState.total_floors)).is_equal(GameState.MIN_FLOOR_ROOMS)
+
+
+func test_generation_starts_on_the_current_floor() -> void:
+	GameState.current_floor = 3
+	assert_array(_rooms(_generate(8))).has_size(6)
+
+
+func test_generator_builds_an_invisible_fade_layer() -> void:
+	var generator := _generate(5)
+	assert_object(generator.fade_layer).is_not_null()
+	assert_int(generator.fade_layer.layer).is_equal(90)   # above the HUD, below the game over screen
+	assert_int(generator.fade_layer.process_mode).is_equal(Node.PROCESS_MODE_ALWAYS)
+	assert_float(generator.fade_rect.modulate.a).is_zero()
+	assert_int(generator.fade_rect.mouse_filter).is_equal(Control.MOUSE_FILTER_IGNORE)
+
+
+func _wait_for_transition(generator: Node2D) -> bool:
+	return await wait_until(func() -> bool: return not generator.transitioning, 5000)
+
+
+func test_next_floor_replaces_the_rooms_with_a_smaller_floor() -> void:
+	GameState.run_active = true
+	var generator := _generate(7)
+	var old_rooms := _rooms(generator)
+	GameState.advance_floor()
+	assert_bool(generator.transitioning).is_true()
+	assert_bool(await _wait_for_transition(generator)).is_true()
+
+	var rooms := _rooms(generator)
+	assert_array(rooms).has_size(6)
+	assert_array(generator.current_rooms).has_size(6)
+	for room in old_rooms:
+		assert_bool(is_instance_valid(room) and room.is_inside_tree()).is_false()
+	assert_str(_folder(rooms[0])).is_equal(RoomsScript.STARTING_ROOMS_FOLDER)
+	assert_str(_folder(rooms[4])).is_equal(RoomsScript.BOSS_ROOMS_FOLDER)
+	assert_str(_folder(rooms[5])).is_equal(RoomsScript.ENDING_ROOMS_FOLDER)
+
+
+func test_next_floor_puts_the_player_at_the_new_start() -> void:
+	GameState.run_active = true
+	var generator := _generate(6)
+	player.global_position = Vector2(99999, 99999)
+	player.velocity = Vector2(500, 0)
+	GameState.advance_floor()
+	await _wait_for_transition(generator)
+	var spawn: Node2D = _rooms(generator)[0].get_node("PlayerSpawnPos")
+	assert_vector(player.global_position).is_equal_approx(spawn.global_position, Vector2.ONE * 0.01)
+	assert_vector(player.velocity).is_equal(Vector2.ZERO)
+
+
+func test_floor_transition_freezes_the_player_and_the_clock_until_it_ends() -> void:
+	GameState.run_active = true
+	var generator := _generate(6)
+	GameState.advance_floor()
+	assert_bool(GameState.clock_paused).is_true()
+	assert_int(player.process_mode).is_equal(Node.PROCESS_MODE_DISABLED)
+	await _wait_for_transition(generator)
+	assert_bool(GameState.clock_paused).is_false()
+	assert_int(player.process_mode).is_equal(Node.PROCESS_MODE_INHERIT)
+	assert_float(generator.fade_rect.modulate.a).is_equal_approx(0.0, 0.001)
+
+
+func test_floor_change_during_a_transition_is_ignored() -> void:
+	GameState.run_active = true
+	var generator := _generate(8)
+	GameState.advance_floor()
+	GameState.floor_changed.emit(3)   # e.g. a second portal press slipping through
+	await _wait_for_transition(generator)
+	assert_array(_rooms(generator)).has_size(7)   # floor 2, not floor 3
 
 
 # --- Room camera -------------------------------------------------------------------

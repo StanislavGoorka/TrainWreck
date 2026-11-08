@@ -184,20 +184,35 @@ func _game_over_screens() -> Array:
 	return get_tree().root.get_children().filter(func(n: Node) -> bool: return n is GameOverScreen)
 
 
+func _victory_screens() -> Array:
+	return get_tree().root.get_children().filter(func(n: Node) -> bool: return n is VictoryScreen)
+
+
+func _run_player(coins := 0, items := 0) -> Player:
+	var player: Player = auto_free(Factory.player())
+	add_child(player)
+	player.currency = coins
+	for i in items:
+		player.add_item(Factory.item(), true)
+	return player
+
+
 func test_end_run_does_nothing_without_an_active_run() -> void:
 	var state := _new_game_state()
 	state.end_run(true)
 	assert_int(int(state.lifetime_stats["wins"])).is_zero()
 	assert_bool(state.game_over).is_false()
 	assert_array(_game_over_screens()).is_empty()
+	assert_array(_victory_screens()).is_empty()
 
 
-func test_winning_shows_the_summary_and_pays_out_coins() -> void:
-	var player: Player = auto_free(Factory.player())
-	add_child(player)
-	player.currency = 12
+func test_winning_shows_the_victory_screen_and_pays_out_coins() -> void:
+	_run_player(12, 3)
 	var state := _new_game_state()
 	state.run_active = true
+	state.run_time = 75.0
+	state.floor_time = 20.0
+	state.floor_times.assign([30.0, 25.0])
 
 	state.end_run(true)
 
@@ -206,21 +221,40 @@ func test_winning_shows_the_summary_and_pays_out_coins() -> void:
 	assert_bool(get_tree().paused).is_true()
 	assert_int(int(state.lifetime_stats["wins"])).is_equal(1)
 	assert_int(state.meta_currency).is_equal(12)
-	assert_dict(state.last_run).is_equal({"won": true, "abandoned": false, "coins": 12})
-	var screens := _game_over_screens()
+	assert_bool(state.last_run["won"]).is_true()
+	assert_bool(state.last_run["abandoned"]).is_false()
+	assert_int(state.last_run["coins"]).is_equal(12)
+	assert_int(state.last_run["items"]).is_equal(3)
+	assert_float(state.last_run["run_time"]).is_equal(75.0)
+	assert_array(state.last_run["floor_times"]).is_equal([30.0, 25.0, 20.0])
+	assert_array(_game_over_screens()).is_empty()
+	var screens := _victory_screens()
 	assert_array(screens).has_size(1)
-	assert_bool(screens[0].won).is_true()
 	assert_dict(screens[0].summary).is_equal(state.last_run)
 	assert_int(int(_saved()["lifetime_stats"]["wins"])).is_equal(1)
 
 
-func test_dying_counts_a_death() -> void:
+func test_dying_counts_a_death_and_shows_the_game_over_screen() -> void:
 	var state := _new_game_state()
 	state.run_active = true
 	state.end_run(false)
 	assert_int(int(state.lifetime_stats["deaths"])).is_equal(1)
-	assert_dict(state.last_run).is_equal({"won": false, "abandoned": false, "coins": 0})
-	assert_bool(_game_over_screens()[0].won).is_false()
+	assert_bool(state.last_run["won"]).is_false()
+	assert_int(state.last_run["coins"]).is_zero()
+	assert_int(state.last_run["items"]).is_zero()
+	assert_array(state.last_run["floor_times"]).is_equal([0.0])
+	assert_array(_victory_screens()).is_empty()
+	var screens := _game_over_screens()
+	assert_array(screens).has_size(1)
+	assert_bool(screens[0].won).is_false()
+
+
+func test_run_summary_keeps_its_own_copy_of_the_floor_times() -> void:
+	var state := _new_game_state()
+	state.run_active = true
+	state.end_run(false)
+	state.floor_times.append(99.0)
+	assert_array(state.last_run["floor_times"]).is_equal([0.0])
 
 
 func test_abandoning_returns_to_the_hub_without_a_game_over_screen() -> void:
@@ -232,6 +266,7 @@ func test_abandoning_returns_to_the_hub_without_a_game_over_screen() -> void:
 	assert_bool(state.game_over).is_false()
 	assert_bool(get_tree().paused).is_false()
 	assert_array(_game_over_screens()).is_empty()
+	assert_array(_victory_screens()).is_empty()
 
 
 func test_end_run_only_counts_once() -> void:
@@ -241,6 +276,146 @@ func test_end_run_only_counts_once() -> void:
 	state.end_run(false)
 	assert_int(int(state.lifetime_stats["deaths"])).is_equal(1)
 	assert_array(_game_over_screens()).has_size(1)
+	assert_array(state.last_run["floor_times"]).has_size(1)
+
+
+# --- Floors ------------------------------------------------------------------------
+
+func test_a_new_game_state_starts_on_floor_one_of_an_unknown_run() -> void:
+	var state := _new_game_state()
+	assert_int(state.current_floor).is_equal(1)
+	assert_int(state.total_floors).is_zero()
+	assert_bool(state.is_final_floor()).is_false()
+
+
+func test_final_floor_needs_a_known_number_of_floors(current: int, total: int, expected: bool, test_parameters := [
+	[1, 0, false],
+	[5, 0, false],
+	[1, 3, false],
+	[2, 3, false],
+	[3, 3, true],
+	[4, 3, true],
+	[1, 1, true],
+]) -> void:
+	var state := _new_game_state()
+	state.current_floor = current
+	state.total_floors = total
+	assert_bool(state.is_final_floor()).is_equal(expected)
+
+
+func test_advance_floor_moves_to_the_next_floor_and_records_its_time() -> void:
+	var state := _new_game_state()
+	state.run_active = true
+	state.total_floors = 3
+	state.floor_time = 42.0
+	var events := []
+	state.floor_changed.connect(func(n: int) -> void: events.append(n))
+
+	state.advance_floor()
+
+	assert_int(state.current_floor).is_equal(2)
+	assert_array(events).is_equal([2])
+	assert_array(state.floor_times).is_equal([42.0])
+	assert_float(state.floor_time).is_zero()
+	assert_bool(state.run_active).is_true()
+
+
+func test_advance_floor_on_the_final_floor_wins_the_run() -> void:
+	var state := _new_game_state()
+	state.run_active = true
+	state.total_floors = 2
+	state.current_floor = 2
+	state.floor_time = 10.0
+	var events := []
+	state.floor_changed.connect(func(n: int) -> void: events.append(n))
+
+	state.advance_floor()
+
+	assert_array(events).is_empty()
+	assert_int(state.current_floor).is_equal(2)
+	assert_bool(state.run_active).is_false()
+	assert_bool(state.last_run["won"]).is_true()
+	assert_array(state.last_run["floor_times"]).is_equal([10.0])
+	assert_array(_victory_screens()).has_size(1)
+
+
+func test_advance_floor_without_a_known_floor_count_never_ends_the_run() -> void:
+	var state := _new_game_state()
+	state.run_active = true
+	for i in 3:
+		state.advance_floor()
+	assert_int(state.current_floor).is_equal(4)
+	assert_bool(state.run_active).is_true()
+
+
+func test_min_floor_rooms_leaves_space_for_every_required_room() -> void:
+	# start, special, boss, end and at least one more
+	assert_int(GameStateScript.MIN_FLOOR_ROOMS).is_greater_equal(5)
+
+
+func test_floor_title_without_a_name(number: int, expected: String, test_parameters := [
+	[1, "Floor 1"],
+	[2, "Floor 2"],
+	[12, "Floor 12"],
+]) -> void:
+	var state := _new_game_state()
+	# FLOOR_NAMES is empty today; a named floor reads "Floor N: Name".
+	if number - 1 < GameStateScript.FLOOR_NAMES.size() and GameStateScript.FLOOR_NAMES[number - 1] != "":
+		expected += ": " + GameStateScript.FLOOR_NAMES[number - 1]
+	assert_str(state.floor_title(number)).is_equal(expected)
+
+
+# --- Run clock ---------------------------------------------------------------------
+
+func test_format_time(seconds: float, expected: String, test_parameters := [
+	[0.0, "00:00"],
+	[0.99, "00:00"],
+	[5.0, "00:05"],
+	[59.9, "00:59"],
+	[60.0, "01:00"],
+	[125.4, "02:05"],
+	[3599.0, "59:59"],
+	[3600.0, "1:00:00"],
+	[3725.0, "1:02:05"],
+	[36000.0, "10:00:00"],
+]) -> void:
+	var state := _new_game_state()
+	assert_str(state.format_time(seconds)).is_equal(expected)
+
+
+func test_clock_runs_during_an_active_run() -> void:
+	var state := _new_game_state()
+	state.run_active = true
+	state._process(0.5)
+	state._process(0.25)
+	assert_float(state.run_time).is_equal_approx(0.75, 0.0001)
+	assert_float(state.floor_time).is_equal_approx(0.75, 0.0001)
+
+
+func test_clock_stops_outside_a_run_after_game_over_or_when_paused(run_active: bool, game_over: bool, clock_paused: bool, test_parameters := [
+	[false, false, false],
+	[true, true, false],
+	[true, false, true],
+]) -> void:
+	var state := _new_game_state()
+	state.run_active = run_active
+	state.game_over = game_over
+	state.clock_paused = clock_paused
+	state._process(1.0)
+	assert_float(state.run_time).is_zero()
+	assert_float(state.floor_time).is_zero()
+
+
+func test_floor_time_restarts_on_a_new_floor_but_run_time_keeps_counting() -> void:
+	var state := _new_game_state()
+	state.run_active = true
+	state.total_floors = 3
+	state._process(2.0)
+	state.advance_floor()
+	state._process(1.0)
+	assert_float(state.run_time).is_equal_approx(3.0, 0.0001)
+	assert_float(state.floor_time).is_equal_approx(1.0, 0.0001)
+	assert_array(state.floor_times).is_equal([2.0])
 
 
 # --- Configuration -----------------------------------------------------------------

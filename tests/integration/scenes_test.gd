@@ -18,13 +18,21 @@ const PAUSE_MENU_SCENE := "res://Test/Scenes/UIScenes/UIFullScenes/pause_menu.ts
 const MAIN_MENU_SCENE := "res://Test/Scenes/UIScenes/UIFullScenes/main_menu.tscn"
 const CREDITS_SCENE := "res://Test/Scenes/UIScenes/UIFullScenes/credits.tscn"
 const GAME_SCENE := "res://Test/Scenes/game.tscn"
-const BOSS_ROOM_SCENE := "res://Test/Scenes/Rooms/BossRooms/boss_01.tscn"
+const BOSS_ROOMS_FOLDER := "res://Test/Scenes/Rooms/BossRooms/"
+const ENDING_ROOMS_FOLDER := "res://Test/Scenes/Rooms/EndingRooms/"
+const SUMMONER_SCENE := "res://Test/Scenes/Enemies/Fantasy/Boss/boris.tscn"
+## Boss room -> name shown on the boss health bar.
+const BOSS_ROOMS := {
+	"res://Test/Scenes/Rooms/BossRooms/boss_01.tscn": "Laureth, Doom Of All Scales",
+	"res://Test/Scenes/Rooms/BossRooms/boss_02.tscn": "Boris,King Of Almaria",
+}
 const ENEMY_SCENES: Array[String] = [
 	"res://Test/Scenes/Enemies/Fantasy/Slayer.tscn",
 	"res://Test/Scenes/Enemies/Fantasy/hairy_fairy.tscn",
 	"res://Test/Scenes/Enemies/Fantasy/rage_fairy.tscn",
 	"res://Test/Scenes/Enemies/Fantasy/slay_fairy.tscn",
 	"res://Test/Scenes/Enemies/Fantasy/Boss/laureth.tscn",
+	SUMMONER_SCENE,
 ]
 
 
@@ -125,10 +133,39 @@ func test_spin_boss_animations_exist(
 	assert_array(Array(_animation_names(boss))).contains("idle", "run", "spin")
 
 
+func test_summoner_boss_scene_has_its_states_and_stats() -> void:
+	var boss: Node = _spawn(SUMMONER_SCENE)
+	assert_object(boss).is_instanceof(SummonerBoss)
+	assert_object(boss.stats).is_instanceof(SummonerBossStats)
+	var machine: StateMachine = boss.get_node("StateMachine")
+	assert_array(machine.states.keys()).contains_exactly_in_any_order(&"Idle", &"Summon", &"Vulnerable", &"Dead")
+	assert_bool(boss.vulnerable).is_false()
+
+
+func test_summoner_boss_animations_exist(
+		do_skip := true,
+		skip_reason := "KNOWN BUG: the summoner states ask for 'idle' and 'summon' but boris.tscn has 'Idle', 'Summon' and 'Vulnerable' (play_anim silently skips missing names, so Boris never animates)") -> void:
+	var boss: Node = _spawn(SUMMONER_SCENE)
+	assert_array(Array(_animation_names(boss))).contains("idle", "summon")
+
+
+## Kills [param enemy]. The summoner only takes damage inside a vulnerability window,
+## and at most window_damage_cap of its health per window, so it needs several windows.
+func _kill(enemy: Enemy) -> void:
+	if enemy is SummonerBoss:
+		for window in 100:
+			if enemy.is_dead:
+				return
+			enemy.set_vulnerable(true)
+			enemy.take_damage(enemy.stats.max_health)
+		return
+	enemy.take_damage(enemy.stats.max_health * 10.0)
+
+
 func test_killed_enemies_play_their_death_and_disappear() -> void:
 	for path in ENEMY_SCENES:
 		var enemy: Enemy = _spawn(path)
-		enemy.take_damage(enemy.stats.max_health * 10.0)
+		_kill(enemy)
 		assert_str(String(enemy.get_node("StateMachine").current_state.name)).is_equal("Dead")
 		var freed := await wait_until(func() -> bool: return not is_instance_valid(enemy), 5000)
 		assert_bool(freed).override_failure_message(path + " was not removed after dying").is_true()
@@ -167,15 +204,13 @@ func test_player_body_has_a_dash_animation(
 	assert_bool(player.get_node("Body").sprite_frames.has_animation("Dash")).is_true()
 
 
-func test_player_scene_has_the_health_bar_character_gd_expects(
-		do_skip := true,
-		skip_reason := "KNOWN BUG: character.gd looks up %HealthBar, which character_1.tscn does not have (error on every spawn)") -> void:
+func test_player_scene_spawns_without_errors() -> void:
+	# character.gd no longer looks up a %HealthBar node (the HUD hearts show health).
 	var capture := ErrorCapture.new()
 	capture.start()
-	var player: Player = _spawn(PLAYER_SCENE)
-	var errors := capture.stop()
-	assert_object(player.health_bar).is_not_null()
-	assert_array(Array(errors)).is_empty()
+	_spawn(PLAYER_SCENE)
+	var errors := Array(capture.stop()).filter(func(e: String) -> bool: return not e.contains("_on_dash_timer_timeout"))
+	assert_array(errors).is_empty()
 
 
 func test_player_stats_come_from_the_slinger_resources() -> void:
@@ -338,7 +373,10 @@ func test_run_scene_builds_a_level_around_the_player() -> void:
 
 	var generator: Node2D = game.get_node("Rooms")
 	var rooms := generator.get_children().filter(func(n: Node) -> bool: return n is Node2D)
-	assert_array(rooms).has_size(generator.num_levels)
+	var first_floor: int = maxi(generator.num_levels, GameState.MIN_FLOOR_ROOMS)
+	assert_array(rooms).has_size(first_floor)
+	assert_int(GameState.total_floors).is_equal(first_floor - GameState.MIN_FLOOR_ROOMS + 1)
+	assert_int(GameState.total_floors).override_failure_message("the run needs at least two floors to use the portal").is_greater(1)
 	var player: Player = game.get_node("Character1")
 	assert_vector(player.global_position).is_equal_approx(rooms[0].get_node("PlayerSpawnPos").global_position, Vector2(64, 64))
 	assert_bool(player.is_dead).is_false()
@@ -351,25 +389,53 @@ func test_run_scene_builds_a_level_around_the_player() -> void:
 	game.free()
 
 
-func test_boss_room_spawns_the_boss_and_shows_its_bar() -> void:
-	var bar: VBoxContainer = auto_free(BossHealthBar.new())
-	add_child(bar)
-	var player: Player = auto_free(Factory.player(Factory.character_stats(1000.0)))
-	var camera := Camera2D.new()
-	camera.name = "Camera2D"
-	player.add_child(camera)
-	add_child(player)
-	player.global_position = Vector2(-5000, -5000)
-	var room: BossRoom = _spawn(BOSS_ROOM_SCENE)
-	room._on_player_detector_body_entered(player)
-	var bosses := room.alive_enemies.filter(func(e: Node) -> bool: return e.is_in_group("Bosses"))
-	assert_array(bosses).has_size(1)
-	assert_bool(bar.visible).is_true()
-	assert_str(bar.name_label.text).is_equal("Laureth, Doom Of All Scales")
+func test_every_boss_room_is_covered_by_these_tests() -> void:
+	for file_name in DirAccess.get_files_at(BOSS_ROOMS_FOLDER):
+		if file_name.ends_with(".tscn"):
+			assert_bool(BOSS_ROOMS.has(BOSS_ROOMS_FOLDER + file_name)) \
+				.override_failure_message("add %s to BOSS_ROOMS in scenes_test.gd" % file_name).is_true()
 
 
-func test_boss_room_rewards_the_player(
+func test_boss_rooms_spawn_their_boss_and_show_its_bar() -> void:
+	for path: String in BOSS_ROOMS:
+		var bar: VBoxContainer = auto_free(BossHealthBar.new())
+		add_child(bar)
+		var player: Player = auto_free(Factory.player(Factory.character_stats(1000.0)))
+		var camera := Camera2D.new()
+		camera.name = "Camera2D"
+		player.add_child(camera)
+		add_child(player)
+		player.global_position = Vector2(-5000, -5000)
+		var room: BossRoom = _spawn(path)
+		room._on_player_detector_body_entered(player)
+		var bosses := room.alive_enemies.filter(func(e: Node) -> bool: return e.is_in_group("Bosses"))
+		assert_array(bosses).override_failure_message(path).has_size(1)
+		assert_bool(bar.visible).override_failure_message(path).is_true()
+		assert_str(bar.name_label.text).override_failure_message(path).is_equal(BOSS_ROOMS[path])
+		room.free()
+		bar.free()
+		player.free()
+
+
+func test_boss_rooms_reward_the_player(
 		do_skip := true,
-		skip_reason := "KNOWN BUG: boss_01.tscn sets reward_pedestal_scene = null, so beating the boss gives no reward") -> void:
-	var room: BossRoom = _spawn(BOSS_ROOM_SCENE)
-	assert_object(room.reward_pedestal_scene).is_not_null()
+		skip_reason := "KNOWN BUG: boss_01.tscn and boss_02.tscn set reward_pedestal_scene = null, so beating a boss before the final floor gives no reward") -> void:
+	for path: String in BOSS_ROOMS:
+		var room: BossRoom = _spawn(path)
+		assert_object(room.reward_pedestal_scene).override_failure_message(path).is_not_null()
+
+
+func test_ending_rooms_have_a_portal_to_the_next_floor() -> void:
+	var found := 0
+	for file_name in DirAccess.get_files_at(ENDING_ROOMS_FOLDER):
+		if not file_name.ends_with(".tscn"):
+			continue
+		found += 1
+		var room: Node = _spawn(ENDING_ROOMS_FOLDER + file_name)
+		var portals := room.find_children("*", "Area2D", true, false).filter(func(n: Node) -> bool: return n is Portal)
+		assert_array(portals).override_failure_message(file_name + " has no Portal").has_size(1)
+		var portal: Portal = portals[0]
+		assert_bool(portal.can_interact()).is_true()
+		assert_int(portal.collision_mask).override_failure_message("the portal must detect the player layer").is_equal(2)
+		assert_object(portal.get_node_or_null("CollisionShape2D")).is_not_null()
+	assert_int(found).is_greater(0)

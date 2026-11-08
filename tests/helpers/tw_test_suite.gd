@@ -2,7 +2,8 @@
 ##
 ## The game keeps state in autoload singletons (GameState, Audio, GameSettings), in
 ## engine singletons (pause, Input, AudioServer, the global RNG) and in user:// files.
-## This class snapshots all of it before each test and restores it afterwards, so
+## This class snapshots all of it before each test and restores it afterwards (floor
+## progress and run clock included), so
 ## tests cannot leak into each other and never overwrite the developer's real save.
 ##
 ## Suites that override a hook must call super(), e.g. [code]super.before_test()[/code]
@@ -22,6 +23,7 @@ const GAME_STATE_FIELDS: Array[String] = [
 	"characters", "selected_character", "selected_id", "unlocked_characters",
 	"meta_currency", "unlocks", "lifetime_stats", "dialogue_progress",
 	"game_over", "run_active", "last_run",
+	"current_floor", "total_floors", "run_time", "floor_time", "floor_times", "clock_paused",
 ]
 
 var _user_files := {}
@@ -50,6 +52,13 @@ func before_test() -> void:
 	GameState.selected_character = null
 	GameState.run_active = false
 	GameState.game_over = false
+	# Every test starts on floor 1 of a run of unknown length (rooms.gd sets total_floors).
+	GameState.current_floor = 1
+	GameState.total_floors = 0
+	GameState.run_time = 0.0
+	GameState.floor_time = 0.0
+	GameState.floor_times.clear()
+	GameState.clock_paused = false
 
 
 func after_test() -> void:
@@ -200,6 +209,6 @@ func _restore_buses(buses: Array[Dictionary]) -> void:
 
 func _free_game_over_screens() -> void:
 	for child in get_tree().root.get_children():
-		if child is GameOverScreen:
+		if child is GameOverScreen or child is VictoryScreen:
 			get_tree().root.remove_child(child)
 			child.free()
