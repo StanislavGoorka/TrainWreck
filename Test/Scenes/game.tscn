@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://5b8noiahvuwg"]
 
 [ext_resource type="PackedScene" uid="uid://dvae3trd2twqh" path="res://Test/Scenes/InGameElements/parallax_background.tscn" id="1_0sh8k"]
-[ext_resource type="Script" uid="uid://dpf00fypvhxl1" path="res://Placeholders/Scripts/rooms.gd" id="2_udv4l"]
+[ext_resource type="Script" uid="uid://dpf00fypvhxl1" path="res://Test/Scripts/RoomRelated/rooms.gd" id="2_udv4l"]
 [ext_resource type="Script" uid="uid://dtnlowemigy7y" path="res://Placeholders/Scripts/camera.gd" id="3_t55o4"]
 [ext_resource type="PackedScene" uid="uid://ch8udrp2yft2f" path="res://Placeholders/Scenes/Characters/character_1.tscn" id="4_2xxq6"]
 [ext_resource type="Script" uid="uid://dbb8qajyxbjuq" path="res://Test/Scripts/UIElements/HUD.gd" id="5_mx71y"]

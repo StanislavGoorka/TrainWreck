@@ -23,6 +23,14 @@ var game_over: bool = false
 var run_active: bool = false
 var last_run: Dictionary = {}                   # summary of the run that just ended
 
+signal floor_changed(floor_number: int)
+
+const MIN_FLOOR_ROOMS := 4    # start, special, boss, end
+const FINAL_FLOOR := 0        # 0 = endless. Set it to e.g. 8 to win the run on floor 8.
+
+var current_floor: int = 1
+
+
 func _ready() -> void:
 	_load_characters()
 	load_game()
@@ -91,7 +99,15 @@ func start_run() -> void:
 	lifetime_stats["runs"] += 1
 	save_game()
 	get_tree().paused = false
+	current_floor = 1
 	get_tree().change_scene_to_file(RUN_SCENE)
+
+func advance_floor() -> void:
+	if FINAL_FLOOR > 0 and current_floor >= FINAL_FLOOR:
+		end_run(true)   # final floor cleared: run complete
+		return
+	current_floor += 1
+	floor_changed.emit(current_floor)
 
 func end_run(won: bool, abandoned: bool = false) -> void:
 	if not run_active:

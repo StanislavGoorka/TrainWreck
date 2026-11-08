@@ -1,6 +1,11 @@
 [gd_scene format=3 uid="uid://c68hs3l6frh3c"]
 
 [ext_resource type="PackedScene" uid="uid://cfypu2dt5rj1i" path="res://Test/Scenes/Rooms/TemplateRooms/ending_room.tscn" id="1_cs4k7"]
+[ext_resource type="Script" uid="uid://p85iaqq75lrs" path="res://Test/Scripts/RoomRelated/Portal.gd" id="2_6tcx8"]
+[ext_resource type="Texture2D" uid="uid://dsorjs8ke8dqn" path="res://icon.svg" id="3_ldqj5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5o1l7"]
+radius = 32.0
 
 [node name="Ending" unique_id=1569111830 instance=ExtResource("1_cs4k7")]
 
@@ -13,3 +18,15 @@ position = Vector2(192, 512)
 
 [node name="Left" parent="Connector" index="0" unique_id=887872]
 position = Vector2(-192, 0)
+
+[node name="Area2D" type="Area2D" parent="." index="3" unique_id=894520323]
+position = Vector2(1536, 512)
+script = ExtResource("2_6tcx8")
+
+[node name="Sprite2D" type="Sprite2D" parent="Area2D" index="0" unique_id=974201292]
+rotation = 0.7853982
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_ldqj5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" index="1" unique_id=1915008237]
+shape = SubResource("CircleShape2D_5o1l7")
