@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bm6on0iv6u7gr"]
 
 [ext_resource type="Theme" uid="uid://dqshteojtraa3" path="res://Test/Themes/StatText.tres" id="1_aphiq"]
-[ext_resource type="Script" uid="uid://8x6248boqpwa" path="res://Test/Scripts/UIElements/StatsUI.gd" id="1_ffsdp"]
+[ext_resource type="Script" uid="uid://8x6248boqpwa" path="res://Test/Scripts/UIElements/InRunUI/StatsUI.gd" id="1_ffsdp"]
 [ext_resource type="Texture2D" uid="uid://ctc31k7n4225u" path="res://Test/Assets/UI Elements/Statistics/SPRITE-UI-STATS1.png" id="2_5rf2q"]
 [ext_resource type="Texture2D" uid="uid://bxunqy3bpg784" path="res://Test/Assets/UI Elements/Statistics/SPRITE-UI-STATS2.png" id="3_gf2tq"]
 [ext_resource type="Texture2D" uid="uid://ch6vws6nwariy" path="res://Test/Assets/UI Elements/Statistics/SPRITE-UI-STATS3.png" id="4_mgprd"]

@@ -7,14 +7,17 @@
 [ext_resource type="Script" uid="uid://dbb8qajyxbjuq" path="res://Test/Scripts/UIElements/HUD.gd" id="5_mx71y"]
 [ext_resource type="PackedScene" uid="uid://c6i1q8obn2wpa" path="res://Test/Scenes/UIScenes/UIElements/health_ui.tscn" id="6_cc1mx"]
 [ext_resource type="Theme" uid="uid://dqshteojtraa3" path="res://Test/Themes/StatText.tres" id="7_qotcy"]
-[ext_resource type="Script" uid="uid://s56nie7y0e7q" path="res://Test/Scripts/UIElements/CurrencyUI.gd" id="8_qocw2"]
+[ext_resource type="Script" uid="uid://s56nie7y0e7q" path="res://Test/Scripts/UIElements/InRunUI/CurrencyUI.gd" id="8_qocw2"]
 [ext_resource type="Texture2D" uid="uid://drm2atggeuhqt" path="res://Placeholders/Assets/Sprites/coinui1.png" id="9_frd4l"]
 [ext_resource type="Texture2D" uid="uid://c780clsn210kh" path="res://Placeholders/Assets/Sprites/coinui4.png" id="10_trvbx"]
 [ext_resource type="PackedScene" uid="uid://bm6on0iv6u7gr" path="res://Test/Scenes/UIScenes/UIElements/stats_ui.tscn" id="11_nhqs1"]
-[ext_resource type="Script" uid="uid://csw6pdudx2x6n" path="res://Test/Scripts/UIElements/MapUI.gd" id="12_fubhx"]
-[ext_resource type="Script" uid="uid://cy30tfj0wh545" path="res://Test/Scripts/UIElements/TimerUI.gd" id="13_qs74i"]
-[ext_resource type="Script" uid="uid://clbaj4qkqisp7" path="res://Test/Scripts/UIElements/ActiveItemsUI.gd" id="14_nq1qe"]
-[ext_resource type="Script" uid="uid://dwn3fhn3bk2ga" path="res://Test/Scripts/UIElements/BossHealthBar.gd" id="15_lbarn"]
+[ext_resource type="Script" uid="uid://xuctcr7kk4ss" path="res://Test/Scripts/Miscellaneous/HoldToShow.gd" id="12_2xxq6"]
+[ext_resource type="Script" uid="uid://csw6pdudx2x6n" path="res://Test/Scripts/UIElements/InRunUI/MapUI.gd" id="12_fubhx"]
+[ext_resource type="Script" uid="uid://cy30tfj0wh545" path="res://Test/Scripts/UIElements/InRunUI/TimerUI.gd" id="13_qs74i"]
+[ext_resource type="Script" uid="uid://clbaj4qkqisp7" path="res://Test/Scripts/UIElements/InRunUI/ActiveItemsUI.gd" id="14_nq1qe"]
+[ext_resource type="Theme" uid="uid://d365fbynytqx2" path="res://Test/Themes/BasicTextInGame.tres" id="15_cc1mx"]
+[ext_resource type="Script" uid="uid://dwn3fhn3bk2ga" path="res://Test/Scripts/UIElements/InRunUI/BossHealthBar.gd" id="15_lbarn"]
+[ext_resource type="Script" uid="uid://6noaalpeyj5v" path="res://Test/Scripts/UIElements/FloorUI.gd" id="15_mx71y"]
 [ext_resource type="Texture2D" uid="uid://dtxv4m051ifkm" path="res://Test/Assets/UI Elements/Enemy Related/SPRITE-UI-BOSSBAR-back.png" id="16_t55o4"]
 [ext_resource type="PackedScene" uid="uid://cjjudcsjw6qys" path="res://Test/Scenes/UIScenes/UIFullScenes/pause_menu.tscn" id="16_wesht"]
 [ext_resource type="Texture2D" uid="uid://dh86f6bcqwcoj" path="res://Test/Assets/UI Elements/Enemy Related/SPRITE-UI-BOSSBAR-health.png" id="17_2xxq6"]
@@ -86,10 +89,16 @@ offset_bottom = 40.0
 
 [node name="Stack" type="VBoxContainer" parent="Character1/UI/HUD/TopRight" unique_id=1488031427]
 layout_mode = 2
+script = ExtResource("12_2xxq6")
 
 [node name="MapUI" type="PanelContainer" parent="Character1/UI/HUD/TopRight/Stack" unique_id=1734487897]
 layout_mode = 2
 script = ExtResource("12_fubhx")
+
+[node name="FloorUI" type="Label" parent="Character1/UI/HUD/TopRight/Stack" unique_id=990908778]
+layout_mode = 2
+theme = ExtResource("15_cc1mx")
+script = ExtResource("15_mx71y")
 
 [node name="TimerUI" type="Label" parent="Character1/UI/HUD/TopRight/Stack" unique_id=1984526073]
 layout_mode = 2

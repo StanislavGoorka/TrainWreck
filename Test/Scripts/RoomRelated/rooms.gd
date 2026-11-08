@@ -14,7 +14,7 @@ var END_ROOMS: Array = []
 var SPECIAL_ROOMS: Array = []
 var BOSS_ROOMS: Array = []
 
-@export var num_levels: int = 10   # rooms on FLOOR 1. Every later floor has one room less.
+@export var num_levels: int = 7   # rooms on FLOOR 1. Every later floor has one room less.
 var generation_seed: int = 0
 
 var current_rooms: Array[Node2D] = []

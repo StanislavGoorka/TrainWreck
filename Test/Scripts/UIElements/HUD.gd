@@ -17,6 +17,13 @@ func _ready() -> void:
 	for child in $TopRight/Stack.get_children():
 		if child is Control:
 			child.size_flags_horizontal = Control.SIZE_SHRINK_END
+	# The map keeps its own size and sits in the middle. The labels fill the stack's width,
+	# which is the width of the map, and center their text under it.
+	for child in $TopRight/Stack.get_children():
+		if child is Label:
+			child.size_flags_horizontal = Control.SIZE_FILL
+		elif child is Control:
+			child.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 
 func _setup_zone(zone: MarginContainer, preset: Control.LayoutPreset, grow_h: Control.GrowDirection, grow_v: Control.GrowDirection) -> void:
 	zone.mouse_filter = Control.MOUSE_FILTER_IGNORE
