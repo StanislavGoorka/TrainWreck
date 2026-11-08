@@ -29,6 +29,9 @@ func _ready() -> void:
 	for def in characters.values():
 		if def.unlocked_by_default and not unlocked_characters.has(def.id):
 			unlocked_characters.append(def.id)
+	# Safety net: the default character is always available.
+	if characters.has(DEFAULT_CHARACTER_ID) and not unlocked_characters.has(DEFAULT_CHARACTER_ID):
+		unlocked_characters.append(DEFAULT_CHARACTER_ID)
 	if not characters.has(selected_id) or not is_unlocked(selected_id):
 		selected_id = DEFAULT_CHARACTER_ID if characters.has(DEFAULT_CHARACTER_ID) else ""
 	selected_character = characters.get(selected_id)

@@ -116,7 +116,6 @@ func _spawn_rooms() -> void:
 			var spawn_pos = room.get_node_or_null("PlayerSpawnPos")
 			if spawn_pos:
 				player.global_position = spawn_pos.global_position
-				push_warning("SPAWNUJE GO")
 			else:
 				push_error("❌ Start room missing PlayerSpawnPos")
 

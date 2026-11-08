@@ -14,4 +14,5 @@ description = "He might be alone, but it does not even matter"
 portrait = ExtResource("1_6eajt")
 stats = ExtResource("4_tyldx")
 weapon_stats = ExtResource("5_vpaib")
+unlocked_by_default = true
 metadata/_custom_type_script = "uid://xcgspuob3fen"

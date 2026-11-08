@@ -34,7 +34,6 @@ var is_dead: bool = false
 const DAMAGE_TICK_RATE: float = 2.5
 
 @onready var hurtbox: Area2D = %HurtBox
-@onready var health_bar: Node2D = %HealthBar
 
 func _ready() -> void:
 	died.connect(_on_died)
@@ -137,9 +136,6 @@ func _recalculate_stats() -> void:
 		
 	var health_gain := current_stats.max_health - old_max_health
 	health += health_gain
-	if health_bar:
-		health_bar.max_value = current_stats.max_health
-		health_bar.value = health
 	health_changed.emit(health, current_stats.max_health)
 	
 	stats_changed.emit()
@@ -163,6 +159,4 @@ func add_pickup(pickup: PickupData) -> void:
 			bombs += pickup.value
 		PickupData.PickupType.HEART:
 			health = min(health + pickup.value, current_stats.max_health)
-			if health_bar:
-				health_bar.value = health
 			health_changed.emit(health, current_stats.max_health)

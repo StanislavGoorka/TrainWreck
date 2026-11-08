@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://y4v8sj35wxvs"]
 
 [ext_resource type="Script" uid="uid://dmkcdsvli13np" path="res://Test/Enemy/Enemy.gd" id="1_vwgg0"]
-[ext_resource type="Resource" uid="uid://b135t1h63tk2c" path="res://Test/Scripts/Resource/EnemyResource/RageyFairy.tres" id="2_ccf2o"]
+[ext_resource type="Resource" uid="uid://dslkbontiukyu" path="res://Test/Scripts/Resource/EnemyResource/SlayFairy.tres" id="2_cn0jq"]
 [ext_resource type="Texture2D" uid="uid://b3nhdi42g5xey" path="res://Test/Assets/Enemies/SPRITE-ENEMY-FANTASY-slayfairy-death-0-1.png" id="3_cn0jq"]
 [ext_resource type="Texture2D" uid="uid://cqcnq6tf1mefl" path="res://Test/Assets/Enemies/SPRITE-ENEMY-FANTASY-slayfairy-fly-0-1.png" id="4_60rrs"]
 [ext_resource type="Texture2D" uid="uid://pnamjxo5bf61" path="res://Test/Assets/Enemies/SPRITE-ENEMY-FANTASY-ragefairy-hurt-0-1.png" id="5_k0ygx"]
@@ -167,7 +167,7 @@ radius = 32.0
 scale = Vector2(2, 2)
 collision_layer = 4
 script = ExtResource("1_vwgg0")
-stats = ExtResource("2_ccf2o")
+stats = ExtResource("2_cn0jq")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1902261154]
 sprite_frames = SubResource("SpriteFrames_s1fef")

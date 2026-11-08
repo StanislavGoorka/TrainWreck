@@ -89,6 +89,6 @@ track = ExtResource("6_0se4w")
 metadata/_custom_type_script = "uid://bai22cyrhldcb"
 
 [connection signal="pressed" from="HBoxContainer/MenuButtons/Start" to="." method="_on_start_pressed"]
-[connection signal="pressed" from="HBoxContainer/MenuButtons/Settings" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="HBoxContainer/MenuButtons/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="HBoxContainer/MenuButtons/Credits" to="." method="_on_credits_pressed"]
 [connection signal="pressed" from="HBoxContainer/MenuButtons/Exit" to="." method="_on_exit_pressed"]

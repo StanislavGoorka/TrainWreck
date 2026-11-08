@@ -8,6 +8,7 @@
 
 [node name="ParallaxBackground" type="ParallaxBackground" unique_id=758316074]
 script = ExtResource("1_7cui2")
+far_speed = 1.0
 
 [node name="CloudsFar" type="ParallaxLayer" parent="." unique_id=267478738]
 motion_mirroring = Vector2(1440, 0)
