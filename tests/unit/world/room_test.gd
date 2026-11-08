@@ -283,3 +283,46 @@ func test_boss_room_without_a_reward_scene_spawns_nothing() -> void:
 	room._on_room_cleared()
 	await await_millis(150)
 	assert_int(room.get_child_count()).is_equal(before)
+
+
+func test_boss_before_the_final_floor_gives_a_reward_and_the_run_goes_on() -> void:
+	GameState.run_active = true
+	GameState.total_floors = 3
+	GameState.current_floor = 2
+	var room := _boss_room(PEDESTAL_SCENE)
+	room.victory_delay = 0.05
+	room._on_room_cleared()
+	var appeared := await wait_until(func() -> bool: return not _pedestals(room).is_empty(), 2000)
+	assert_bool(appeared).is_true()
+	assert_bool(GameState.run_active).is_true()
+	assert_bool(GameState.clock_paused).is_false()
+
+
+func test_beating_the_boss_on_the_final_floor_wins_the_run() -> void:
+	GameState.run_active = true
+	GameState.total_floors = 3
+	GameState.current_floor = 3
+	var room := _boss_room(PEDESTAL_SCENE)
+	room.victory_delay = 0.05
+	room._on_room_cleared()
+	# The clock stops at once, so the boss's death animation is not counted.
+	assert_bool(GameState.clock_paused).is_true()
+	assert_bool(GameState.run_active).is_true()
+	var won := await wait_until(func() -> bool: return not GameState.run_active, 2000)
+	assert_bool(won).is_true()
+	assert_bool(GameState.last_run["won"]).is_true()
+	assert_bool(GameState.game_over).is_true()
+	var victory := get_tree().root.get_children().filter(func(n: Node) -> bool: return n is VictoryScreen)
+	assert_array(victory).has_size(1)
+	assert_array(_pedestals(room)).is_empty()   # no item reward on the last floor
+
+
+func test_victory_waits_for_the_boss_death_animation() -> void:
+	GameState.run_active = true
+	GameState.total_floors = 1
+	var room := _boss_room()
+	room.victory_delay = 0.4
+	room._on_room_cleared()
+	await await_millis(150)
+	assert_bool(GameState.run_active).is_true()
+	assert_bool(await wait_until(func() -> bool: return not GameState.run_active, 2000)).is_true()

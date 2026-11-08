@@ -4,7 +4,6 @@
 ## out. Textures are PlaceholderTexture2D instances: no asset file is ever opened.
 extends RefCounted
 
-const FakeHealthBar := preload("res://tests/helpers/fake_health_bar.gd")
 const RecordingState := preload("res://tests/helpers/recording_state.gd")
 
 const PLAYER_ANIMATIONS: Array[StringName] = [&"Idle", &"NewRun", &"Dash"]
@@ -134,7 +133,7 @@ static func _make_unique(owner_node: Node, child: Node) -> void:
 
 
 ## A Player with every node character.gd and the player states need (Body, Head,
-## %HurtBox, %HealthBar). Not added to the tree.
+## %HurtBox). Not added to the tree.
 static func player(stats: CharacterStats = null, weapon: WeaponStats = null) -> Player:
 	var result := Player.new()
 	result.name = "TestPlayer"
@@ -147,10 +146,6 @@ static func player(stats: CharacterStats = null, weapon: WeaponStats = null) -> 
 	result.add_child(animated_sprite("Body", PLAYER_ANIMATIONS))
 	result.add_child(animated_sprite("Head", PLAYER_ANIMATIONS))
 	_make_unique(result, area("HurtBox", 2, 4 | 16, 16.0))   # same layers as character_1.tscn
-	var bar := Node2D.new()
-	bar.name = "HealthBar"
-	bar.set_script(FakeHealthBar)
-	_make_unique(result, bar)
 	return result
 
 

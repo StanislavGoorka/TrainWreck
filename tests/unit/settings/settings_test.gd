@@ -37,7 +37,14 @@ func test_game_settings_defaults_to_windowed_without_a_file() -> void:
 	var settings: Node = auto_free(GameSettingsScript.new())
 	add_child(settings)
 	assert_bool(settings.fullscreen).is_false()
-	assert_bool(settings.is_fullscreen()).is_false()
+	# The project window is borderless and 1920x1080. On a 1920x1080 screen the OS reports
+	# such a window as fullscreen even in windowed mode, so the real window state can only
+	# be checked when the window is smaller than the screen.
+	var window_size := DisplayServer.window_get_size()
+	var screen_size := DisplayServer.screen_get_size()
+	var borderless := DisplayServer.window_get_flag(DisplayServer.WINDOW_FLAG_BORDERLESS)
+	if not (borderless and window_size.x >= screen_size.x and window_size.y >= screen_size.y):
+		assert_bool(settings.is_fullscreen()).is_false()
 
 
 func test_set_fullscreen_saves_the_choice() -> void:

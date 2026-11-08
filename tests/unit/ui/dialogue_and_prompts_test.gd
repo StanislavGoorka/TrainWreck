@@ -1,4 +1,4 @@
-## DialogueText (typed speech lines), InteractPrompt ("[E] Talk") and GameOverScreen.
+## DialogueText (typed speech lines), InteractPrompt ("[E] Talk"), GameOverScreen and VictoryScreen.
 extends "res://tests/helpers/tw_test_suite.gd"
 
 
@@ -238,3 +238,62 @@ func test_game_over_screen_works_on_top_of_a_paused_game() -> void:
 	assert_int(screen.process_mode).is_equal(Node.PROCESS_MODE_ALWAYS)
 	var holder: Control = screen.get_child(0)
 	assert_int(holder.mouse_filter).is_equal(Control.MOUSE_FILTER_STOP)
+
+
+# --- VictoryScreen -----------------------------------------------------------------
+
+func _victory(summary: Dictionary) -> VictoryScreen:
+	var screen: VictoryScreen = auto_free(VictoryScreen.new())
+	screen.setup(summary)
+	add_child(screen)
+	return screen
+
+
+func _victory_summary() -> Dictionary:
+	return {
+		"won": true, "abandoned": false, "coins": 9, "items": 4,
+		"run_time": 3725.0, "floor_times": [65.0, 600.0, 3060.0],
+	}
+
+
+func test_victory_screen_shows_items_and_total_time() -> void:
+	var screen := _victory(_victory_summary())
+	assert_array(Array(_labels(screen))).contains("VICTORY", "Items collected", "4", "Total time", "1:02:05")
+
+
+func test_victory_screen_lists_the_time_of_every_floor_in_order() -> void:
+	var screen := _victory(_victory_summary())
+	var grid: GridContainer = screen.find_children("*", "GridContainer", true, false)[0]
+	var texts := grid.get_children().filter(func(n: Node) -> bool: return n is Label).map(func(l: Label) -> String: return l.text)
+	assert_array(texts).contains_exactly(
+		"Items collected", "4", "Total time", "1:02:05",
+		"Floor 1", "01:05", "Floor 2", "10:00", "Floor 3", "51:00")
+	assert_int(grid.columns).is_equal(2)
+
+
+func test_victory_screen_survives_an_empty_summary() -> void:
+	var screen := _victory({})
+	assert_array(Array(_labels(screen))).contains("Items collected", "0", "Total time", "00:00")
+	assert_array(Array(_labels(screen))).not_contains("Floor 1")
+
+
+func test_victory_screen_offers_a_new_run_or_the_hub() -> void:
+	var screen := _victory(_victory_summary())
+	var texts := _buttons(screen).map(func(b: Button) -> String: return b.text)
+	assert_array(texts).contains_exactly("New Run", "Get Back To Hub")
+	# Pressing them changes the scene, which would replace the test runner.
+
+
+func test_victory_screen_focuses_new_run_for_keyboard_and_gamepad() -> void:
+	var screen := _victory(_victory_summary())
+	var new_run: Button = _buttons(screen).filter(func(b: Button) -> bool: return b.text == "New Run")[0]
+	assert_bool(new_run.has_focus()).is_true()
+
+
+func test_victory_screen_works_on_top_of_a_paused_game() -> void:
+	var screen := _victory(_victory_summary())
+	assert_int(screen.layer).is_equal(100)
+	assert_int(screen.process_mode).is_equal(Node.PROCESS_MODE_ALWAYS)
+	var holder: Control = screen.get_child(0)
+	assert_int(holder.mouse_filter).is_equal(Control.MOUSE_FILTER_STOP)
+	assert_float(holder.modulate.a).is_less(1.0)   # fades in

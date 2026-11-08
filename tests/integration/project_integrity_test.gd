@@ -19,7 +19,6 @@ const KNOWN_BROKEN_SCENES := {
 	"res://Placeholders/Scenes/Rooms/testing_room.tscn": "instances Placeholders/Scenes/Enemies/*.tscn and Placeholders/Scenes/Items/coin.tscn, which do not exist",
 }
 const KNOWN_BAD_CONNECTIONS := {
-	"res://Test/Scenes/UIScenes/UIFullScenes/main_menu.tscn": "Settings.pressed -> _on_options_pressed, but main_menu.gd defines _on_settings_pressed (the Settings button does nothing)",
 	"res://Placeholders/Scenes/Characters/character_1.tscn": "DashTimer.timeout -> _on_dash_timer_timeout, which character.gd does not define",
 }
 const KNOWN_MISSING_PATHS := {
@@ -139,7 +138,7 @@ func test_scene_signal_connections_reach_existing_methods() -> void:
 
 func test_known_bad_connections_are_fixed(
 		do_skip := true,
-		skip_reason := "KNOWN BUG: see KNOWN_BAD_CONNECTIONS (main menu Settings button, player DashTimer)") -> void:
+		skip_reason := "KNOWN BUG: see KNOWN_BAD_CONNECTIONS (player DashTimer)") -> void:
 	var problems := []
 	for path: String in KNOWN_BAD_CONNECTIONS:
 		problems.append_array(_connection_problems(path))
@@ -274,12 +273,21 @@ func test_audio_bus_layout_has_the_buses_the_game_uses() -> void:
 		assert_int(AudioServer.get_bus_index(bus_name)).override_failure_message("missing bus " + bus_name).is_greater_equal(0)
 
 
-func test_tilesets_fit_inside_their_textures(
+func _tile_errors(path: String) -> Array:
+	var capture := ErrorCapture.new()
+	capture.start()
+	ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP)
+	return Array(capture.stop()).filter(func(e: String) -> bool: return e.contains("tile"))
+
+
+func test_room_tileset_fits_inside_its_texture() -> void:
+	# Fixed with clean_tilesets.gd; this keeps the room TileSet clean.
+	var errors := _tile_errors(ROOM_TILESET_PATH)
+	assert_array(errors).override_failure_message("%s: %d tile errors" % [ROOM_TILESET_PATH, errors.size()]).is_empty()
+
+
+func test_hub_tileset_fits_inside_its_texture(
 		do_skip := true,
-		skip_reason := "KNOWN BUG: the room TileSet (Placeholders/Scenes/Rooms/testing_room.tres) and the TileSet embedded in hub.tscn define tiles outside their atlas textures; Godot logs 'Cannot create tile' / 'no tile at' errors and loading takes about a second") -> void:
-	for path in [ROOM_TILESET_PATH, HUB_SCENE_PATH]:
-		var capture := ErrorCapture.new()
-		capture.start()
-		ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP)
-		var errors := Array(capture.stop()).filter(func(e: String) -> bool: return e.contains("tile"))
-		assert_array(errors).override_failure_message("%s: %d tile errors" % [path, errors.size()]).is_empty()
+		skip_reason := "KNOWN BUG: the TileSet embedded in hub.tscn defines tiles outside its atlas texture; Godot logs thousands of 'Cannot create tile' / 'no tile at' errors (clean_tilesets.gd only cleans it when hub.tscn is open in the editor)") -> void:
+	var errors := _tile_errors(HUB_SCENE_PATH)
+	assert_array(errors).override_failure_message("%s: %d tile errors" % [HUB_SCENE_PATH, errors.size()]).is_empty()

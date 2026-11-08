@@ -9,13 +9,13 @@ Na GitHubie odpalają się przy każdym pushu i pull requeście (`.github/workfl
 |---|---|
 | `unit/resources` | `StatusEffect`, `ItemData` (ikony, opisy statystyk), `DialogueData`, domyślne wartości statystyk |
 | `unit/player` | `Player` (przedmioty, statystyki, obrażenia, pickupy), stany Idle/Move/Dash, stany broni i odrzut |
-| `unit/enemy` | `Enemy`, `StatusComponent` (burn/poison/freeze/bleed), AI walkera, latający wróg, boss (SpinBossChase/SpinAttack) |
+| `unit/enemy` | `Enemy`, `StatusComponent` (burn/poison/freeze/bleed), AI walkera, latający wróg, boss (SpinBossChase/SpinAttack), boss Summoner (okno podatności, limit obrażeń, fale, stany) |
 | `unit/state_machine` | `StateMachine` i `State` |
-| `unit/game_state` | progresja, odblokowywanie postaci, zapis/odczyt, koniec runu |
+| `unit/game_state` | progresja, odblokowywanie postaci, zapis/odczyt, koniec runu, piętra, zegar runu |
 | `unit/audio`, `unit/settings` | `Audio` (głośności, crossfade, SFX), `GameSettings`, panel i overlay ustawień |
-| `unit/ui` | HUD (serca, statystyki, waluta, timery, przedmioty, popup, pasek bossa), dialogi, prompt interakcji, Game Over, menu-książka, wybór postaci |
-| `unit/interactables` | `Interactable`, `NPC`, `CharacterStation`, `TrainDoor` |
-| `unit/world` | pickupy, piedestały, pociski, pokoje i pokój bossa, generator poziomu, kamera |
+| `unit/ui` | HUD (serca, statystyki, waluta, timery, przedmioty, popup, pasek bossa), dialogi, prompt interakcji, Game Over, ekran zwycięstwa, menu-książka, wybór postaci |
+| `unit/interactables` | `Interactable`, `NPC`, `CharacterStation`, `TrainDoor`, `Portal` |
+| `unit/world` | pickupy, piedestały, pociski, pokoje i pokój bossa (także zwycięstwo na ostatnim piętrze), generator poziomu i przejścia między piętrami, kamera |
 | `integration` | integralność projektu (kompilacja, sceny, zasoby, ścieżki `res://`, sygnały, akcje wejścia, autoloady), dane `.tres`, testy dymne prawdziwych scen |
 | `helpers` | klasa bazowa, fabryka fixture'ów, dublery testowe |
 
@@ -36,7 +36,7 @@ Testy nie ruszają Twojego zapisu: `user://save.json` i `user://settings.cfg` s�
 
 ## Zasady pisania testów
 
-- Każda suita dziedziczy z `res://tests/helpers/tw_test_suite.gd`. Klasa bazowa przed każdym testem robi snapshot `GameState`, `Audio`, głośności szyn, pauzy, `current_scene` i wejścia, a po teście je przywraca. Nadpisując hooki, wołaj `super.before_test()` / `await super.after_test()`.
+- Każda suita dziedziczy z `res://tests/helpers/tw_test_suite.gd`. Klasa bazowa przed każdym testem robi snapshot `GameState` (także piętra i zegar runu), `Audio`, głośności szyn, pauzy, `current_scene` i wejścia, a po teście je przywraca. Nadpisując hooki, wołaj `super.before_test()` / `await super.after_test()`.
 - Fixture'y buduj przez `Factory` (`helpers/factory.gd`). Tekstury to `PlaceholderTexture2D`, więc testy nie otwierają plików graficznych (zasady z `AGENTS.md`).
 - Nie wywołuj metod zmieniających scenę (`GameState.start_run/go_to_hub/go_to_menu`, przyciski, które je wołają): podmieniłyby scenę runnera testów. Do `go_to_hub` użyj `helpers/game_state_double.gd`.
 - Tweeny przesuwaj ręcznie `tween.custom_step(czas)`. W trybie headless jedna klatka potrafi trwać dłużej niż cała animacja. Callback na końcu tweena wykona się dopiero w kroku, w którym zostaje nadwyżka czasu (`czas + 0.01`).
@@ -54,20 +54,18 @@ Po naprawieniu buga usuń `do_skip`/`skip_reason` z testu (a dla skanów integra
 | `character.gd`: `dash_distance_add` doliczane dwa razy | `player_test` › `test_dash_distance_bonus_is_applied_once` |
 | `start_dash_cooldown()` czyta nieistniejące `dash_cooldown`, dash nie ma cooldownu | `player_test` › `test_start_dash_cooldown_uses_the_character_stats` |
 | `GameState.CHARACTER_FOLDER` wskazuje folder bez postaci | `game_state_test` › `test_characters_folder_contains_character_definitions` |
-| `slinger.tres` nie jest odblokowany od startu | `resource_data_test` › `test_default_character_is_unlocked_from_the_start` |
 | `SlingerStats.tres` ma stare nazwy pól (statystyki ignorowane) | `resource_data_test` › `test_known_stale_resources_are_fixed` |
-| `slay_fairy.tscn` używa `RageyFairy.tres`, `SlayFairy.tres` nieużywany | `resource_data_test` › `test_every_enemy_stats_resource_is_used` |
-| Menu główne: Settings → nieistniejące `_on_options_pressed` | `project_integrity_test` › `test_known_bad_connections_are_fixed` |
-| Gracz: `DashTimer` → nieistniejące `_on_dash_timer_timeout` | jw. |
-| Gracz: brak węzła `%HealthBar` | `scenes_test` › `test_player_scene_has_the_health_bar_character_gd_expects` |
+| Gracz: `DashTimer` → nieistniejące `_on_dash_timer_timeout` | `project_integrity_test` › `test_known_bad_connections_are_fixed` |
 | `credits.gd` wraca do nieistniejącej sceny menu | `project_integrity_test` › `test_known_missing_paths_exist` |
 | `enemy_shoot.gd` preloaduje usuniętą scenę | `project_integrity_test` › `test_known_broken_scripts_compile` |
 | `testing_room.tscn` używa usuniętych scen | `project_integrity_test` › `test_known_broken_scenes_are_fixed` |
-| TileSet pokoi i TileSet huba mają kafle poza atlasem (tysiące błędów przy ładowaniu) | `project_integrity_test` › `test_tilesets_fit_inside_their_textures` |
+| TileSet huba ma kafle poza atlasem (tysiące błędów przy ładowaniu) | `project_integrity_test` › `test_hub_tileset_fits_inside_its_texture` |
 | Stany walkera grają `idle`/`run`/`attack`, a sceny mają `Idle`/`Chase`/`Attack` | `scenes_test` › `test_walker_state_animations_exist` |
 | Boss prosi o `idle`/`run`/`spin`, a ma `Idle`/`Chase`/`SpinAttack` | `scenes_test` › `test_spin_boss_animations_exist` |
+| Stany Summonera proszą o `idle`/`summon`, a `boris.tscn` ma `Idle`/`Summon`/`Vulnerable` | `scenes_test` › `test_summoner_boss_animations_exist` |
+| `SummonerBoss.spawn_wave()` nie zwalnia instancji z `enemy_pool`, która nie jest `Enemy` (wyciek węzłów) | `summoner_boss_test` › `test_pool_entries_that_are_not_enemies_are_skipped_without_leaking` |
 | `Dash.gd` gra `Dash`, a Body ma `Roll` | `scenes_test` › `test_player_body_has_a_dash_animation` |
-| `boss_01.tscn` nie daje nagrody (`reward_pedestal_scene = null`) | `scenes_test` › `test_boss_room_rewards_the_player` |
+| `boss_01.tscn` i `boss_02.tscn` nie dają nagrody przed ostatnim piętrem (`reward_pedestal_scene = null`) | `scenes_test` › `test_boss_rooms_reward_the_player` |
 | `room.gd:86` woła `_on_enemies_spawned()` raz na każdego wroga | `room_test` › `test_room_hook_receives_all_spawned_enemies_once` |
 | `InventorySpread` gubi węzły ukrytych stron (wyciek) | `book_menu_test` › `test_freeing_the_inventory_frees_hidden_pages` |
 | Godot 4.7: prompt pokazuje `[E - Physical]` zamiast `[E]` | `dialogue_and_prompts_test` › `test_key_name_is_the_bare_key_of_the_interact_binding` |

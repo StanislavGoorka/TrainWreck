@@ -124,7 +124,11 @@ func test_enemy_stats_are_playable() -> void:
 	for stats: EnemyStats in all:
 		var where := stats.resource_path
 		assert_float(stats.max_health).override_failure_message(where).is_greater(0.0)
-		assert_float(stats.speed).override_failure_message(where).is_greater(0.0)
+		if stats is SummonerBossStats:
+			# The summoner stands still on purpose (SummonerIdle/Summon/Vulnerable never move it).
+			assert_float(stats.speed).override_failure_message(where).is_greater_equal(0.0)
+		else:
+			assert_float(stats.speed).override_failure_message(where).is_greater(0.0)
 		assert_float(stats.damage).override_failure_message(where).is_greater_equal(0.0)
 		assert_float(stats.attack_cooldown).override_failure_message(where).is_greater(0.0)
 
@@ -136,6 +140,31 @@ func test_bosses_have_names_and_a_valid_spin_cycle() -> void:
 		if stats is SpinBossStats:
 			for property in ["spin_trigger_range", "spin_windup", "spin_duration", "spin_recovery", "spin_cooldown"]:
 				assert_float(stats.get(property)).override_failure_message(property).is_greater(0.0)
+
+
+func test_summoner_bosses_have_playable_waves() -> void:
+	var summoners := _resources_in(BOSS_FOLDER).filter(func(r: Resource) -> bool: return r is SummonerBossStats)
+	assert_array(summoners).override_failure_message("no SummonerBossStats in " + BOSS_FOLDER).is_not_empty()
+	for stats: SummonerBossStats in summoners:
+		var where := stats.resource_path
+		assert_array(stats.enemy_pool).override_failure_message(where + " has an empty enemy_pool").is_not_empty()
+		for scene: PackedScene in stats.enemy_pool:
+			assert_object(scene).override_failure_message(where + " has an empty enemy_pool slot").is_not_null()
+			var enemy := scene.instantiate()
+			assert_object(enemy).override_failure_message("%s: %s is not an Enemy" % [where, scene.resource_path]).is_instanceof(Enemy)
+			assert_bool(enemy is SummonerBoss).override_failure_message(where + " would summon itself").is_false()
+			enemy.free()
+		assert_array(stats.wave_size_pool).override_failure_message(where).is_not_empty()
+		for size in stats.wave_size_pool:
+			assert_int(size).override_failure_message(where + " wave size").is_greater(0)
+		assert_int(stats.growth_after_pool).is_greater_equal(0)
+		assert_float(stats.window_duration).override_failure_message(where).is_greater(0.0)
+		assert_float(stats.window_damage_cap).override_failure_message(where).is_between(0.01, 1.0)
+		assert_float(stats.spawn_radius_min).override_failure_message(where).is_greater(0.0)
+		assert_float(stats.spawn_radius_max).override_failure_message(where).is_greater_equal(stats.spawn_radius_min)
+		assert_float(stats.spawn_fade_time).is_greater_equal(0.0)
+		assert_float(stats.first_wave_delay).is_greater_equal(0.0)
+		assert_float(stats.wave_delay).is_greater_equal(0.0)
 
 
 ## Enemy scene path -> path of the stats resource its root node uses ("" if none).
@@ -168,9 +197,7 @@ func test_every_enemy_scene_has_stats() -> void:
 		assert_str(scene_stats[scene]).override_failure_message(scene + " has no stats").is_not_empty()
 
 
-func test_every_enemy_stats_resource_is_used(
-		do_skip := true,
-		skip_reason := "KNOWN BUG: SlayFairy.tres is unused because slay_fairy.tscn uses RageyFairy.tres (probably a copy-paste mistake)") -> void:
+func test_every_enemy_stats_resource_is_used() -> void:
 	var used := _stats_used_by_enemy_scenes()
 	for stats: Resource in _resources_in(ENEMY_FOLDER) + _resources_in(BOSS_FOLDER):
 		assert_bool(used.has(stats.resource_path)).override_failure_message(stats.resource_path + " is not used by any enemy scene").is_true()
@@ -214,9 +241,7 @@ func test_default_character_exists() -> void:
 		"no CharacterDefinition with id '%s' in %s" % [GameState.DEFAULT_CHARACTER_ID, CHARACTER_FOLDER]).is_not_null()
 
 
-func test_default_character_is_unlocked_from_the_start(
-		do_skip := true,
-		skip_reason := "KNOWN BUG: slinger.tres does not set unlocked_by_default, so a new save owns no character (hidden today because GameState loads no characters at all)") -> void:
+func test_default_character_is_unlocked_from_the_start() -> void:
 	assert_bool(_default_character().unlocked_by_default).is_true()
 
 
