@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SummonerBossStats" format=3 uid="uid://b3p5unb70akmn"]
+
+[ext_resource type="PackedScene" uid="uid://y4v8sj35wxvs" path="res://Test/Scenes/Enemies/Fantasy/slay_fairy.tscn" id="1_8p321"]
+[ext_resource type="Script" uid="uid://d34sibagsji2k" path="res://Test/Scripts/Resource/ResourceData/BossTypes/SummonerBossStats.gd" id="1_ir5bo"]
+[ext_resource type="PackedScene" uid="uid://ddg40s5k5o81y" path="res://Test/Scenes/Enemies/Fantasy/rage_fairy.tscn" id="2_bf4vr"]
+[ext_resource type="PackedScene" uid="uid://bddaglwak3hlp" path="res://Test/Scenes/Enemies/Fantasy/hairy_fairy.tscn" id="3_5fhj0"]
+
+[resource]
+script = ExtResource("1_ir5bo")
+enemy_pool = Array[PackedScene]([ExtResource("1_8p321"), ExtResource("2_bf4vr"), ExtResource("3_5fhj0")])
+wave_size_pool = Array[int]([2, 3, 4, 5, 5])
+spawn_radius_min = 350.0
+spawn_radius_max = 350.0
+end_window_at_cap = true
+boss_name = "Boris,King Of Almaria"
+max_health = 100.0
+speed = 0.0
+status_immunities = 4
+metadata/_custom_type_script = "uid://d34sibagsji2k"
