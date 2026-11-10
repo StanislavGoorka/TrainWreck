@@ -1,62 +1,81 @@
 [gd_scene format=3 uid="uid://cglbu2m7jhecl"]
 
-[ext_resource type="Texture2D" uid="uid://45xn5depesix" path="res://Test/Assets/Backgrounds/1.png" id="1_oi5fm"]
+[ext_resource type="Theme" uid="uid://ctf2qg1d64lx" path="res://Test/Themes/ItemDescription.tres" id="1_btduk"]
 [ext_resource type="Script" uid="uid://bvfhxqr7f1buo" path="res://Placeholders/Scripts/credits.gd" id="1_xk2gx"]
-[ext_resource type="Texture2D" uid="uid://xqkddq5ep7kx" path="res://Test/Assets/Backgrounds/3.png" id="2_xk2gx"]
+[ext_resource type="Resource" uid="uid://0u8060g81vha" path="res://Test/Scripts/Resource/CreditsRecource/MainTeam.tres" id="2_qqq4x"]
 [ext_resource type="Theme" uid="uid://8hobcx0vqyfr" path="res://Test/Themes/MenuButton.tres" id="3_kft4w"]
+[ext_resource type="Texture2D" uid="uid://p1e0g5nnv4po" path="res://Placeholders/Assets/Backgrounds/Steampunk/1.png" id="3_qdf6u"]
+[ext_resource type="AudioStream" uid="uid://rm3vg2erbje8" path="res://Placeholders/Assets/Audio/Bus Ride.mp3" id="4_4bhxk"]
+[ext_resource type="Texture2D" uid="uid://c317o2fh62o60" path="res://Placeholders/Assets/Backgrounds/Steampunk/2.png" id="4_btduk"]
+[ext_resource type="Texture2D" uid="uid://e88wnj7wx6or" path="res://Placeholders/Assets/Backgrounds/Steampunk/3.png" id="5_4bhxk"]
+[ext_resource type="Texture2D" uid="uid://bnn1beklip8l4" path="res://Placeholders/Assets/Backgrounds/Steampunk/4.png" id="6_x8epj"]
+[ext_resource type="Texture2D" uid="uid://b58b4npefjahx" path="res://Placeholders/Assets/Backgrounds/Steampunk/5.png" id="7_nualx"]
+[ext_resource type="Texture2D" uid="uid://y8vd8ewo4gcl" path="res://Placeholders/Assets/Backgrounds/Steampunk/6.png" id="8_fjup4"]
 
 [node name="Credits" type="Control" unique_id=788754117]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 1280.0
-offset_bottom = 736.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+theme = ExtResource("1_btduk")
 script = ExtResource("1_xk2gx")
+data = ExtResource("2_qqq4x")
+music = ExtResource("4_4bhxk")
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=511103207]
+[node name="BackgroundLayers" type="Control" parent="." unique_id=887315132]
+anchors_preset = 0
+offset_right = 576.0
+offset_bottom = 352.0
+
+[node name="Background2" type="TextureRect" parent="BackgroundLayers" unique_id=624041536]
 layout_mode = 0
-offset_right = 1280.0
-offset_bottom = 736.0
-texture = ExtResource("1_oi5fm")
+offset_right = 1920.0
+offset_bottom = 1088.0
+texture = ExtResource("3_qdf6u")
 
-[node name="TextureRect2" type="TextureRect" parent="." unique_id=657101576]
+[node name="Background" type="TextureRect" parent="BackgroundLayers" unique_id=657101576]
 layout_mode = 0
-offset_right = 1280.0
-offset_bottom = 736.0
-texture = ExtResource("2_xk2gx")
+offset_right = 1920.0
+offset_bottom = 1088.0
+texture = ExtResource("4_btduk")
 
-[node name="CreditNames" type="HBoxContainer" parent="." unique_id=1218551975]
+[node name="Background3" type="TextureRect" parent="BackgroundLayers" unique_id=1455092573]
 layout_mode = 0
-offset_right = 1280.0
-offset_bottom = 736.0
-alignment = 1
+offset_right = 1920.0
+offset_bottom = 1088.0
+texture = ExtResource("5_4bhxk")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CreditNames" unique_id=19890045]
-layout_mode = 2
-alignment = 1
+[node name="Background4" type="TextureRect" parent="BackgroundLayers" unique_id=491298509]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1088.0
+texture = ExtResource("6_x8epj")
 
-[node name="Credit" type="Label" parent="CreditNames/VBoxContainer" unique_id=1040667058]
-layout_mode = 2
+[node name="Background5" type="TextureRect" parent="BackgroundLayers" unique_id=1579756071]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1088.0
+texture = ExtResource("7_nualx")
+
+[node name="Background6" type="TextureRect" parent="BackgroundLayers" unique_id=524882097]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1088.0
+texture = ExtResource("8_fjup4")
+
+[node name="Overlay" type="ColorRect" parent="." unique_id=573638793]
+layout_mode = 0
+offset_left = 32.0
+offset_top = -96.0
+offset_right = 72.0
+offset_bottom = -56.0
+
+[node name="SkipButton" type="Button" parent="." unique_id=1766267833]
+layout_mode = 0
+offset_left = 1568.0
+offset_top = 992.0
+offset_right = 1888.0
+offset_bottom = 1061.0
 theme = ExtResource("3_kft4w")
-theme_override_constants/outline_size = 12
 theme_override_font_sizes/font_size = 64
-text = "Stepanlange Font by Szymon Furjan"
-horizontal_alignment = 1
-
-[node name="Credit2" type="Label" parent="CreditNames/VBoxContainer" unique_id=825004110]
-layout_mode = 2
-theme = ExtResource("3_kft4w")
-theme_override_constants/outline_size = 12
-theme_override_font_sizes/font_size = 64
-text = "Sky Backgrounds by Free Game Assets"
-horizontal_alignment = 1
-
-[node name="Credit3" type="Label" parent="CreditNames/VBoxContainer" unique_id=1799904624]
-layout_mode = 2
-
-[node name="MenuButton" type="MenuButton" parent="CreditNames/VBoxContainer" unique_id=190895438]
-layout_mode = 2
-theme = ExtResource("3_kft4w")
-theme_override_font_sizes/font_size = 64
-text = "Back To Menu"
-
-[connection signal="pressed" from="CreditNames/VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
+text = "Skip Credits"

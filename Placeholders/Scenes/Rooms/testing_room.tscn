@@ -4,13 +4,8 @@
 [ext_resource type="TileSet" uid="uid://jwyvg81gu4qv" path="res://Placeholders/Scenes/Rooms/testing_room.tres" id="2_tyh6b"]
 [ext_resource type="PackedScene" uid="uid://kag2va7fuv4a" path="res://Test/Scenes/InGameElements/door.tscn" id="3_nbsg6"]
 [ext_resource type="PackedScene" uid="uid://ch8udrp2yft2f" path="res://Placeholders/Scenes/Characters/character_1.tscn" id="4_51mcl"]
-[ext_resource type="PackedScene" uid="uid://oavstsn8lg76" path="res://Placeholders/Scenes/Enemies/enemy_walker.tscn" id="4_nbsg6"]
 [ext_resource type="PackedScene" uid="uid://dvae3trd2twqh" path="res://Test/Scenes/InGameElements/parallax_background.tscn" id="5_51mcl"]
-[ext_resource type="PackedScene" uid="uid://dwr35dcxjl68o" path="res://Placeholders/Scenes/Enemies/enemy_turret.tscn" id="5_qj8b0"]
 [ext_resource type="PackedScene" uid="uid://cjjudcsjw6qys" path="res://Test/Scenes/UIScenes/UIFullScenes/pause_menu.tscn" id="6_tyh6b"]
-[ext_resource type="PackedScene" uid="uid://cpsvt4j0t25db" path="res://Placeholders/Scenes/Enemies/ranger.tscn" id="9_vjnat"]
-[ext_resource type="Script" uid="uid://fst7hw58oehy" path="res://Placeholders/Scripts/ranger.gd" id="10_qecpj"]
-[ext_resource type="PackedScene" uid="uid://dtkskmjdq63tk" path="res://Placeholders/Scenes/Items/coin.tscn" id="11_brw4c"]
 [ext_resource type="PackedScene" uid="uid://cbdjegwutnsfa" path="res://Test/Scenes/Enemies/Fantasy/Slayer.tscn" id="11_sgwdm"]
 [ext_resource type="Texture2D" uid="uid://cydvttles3iqj" path="res://Placeholders/Assets/Tilesets/TILESET-royalcar.png" id="12_55jsm"]
 
@@ -905,27 +900,8 @@ shape = SubResource("RectangleShape2D_4wrvd")
 
 [node name="EnemySpawns" type="Node2D" parent="." unique_id=568750040]
 
-[node name="Turret" parent="EnemySpawns" unique_id=1637423822 instance=ExtResource("5_qj8b0")]
-position = Vector2(672, 128)
-
-[node name="EnemyWalker" parent="EnemySpawns" unique_id=1005343083 instance=ExtResource("4_nbsg6")]
-position = Vector2(1152, 192)
-
-[node name="EnemyWalker2" parent="EnemySpawns" unique_id=944290919 instance=ExtResource("4_nbsg6")]
-position = Vector2(544, -160)
-
-[node name="EnemyWalker3" parent="EnemySpawns" unique_id=1054138050 instance=ExtResource("4_nbsg6")]
-position = Vector2(-160, 672)
-
-[node name="Ranger" parent="EnemySpawns" unique_id=189728548 groups=["Enemies"] instance=ExtResource("9_vjnat")]
-position = Vector2(1080, 544)
-script = ExtResource("10_qecpj")
-
 [node name="Melee" parent="EnemySpawns" unique_id=1065179710 instance=ExtResource("11_sgwdm")]
 position = Vector2(-368, 32)
-
-[node name="Coin" parent="." unique_id=1625367013 instance=ExtResource("11_brw4c")]
-position = Vector2(388, 224)
 
 [node name="Character1" parent="." unique_id=290365348 instance=ExtResource("4_51mcl")]
 position = Vector2(-896, 32)

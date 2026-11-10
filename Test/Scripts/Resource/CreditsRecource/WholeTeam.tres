@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CreditsSection" format=3 uid="uid://cmoklxjd5ylyy"]
+
+[ext_resource type="Script" uid="uid://bjc1pt4cxqy13" path="res://Test/Scenes/UIScenes/UIFullScenes/CreditsSection.gd" id="1_j7xqy"]
+
+[resource]
+script = ExtResource("1_j7xqy")
+heading = "Dev Team"
+lines = Array[String](["Game Director", "Arteus", "Game Designer", "Arteus", "Programmer", "Arteus", "Art Team Leader", "Vesper", "Sprites", "Vesper", "Creative Team", "Arteus & Vesper"])
+metadata/_custom_type_script = "uid://bjc1pt4cxqy13"
