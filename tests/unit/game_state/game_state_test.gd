@@ -421,9 +421,23 @@ func test_floor_time_restarts_on_a_new_floor_but_run_time_keeps_counting() -> vo
 # --- Configuration -----------------------------------------------------------------
 
 func test_scene_paths_point_to_existing_scenes() -> void:
-	for path in [GameStateScript.MENU_SCENE, GameStateScript.HUB_SCENE, GameStateScript.RUN_SCENE]:
+	for path in [GameStateScript.MENU_SCENE, GameStateScript.HUB_SCENE, GameStateScript.RUN_SCENE, GameStateScript.CREDITS_SCENE]:
 		assert_bool(ResourceLoader.exists(path)).override_failure_message("missing scene: " + path).is_true()
 		assert_object(load(path)).is_instanceof(PackedScene)
+
+
+func test_start_run_is_ignored_while_a_scene_is_loading() -> void:
+	var state := _new_game_state()
+	state.current_floor = 3
+	state.run_time = 42.0
+	var runs: int = state.lifetime_stats["runs"]
+	SceneLoader.busy = true
+	state.start_run()
+	assert_bool(state.run_active).is_false()
+	assert_int(state.current_floor).is_equal(3)
+	assert_float(state.run_time).is_equal(42.0)
+	assert_int(state.lifetime_stats["runs"]).is_equal(runs)
+	assert_bool(FileAccess.file_exists(SAVE_PATH)).is_false()
 
 
 func test_characters_folder_exists() -> void:

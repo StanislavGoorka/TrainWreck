@@ -3,13 +3,13 @@
 extends "res://tests/helpers/tw_test_suite.gd"
 
 const HealthUI := preload("res://Test/Scripts/UIElements/HealthUI.gd")
-const StatsUI := preload("res://Test/Scripts/UIElements/StatsUI.gd")
-const CurrencyUI := preload("res://Test/Scripts/UIElements/CurrencyUI.gd")
-const TimerUI := preload("res://Test/Scripts/UIElements/TimerUI.gd")
-const ActiveItemsUI := preload("res://Test/Scripts/UIElements/ActiveItemsUI.gd")
+const StatsUI := preload("res://Test/Scripts/UIElements/InRunUI/StatsUI.gd")
+const CurrencyUI := preload("res://Test/Scripts/UIElements/InRunUI/CurrencyUI.gd")
+const TimerUI := preload("res://Test/Scripts/UIElements/InRunUI/TimerUI.gd")
+const ActiveItemsUI := preload("res://Test/Scripts/UIElements/InRunUI/ActiveItemsUI.gd")
 const ItemPopup := preload("res://Test/Scripts/UIElements/ItemPopup.gd")
-const MapUI := preload("res://Test/Scripts/UIElements/MapUI.gd")
-const BossHealthBar := preload("res://Test/Scripts/UIElements/BossHealthBar.gd")
+const MapUI := preload("res://Test/Scripts/UIElements/InRunUI/MapUI.gd")
+const BossHealthBar := preload("res://Test/Scripts/UIElements/InRunUI/BossHealthBar.gd")
 const HUD := preload("res://Test/Scripts/UIElements/HUD.gd")
 const COUNTDOWN_SCENE := preload("res://Test/Scenes/UIScenes/UIElements/timer.tscn")
 
@@ -149,29 +149,36 @@ func test_currency_ui_without_player_still_builds_its_rows() -> void:
 
 # --- TimerUI -----------------------------------------------------------------------
 
-func test_run_timer_counts_minutes_and_seconds() -> void:
+func test_run_timer_displays_the_shared_run_clock() -> void:
 	var timer: Label = _widget(TimerUI)
+	timer.set_process(false)
+	timer._process(0.0)
 	assert_str(timer.text).is_equal("00:00")
-	timer._process(65.4)
+	GameState.run_time = 65.4
+	timer._process(0.0)
 	assert_str(timer.text).is_equal("01:05")
-	timer._process(600.0)
+	GameState.run_time = 665.4
+	timer._process(0.0)
 	assert_str(timer.text).is_equal("11:05")
 
 
-func test_run_timer_stops_when_the_player_dies() -> void:
+func test_run_timer_keeps_the_same_clock_when_the_widget_is_recreated() -> void:
+	GameState.run_time = 63.0
 	var timer: Label = _widget(TimerUI)
-	timer._process(3.0)
-	player.take_damage(1000.0)
-	timer._process(10.0)
-	assert_str(timer.text).is_equal("00:03")
+	timer._process(0.0)
+	assert_str(timer.text).is_equal("01:03")
+	timer.free()
+	var replacement: Label = _widget(TimerUI)
+	replacement._process(0.0)
+	assert_str(replacement.text).is_equal("01:03")
 
 
-func test_run_timer_does_not_count_while_paused() -> void:
+func test_run_timer_does_not_advance_the_shared_clock() -> void:
 	var timer: Label = _widget(TimerUI)
-	get_tree().paused = true
+	GameState.run_time = 12.0
 	timer._process(5.0)
-	get_tree().paused = false
-	assert_float(timer.elapsed).is_equal(0.0)
+	assert_float(GameState.run_time).is_equal(12.0)
+	assert_str(timer.text).is_equal("00:12")
 
 
 # --- Countdown timer (timer.tscn) --------------------------------------------------
@@ -333,6 +340,8 @@ func test_hud_anchors_every_zone_with_the_standard_margin() -> void:
 		hud.get_node(zone_name).add_child(stack)
 	var right_widget := Label.new()
 	hud.get_node("TopRight/Stack").add_child(right_widget)
+	var map_widget := PanelContainer.new()
+	hud.get_node("TopRight/Stack").add_child(map_widget)
 	hud.set_script(HUD)
 	add_child(hud)
 
@@ -340,5 +349,6 @@ func test_hud_anchors_every_zone_with_the_standard_margin() -> void:
 	for zone: MarginContainer in hud.get_children():
 		assert_int(zone.get_theme_constant("margin_left")).is_equal(UIStyle.MARGIN)
 		assert_int(zone.mouse_filter).is_equal(Control.MOUSE_FILTER_IGNORE)
-	assert_int(right_widget.size_flags_horizontal).is_equal(Control.SIZE_SHRINK_END)
+	assert_int(right_widget.size_flags_horizontal).is_equal(Control.SIZE_FILL)
+	assert_int(map_widget.size_flags_horizontal).is_equal(Control.SIZE_SHRINK_CENTER)
 	assert_int(hud.get_node("TopRight").grow_horizontal).is_equal(Control.GROW_DIRECTION_BEGIN)

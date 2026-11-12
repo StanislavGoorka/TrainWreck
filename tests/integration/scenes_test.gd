@@ -11,7 +11,7 @@ const WalkerDeath := preload("res://Test/Scripts/States/Walker/death.gd")
 const FlyingChase := preload("res://Test/Scripts/States/FlyingEnemy/FlyingChase.gd")
 const SpinBossChase := preload("res://Test/Scripts/States/BossScripts/SpinBossChase.gd")
 const SpinAttack := preload("res://Test/Scripts/States/BossScripts/SpinAttack.gd")
-const BossHealthBar := preload("res://Test/Scripts/UIElements/BossHealthBar.gd")
+const BossHealthBar := preload("res://Test/Scripts/UIElements/InRunUI/BossHealthBar.gd")
 
 const PLAYER_SCENE := "res://Placeholders/Scenes/Characters/character_1.tscn"
 const PAUSE_MENU_SCENE := "res://Test/Scenes/UIScenes/UIFullScenes/pause_menu.tscn"
@@ -325,9 +325,22 @@ func test_main_menu_clouds_drift_on_their_own() -> void:
 
 func test_credits_scene_has_a_way_back() -> void:
 	var credits: Control = _spawn(CREDITS_SCENE)
-	var buttons := credits.find_children("*", "BaseButton", true, false)
-	assert_array(buttons).is_not_empty()
-	assert_bool(credits.has_method("_on_menu_button_pressed")).is_true()
+	assert_object(credits).is_instanceof(CreditsScreen)
+	assert_object(credits.skip_button).is_instanceof(Button)
+	assert_bool(credits.skip_button.pressed.is_connected(credits._leave)).is_true()
+	assert_object(credits.data).is_not_null()
+	assert_array(credits.data.sections).is_not_empty()
+	# _ready() measures its layout asynchronously; finish it before freeing the scene.
+	assert_bool(await wait_until(func() -> bool: return credits.scrolling)).is_true()
+
+
+func test_pause_input_is_ignored_while_a_scene_is_loading() -> void:
+	var menu := _pause_menu()
+	SceneLoader.busy = true
+	Input.action_press("Pause")
+	menu._process(0.0)
+	assert_bool(get_tree().paused).is_false()
+	assert_bool(menu.book.visible).is_false()
 
 
 # --- Hub ---------------------------------------------------------------------------
@@ -382,6 +395,12 @@ func test_run_scene_builds_a_level_around_the_player() -> void:
 	assert_bool(player.is_dead).is_false()
 
 	var hud := game.get_node("Character1/UI/HUD")
+	var stack: Control = hud.get_node("TopRight/Stack")
+	assert_bool(stack.is_in_group("RunOnlyUI")).is_true()
+	assert_str(stack.action).is_equal("Show")
+	assert_float(stack.modulate.a).is_zero()
+	assert_str(stack.get_node("FloorUI").text).is_equal(GameState.floor_title(GameState.current_floor))
+	assert_str(stack.get_node("TimerUI").text).is_equal(GameState.format_time(GameState.run_time))
 	assert_str(hud.get_node("TopLeft/Stack/CurrencyUI").coin_label.text).is_equal("00")
 	assert_int(hud.get_node("TopLeft/Stack/HealthUI").get_child_count()).is_greater(0)
 	assert_bool(hud.get_node("BottomCenter/BossHealthBar").visible).is_false()
