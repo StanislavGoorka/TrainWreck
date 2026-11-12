@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://cglbu2m7jhecl"]
 
-[ext_resource type="Theme" uid="uid://ctf2qg1d64lx" path="res://Test/Themes/ItemDescription.tres" id="1_btduk"]
+[ext_resource type="Theme" uid="uid://hyjxks65jep1" path="res://Test/Themes/CreditsTheme.tres" id="1_4bhxk"]
 [ext_resource type="Script" uid="uid://bvfhxqr7f1buo" path="res://Placeholders/Scripts/credits.gd" id="1_xk2gx"]
-[ext_resource type="Resource" uid="uid://0u8060g81vha" path="res://Test/Scripts/Resource/CreditsRecource/MainTeam.tres" id="2_qqq4x"]
+[ext_resource type="Resource" uid="uid://0u8060g81vha" path="res://Test/Scripts/Resource/CreditsResource/MainTeam.tres" id="2_qqq4x"]
 [ext_resource type="Theme" uid="uid://8hobcx0vqyfr" path="res://Test/Themes/MenuButton.tres" id="3_kft4w"]
 [ext_resource type="Texture2D" uid="uid://p1e0g5nnv4po" path="res://Placeholders/Assets/Backgrounds/Steampunk/1.png" id="3_qdf6u"]
 [ext_resource type="AudioStream" uid="uid://rm3vg2erbje8" path="res://Placeholders/Assets/Audio/Bus Ride.mp3" id="4_4bhxk"]
@@ -17,7 +17,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
-theme = ExtResource("1_btduk")
+theme = ExtResource("1_4bhxk")
 script = ExtResource("1_xk2gx")
 data = ExtResource("2_qqq4x")
 music = ExtResource("4_4bhxk")

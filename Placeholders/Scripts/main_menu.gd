@@ -37,4 +37,4 @@ func _on_exit_pressed() -> void:
 
 
 func _on_credits_pressed() -> void:
-	get_tree().change_scene_to_file("res://Test/Scenes/UIScenes/UIFullScenes/credits.tscn")
+	GameState.go_to_credits()

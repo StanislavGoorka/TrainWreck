@@ -1,6 +1,14 @@
 [gd_resource type="Theme" format=3 uid="uid://d365fbynytqx2"]
 
+[ext_resource type="Texture2D" uid="uid://dtxv4m051ifkm" path="res://Test/Assets/UI Elements/Enemy Related/SPRITE-UI-BOSSBAR-back.png" id="1_hj373"]
 [ext_resource type="FontFile" uid="uid://q2j1l6fmnva4" path="res://Test/Assets/UI Elements/Fonts/NotJamScrawl12.ttf" id="1_v6nk0"]
+[ext_resource type="Texture2D" uid="uid://dh86f6bcqwcoj" path="res://Test/Assets/UI Elements/Enemy Related/SPRITE-UI-BOSSBAR-health.png" id="2_yq0xm"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_v6nk0"]
+texture = ExtResource("1_hj373")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hj373"]
+texture = ExtResource("2_yq0xm")
 
 [resource]
 default_base_scale = 1.0
@@ -9,6 +17,15 @@ default_font_size = 36
 Label/colors/font_color = Color(0.85477847, 0.8945081, 0.98810107, 1)
 Label/colors/font_outline_color = Color(0, 0, 0, 1)
 Label/constants/outline_size = 8
+LoadingBar/base_type = &"ProgressBar"
+LoadingBar/styles/background = SubResource("StyleBoxTexture_v6nk0")
+LoadingBar/styles/fill = SubResource("StyleBoxTexture_hj373")
+LoadingLabel/base_type = &"Label"
+LoadingLabel/colors/font_color = Color(0.09882427, 0.58961475, 0.6262937, 1)
+LoadingLabel/colors/font_outline_color = Color(0, 0, 0, 1)
+LoadingLabel/constants/outline_size = 8
+LoadingLabel/font_sizes/font_size = 32
+LoadingLabel/fonts/font = ExtResource("1_v6nk0")
 MenuButton/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 MenuButton/colors/font_hover_color = Color(0.8544351, 0.84477836, 0.8471859, 1)
 MenuButton/colors/icon_hover_color = Color(0.250066, 0.527545, 0.476917, 1)

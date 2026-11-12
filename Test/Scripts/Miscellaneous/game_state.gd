@@ -3,7 +3,8 @@ extends Node
 signal meta_currency_changed(amount: int)
 
 const SAVE_PATH := "user://save.json"
-const MENU_SCENE := "res://Test/Scenes/UIScenes/UIFullScenes/main_menu.tscn"   # adjust paths
+const MENU_SCENE := "res://Test/Scenes/UIScenes/UIFullScenes/main_menu.tscn"
+const CREDITS_SCENE := "res://Test/Scenes/UIScenes/UIFullScenes/credits.tscn"
 const HUB_SCENE := "res://Test/Scenes/Hub/hub.tscn"
 const RUN_SCENE := "res://Test/Scenes/game.tscn"
 const CHARACTER_FOLDER := "res://Test/Scripts/Character/"
@@ -96,10 +97,11 @@ func add_meta_currency(amount: int) -> void:
 func go_to_hub() -> void:
 	game_over = false
 	run_active = false
-	get_tree().paused = false
-	get_tree().change_scene_to_file(HUB_SCENE)
+	SceneLoader.change_scene(HUB_SCENE)
 
 func start_run() -> void:
+	if SceneLoader.busy:
+		return
 	game_over = false
 	run_active = true
 	current_floor = 1
@@ -109,8 +111,7 @@ func start_run() -> void:
 	clock_paused = false
 	lifetime_stats["runs"] += 1
 	save_game()
-	get_tree().paused = false
-	get_tree().change_scene_to_file(RUN_SCENE)
+	SceneLoader.change_scene(RUN_SCENE)
 
 func advance_floor() -> void:
 	if is_final_floor():
@@ -185,8 +186,10 @@ func format_time(seconds: float) -> String:
 func go_to_menu() -> void:
 	game_over = false
 	run_active = false
-	get_tree().paused = false
-	get_tree().change_scene_to_file(MENU_SCENE)
+	SceneLoader.change_scene(MENU_SCENE)
+	
+func go_to_credits() -> void:
+	SceneLoader.change_scene(CREDITS_SCENE)
 
 # --- Save / load ---------------------------------------------------------
 

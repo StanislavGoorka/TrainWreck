@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CreditsSection" format=3 uid="uid://cjc1rpp72i16c"]
+
+[ext_resource type="Script" uid="uid://bjc1pt4cxqy13" path="res://Test/Scenes/UIScenes/UIFullScenes/CreditsSection.gd" id="1_sbd3v"]
+
+[resource]
+script = ExtResource("1_sbd3v")
+heading = "Playtesters"
+lines = Array[String](["Kiz", "kulasowa", "Taharaki", "Taumaturgia", "varmint", "Zhio"])
+metadata/_custom_type_script = "uid://bjc1pt4cxqy13"

@@ -28,6 +28,7 @@ buses/default_bus_layout="uid://cc4hyi1rg3a3t"
 GameState="*uid://d8gl8rf7gptk"
 Audio="*uid://ckdjk0vpghbf6"
 GameSettings="*uid://cgwvitxem32gu"
+SceneLoader="*uid://c0lfdgsqx7jbi"
 
 [display]
 
@@ -51,6 +52,10 @@ Players="All Of The Characters That Can Be Controlled By The Player"
 Enemies="All Of The Enemies That Can Be Put Inside Of The Rooms"
 Bosses="All Of The Bosses"
 NPC="All Of The Characters That The Player Will Be Able To Interact With"
+
+[gui]
+
+theme/custom="uid://d365fbynytqx2"
 
 [input]
 

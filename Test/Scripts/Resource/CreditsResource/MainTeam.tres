@@ -3,12 +3,13 @@
 [ext_resource type="Script" uid="uid://8r0g52assq3c" path="res://Test/Scenes/UIScenes/UIFullScenes/CreditsData.gd" id="1_c866f"]
 [ext_resource type="Texture2D" uid="uid://dsorjs8ke8dqn" path="res://icon.svg" id="1_os4ls"]
 [ext_resource type="Script" uid="uid://bjc1pt4cxqy13" path="res://Test/Scenes/UIScenes/UIFullScenes/CreditsSection.gd" id="2_os4ls"]
-[ext_resource type="Resource" uid="uid://cmoklxjd5ylyy" path="res://Test/Scripts/Resource/CreditsRecource/WholeTeam.tres" id="4_qirbj"]
+[ext_resource type="Resource" uid="uid://cmoklxjd5ylyy" path="res://Test/Scripts/Resource/CreditsResource/WholeTeam.tres" id="4_qirbj"]
+[ext_resource type="Resource" uid="uid://cjc1rpp72i16c" path="res://Test/Scripts/Resource/CreditsResource/Playtesters.tres" id="4_vxvni"]
 
 [resource]
 script = ExtResource("1_c866f")
 game_logo = ExtResource("1_os4ls")
 game_title = "One Way Ticket"
-sections = Array[ExtResource("2_os4ls")]([ExtResource("4_qirbj")])
-closing_text = ""
+sections = Array[ExtResource("2_os4ls")]([ExtResource("4_qirbj"), ExtResource("4_vxvni")])
+closing_text = "And thank you dear player!"
 metadata/_custom_type_script = "uid://8r0g52assq3c"

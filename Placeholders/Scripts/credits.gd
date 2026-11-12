@@ -41,14 +41,32 @@ func _ready() -> void:
 	if music:
 		Audio.play_music(music)
 
-	# Wait for the layout to measure the content, then start from below the screen.
+	# Wait for the layout to measure the content, then park it just below the screen.
+	content.visible = false
 	await get_tree().process_frame
 	await get_tree().process_frame
 	content.reset_size()
 	scroll_y = clip.size.y
+	_place_content()
+	content.visible = true
+
 	create_tween().tween_property(self, "modulate:a", 1.0, fade_time)
 	await get_tree().create_timer(start_delay).timeout
 	scrolling = true
+
+func _place_content() -> void:
+	content.position = Vector2((clip.size.x - content.size.x) / 2.0, scroll_y)
+
+func _process(delta: float) -> void:
+	if not scrolling or leaving:
+		return
+	var speed := scroll_speed * (fast_multiplier if Input.is_action_pressed("ui_down") else 1.0)
+	scroll_y -= speed * delta
+	_place_content()
+	if scroll_y + content.size.y < 0.0:   # the last line has left the screen
+		scrolling = false
+		await get_tree().create_timer(end_delay).timeout
+		_leave()
 
 func _setup_skip_button() -> void:
 	skip_button = find_child("SkipButton", false, false) as Button
@@ -111,16 +129,6 @@ func _make_spacer(height: float) -> Control:
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return spacer
 
-func _process(delta: float) -> void:
-	if not scrolling or leaving:
-		return
-	var speed := scroll_speed * (fast_multiplier if Input.is_action_pressed("ui_down") else 1.0)
-	scroll_y -= speed * delta
-	content.position = Vector2((clip.size.x - content.size.x) / 2.0, scroll_y)
-	if scroll_y + content.size.y < 0.0:   # the last line has left the screen
-		scrolling = false
-		await get_tree().create_timer(end_delay).timeout
-		_leave()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
@@ -132,8 +140,5 @@ func _leave() -> void:
 		return
 	leaving = true
 	scrolling = false
-	var tween := create_tween()
-	tween.tween_property(self, "modulate:a", 0.0, fade_time)
-	await tween.finished
 	finished.emit()
 	GameState.go_to_menu()

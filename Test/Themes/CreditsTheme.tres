@@ -1,0 +1,37 @@
+[gd_resource type="Theme" format=3 uid="uid://hyjxks65jep1"]
+
+[ext_resource type="FontFile" uid="uid://dxe5eyqewwpab" path="res://Test/Assets/UI Elements/Fonts/Stepalange-x3BLm.otf" id="1_1qf24"]
+[ext_resource type="FontFile" uid="uid://q2j1l6fmnva4" path="res://Test/Assets/UI Elements/Fonts/NotJamScrawl12.ttf" id="1_plwxn"]
+
+[resource]
+default_base_scale = 1.0
+default_font = ExtResource("1_plwxn")
+default_font_size = 36
+CreditsHeading/base_type = &"Label"
+CreditsHeading/colors/font_color = Color(0.5804336, 0.45415878, 0.8509811, 1)
+CreditsHeading/colors/font_outline_color = Color(0, 0, 0, 1)
+CreditsHeading/constants/line_spacing = 3
+CreditsHeading/constants/outline_size = 5
+CreditsHeading/font_sizes/font_size = 64
+CreditsHeading/fonts/font = ExtResource("1_plwxn")
+CreditsLine/base_type = &"Label"
+CreditsLine/colors/font_color = Color(0.86220646, 0.7630567, 0.9856985, 1)
+CreditsLine/colors/font_outline_color = Color(0, 0, 0, 1)
+CreditsLine/constants/line_spacing = 3
+CreditsLine/constants/outline_size = 5
+CreditsLine/font_sizes/font_size = 32
+CreditsLine/fonts/font = ExtResource("1_plwxn")
+CreditsTitle/base_type = &"Label"
+CreditsTitle/colors/font_color = Color(0.67662174, 0.41785368, 0.98906726, 1)
+CreditsTitle/colors/font_outline_color = Color(0, 0, 0, 1)
+CreditsTitle/constants/line_spacing = 3
+CreditsTitle/constants/outline_size = 8
+CreditsTitle/font_sizes/font_size = 72
+CreditsTitle/fonts/font = ExtResource("1_1qf24")
+Label/colors/font_color = Color(0.46081793, 0.5908613, 0.95072836, 1)
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/constants/outline_size = 8
+Label/fonts/font = ExtResource("1_1qf24")
+MenuButton/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+MenuButton/colors/font_hover_color = Color(0.8544351, 0.84477836, 0.8471859, 1)
+MenuButton/colors/icon_hover_color = Color(0.250066, 0.527545, 0.476917, 1)

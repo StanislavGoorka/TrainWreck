@@ -19,7 +19,7 @@ func _connect_button(button_name: String, handler: Callable) -> void:
 		button.pressed.connect(handler)
 
 func _process(_delta: float) -> void:
-	if GameState.game_over:
+	if GameState.game_over or SceneLoader.busy:
 		return
 	if Input.is_action_just_pressed("Pause"):
 		if get_tree().paused:
