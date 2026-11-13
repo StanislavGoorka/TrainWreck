@@ -291,6 +291,9 @@ func test_boss_before_the_final_floor_gives_a_reward_and_the_run_goes_on() -> vo
 	GameState.current_floor = 2
 	var room := _boss_room(PEDESTAL_SCENE)
 	room.victory_delay = 0.05
+	# Away from the origin: the test player's physics body stays at (0, 0) for the first
+	# physics steps after before_test(), so a pedestal spawned there could be picked up at once.
+	room.last_enemy_position = Vector2(300, 200)
 	room._on_room_cleared()
 	var appeared := await wait_until(func() -> bool: return not _pedestals(room).is_empty(), 2000)
 	assert_bool(appeared).is_true()
