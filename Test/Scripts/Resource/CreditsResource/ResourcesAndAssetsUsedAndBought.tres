@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CreditsSection" format=3 uid="uid://c1at0fcphtfvf"]
+
+[ext_resource type="Script" uid="uid://bjc1pt4cxqy13" path="res://Test/Scenes/UIScenes/UIFullScenes/CreditsSection.gd" id="1_4opxy"]
+
+[resource]
+script = ExtResource("1_4opxy")
+heading = "Outsource Assets Used/Bought"
+lines = Array[String](["Fonts", "Salmon Typewriter by Phildjii", "Not Jam Scrawl by Not Jam", "Icons", "UI Icon Set by Kenny"])
+metadata/_custom_type_script = "uid://bjc1pt4cxqy13"
