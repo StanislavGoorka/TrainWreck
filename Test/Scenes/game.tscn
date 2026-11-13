@@ -29,6 +29,7 @@
 [node name="Game" type="Node" unique_id=1869221073]
 
 [node name="ParallaxBackground" parent="." unique_id=123394018 instance=ExtResource("1_0sh8k")]
+base_speed = 300.0
 
 [node name="Rooms" type="Node2D" parent="." unique_id=1612187204]
 position = Vector2(0, 540)
