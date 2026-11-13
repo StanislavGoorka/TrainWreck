@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://c1thf7w136e72"]
+
+[ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="1_hgwdq"]
+[ext_resource type="Texture2D" uid="uid://cc7cdgstt1ukf" path="res://Test/Assets/Items/SPRITE-item32.png" id="1_i2dmq"]
+
+[resource]
+script = ExtResource("1_hgwdq")
+item_name = "Conductor's Nametag"
+description = "Wow...I feel so...powerful"
+rarity = 4
+icon_sheet = ExtResource("1_i2dmq")
+icon_sheet_ui = ExtResource("1_i2dmq")
+icon_grid_pos = Vector2i(2, 1)
+damage_mult = 2.0
+fire_rate_mult = 1.25
+metadata/_custom_type_script = "uid://dt4uqd0oigesc"

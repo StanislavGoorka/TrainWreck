@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("2_iytys")
+biomes = 2
 item_name = "Old Quiver"
 description = "It has some scratches, but I can still fit a few arrows there!"
 rarity = 1

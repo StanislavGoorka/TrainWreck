@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("1_037w4")
+biomes = 2
 item_name = "Banner Of Courage"
 description = "For the king, for the whole nation!!! Forward!!!"
 rarity = 1

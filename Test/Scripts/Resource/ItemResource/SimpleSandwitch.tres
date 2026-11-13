@@ -7,6 +7,7 @@
 [resource]
 script = ExtResource("1_o32aj")
 pools = 3
+biomes = 2
 item_name = "Simple Sandwitch "
 description = "It's so weird...yet so delicious...I should add a pickle on top of it"
 rarity = 1

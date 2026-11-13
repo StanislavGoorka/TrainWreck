@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://loco7a15he8p"]
+
+[ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="1_81ctk"]
+[ext_resource type="Texture2D" uid="uid://cc7cdgstt1ukf" path="res://Test/Assets/Items/SPRITE-item32.png" id="1_kwol3"]
+
+[resource]
+script = ExtResource("1_81ctk")
+pools = 5
+item_name = "The Last Whistle"
+description = "Last chance to board the train!"
+rarity = 1
+icon_sheet = ExtResource("1_kwol3")
+icon_sheet_ui = ExtResource("1_kwol3")
+icon_grid_pos = Vector2i(3, 2)
+speed_add = 100.0
+dash_distance_add = 50.0
+metadata/_custom_type_script = "uid://dt4uqd0oigesc"

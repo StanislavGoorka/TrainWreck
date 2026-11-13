@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("1_7h44r")
+biomes = 2
 item_name = "Bloody Dagger"
 description = "Be careful! Someone might have put some poison in!"
 rarity = 2

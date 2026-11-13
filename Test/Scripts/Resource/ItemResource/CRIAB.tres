@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("1_8js0b")
+biomes = 2
 item_name = "Corrupted Rune In A Bottle"
 description = "How Do You Even Capture Such Thing?!?"
 rarity = 3

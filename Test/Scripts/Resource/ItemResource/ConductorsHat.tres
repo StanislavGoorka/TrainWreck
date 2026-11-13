@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://ckms6k28sbafb"]
+
+[ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="1_gktw3"]
+[ext_resource type="Texture2D" uid="uid://cc7cdgstt1ukf" path="res://Test/Assets/Items/SPRITE-item32.png" id="1_x5vx0"]
+
+[resource]
+script = ExtResource("1_gktw3")
+item_name = "Conductor's Hat"
+description = "Like in RPG, every item must be picked up"
+rarity = 2
+icon_sheet = ExtResource("1_x5vx0")
+icon_sheet_ui = ExtResource("1_x5vx0")
+icon_grid_pos = Vector2i(0, 2)
+fire_rate_add = -0.5
+speed_add = 250.0
+dash_distance_add = 250.0
+metadata/_custom_type_script = "uid://dt4uqd0oigesc"

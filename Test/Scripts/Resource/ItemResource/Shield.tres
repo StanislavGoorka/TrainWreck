@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("1_se0q3")
+biomes = 2
 item_name = "Wooden Buckler"
 description = "Hey, at least it will protect you from getting shot by an arrow!"
 icon_sheet = ExtResource("1_qcrgw")

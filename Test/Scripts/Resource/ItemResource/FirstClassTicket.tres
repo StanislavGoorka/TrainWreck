@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://cunsoloc13f1w"]
+
+[ext_resource type="Texture2D" uid="uid://cc7cdgstt1ukf" path="res://Test/Assets/Items/SPRITE-item32.png" id="1_i4xlk"]
+[ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="1_umqp8"]
+
+[resource]
+script = ExtResource("1_umqp8")
+pools = 3
+item_name = "First Class Ticket"
+description = "The whole crew, at your service!"
+rarity = 3
+icon_sheet = ExtResource("1_i4xlk")
+icon_sheet_ui = ExtResource("1_i4xlk")
+icon_grid_pos = Vector2i(0, 1)
+damage_add = 0.2
+fire_rate_add = -0.2
+bullet_speed_add = 0.2
+shoot_range_add = 0.2
+max_health_add = 2.0
+speed_add = 150.0
+dash_distance_add = 150.0
+luck_add = 1.0
+metadata/_custom_type_script = "uid://dt4uqd0oigesc"

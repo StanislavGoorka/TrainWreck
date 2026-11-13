@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("1_bt520")
+biomes = 2
 item_name = "King's Goblet"
 description = "Be careful! Someone might have put some poison in!"
 icon_sheet = ExtResource("1_ty7te")

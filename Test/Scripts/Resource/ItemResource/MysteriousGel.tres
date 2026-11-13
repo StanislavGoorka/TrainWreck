@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://4ysa3gqq0xss"]
+
+[ext_resource type="Texture2D" uid="uid://cc7cdgstt1ukf" path="res://Test/Assets/Items/SPRITE-item32.png" id="1_64vdt"]
+[ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="1_uy5ud"]
+
+[resource]
+script = ExtResource("1_uy5ud")
+pools = 2
+item_name = "Mysterious Gel"
+description = "I won't drink that...Let Me Pour It On My Weapon"
+rarity = 1
+icon_sheet = ExtResource("1_64vdt")
+icon_sheet_ui = ExtResource("1_64vdt")
+icon_grid_pos = Vector2i(2, 2)
+fire_rate_add = -0.25
+metadata/_custom_type_script = "uid://dt4uqd0oigesc"

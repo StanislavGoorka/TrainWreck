@@ -7,6 +7,7 @@
 [resource]
 script = ExtResource("1_jjy0j")
 pools = 3
+biomes = 2
 item_name = "Dragon Scale"
 description = "I feel much safer wearing it!"
 icon_sheet = ExtResource("1_yxetv")

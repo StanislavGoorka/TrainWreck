@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://cgxurowp5t8gq"]
+
+[ext_resource type="Texture2D" uid="uid://cc7cdgstt1ukf" path="res://Test/Assets/Items/SPRITE-item32.png" id="1_e6mur"]
+[ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="1_yofcw"]
+
+[resource]
+script = ExtResource("1_yofcw")
+pools = 2
+item_name = "Bag Of Jelly Beans"
+description = " I wonder what will I get!"
+rarity = 1
+icon_sheet = ExtResource("1_e6mur")
+icon_sheet_ui = ExtResource("1_e6mur")
+icon_grid_pos = Vector2i(2, 0)
+special_effect = &"Spawn 10 Coins"
+metadata/_custom_type_script = "uid://dt4uqd0oigesc"

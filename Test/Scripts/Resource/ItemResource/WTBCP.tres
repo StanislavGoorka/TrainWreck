@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("1_fi7xm")
+biomes = 2
 item_name = "Way Too Big Chestplate"
 description = "Oh man, how am I suppose to wear that?"
 rarity = 1

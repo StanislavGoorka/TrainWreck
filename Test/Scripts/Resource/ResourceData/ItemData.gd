@@ -4,8 +4,11 @@ extends Resource
 const POOL_ITEM_ROOM := 1
 const POOL_BOSS := 2
 
+const POOL_BIOME := 1
+
 @export_group("Pools")
-@export_flags("Item Room", "Boss") var pools: int = POOL_ITEM_ROOM
+@export_flags("Item Room", "Boss", "Shop") var pools: int = POOL_ITEM_ROOM
+@export_flags("General", "Fantasy") var biomes: int = POOL_BIOME
 
 enum Rarity { COMMON, UNCOMMON, RARE, EPIC, LEGENDARY }
 

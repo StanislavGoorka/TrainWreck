@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://cfm43k4yl76qt"]
+
+[ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="1_02q0x"]
+[ext_resource type="Texture2D" uid="uid://cc7cdgstt1ukf" path="res://Test/Assets/Items/SPRITE-item32.png" id="1_ljdxn"]
+
+[resource]
+script = ExtResource("1_02q0x")
+item_name = "Charcoal"
+description = "Ouch! It is still hot!"
+icon_sheet = ExtResource("1_ljdxn")
+icon_sheet_ui = ExtResource("1_ljdxn")
+status_effect = 1
+status_chance = 5.0
+metadata/_custom_type_script = "uid://dt4uqd0oigesc"

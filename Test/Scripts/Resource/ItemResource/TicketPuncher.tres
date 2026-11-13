@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://cnbs5xawbnhou"]
+
+[ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="1_1wscw"]
+[ext_resource type="Texture2D" uid="uid://cc7cdgstt1ukf" path="res://Test/Assets/Items/SPRITE-item32.png" id="1_lth6a"]
+
+[resource]
+script = ExtResource("1_1wscw")
+item_name = "Ticket Puncher"
+description = "Tickets please."
+rarity = 2
+icon_sheet = ExtResource("1_lth6a")
+icon_sheet_ui = ExtResource("1_lth6a")
+icon_grid_pos = Vector2i(1, 0)
+damage_add = 1.0
+damage_mult = 1.2
+metadata/_custom_type_script = "uid://dt4uqd0oigesc"
