@@ -32,6 +32,7 @@ var _audio := {}
 var _buses: Array[Dictionary] = []
 var _fullscreen := false
 var _current_scene: Node
+var _scene_loader_busy := false
 
 
 func before() -> void:
@@ -48,6 +49,7 @@ func before_test() -> void:
 	_buses = _snapshot_buses()
 	_fullscreen = GameSettings.fullscreen
 	_current_scene = get_tree().current_scene
+	_scene_loader_busy = SceneLoader.busy
 	# Player fixtures must use the stats they were built with, not the selected character.
 	GameState.selected_character = null
 	GameState.run_active = false
@@ -75,6 +77,7 @@ func after_test() -> void:
 	_restore_audio(_audio)
 	_restore_buses(_buses)
 	GameSettings.fullscreen = _fullscreen
+	SceneLoader.busy = _scene_loader_busy
 	randomize()
 	if input_used:
 		# is_action_just_pressed() stays true until the frame ends, even after

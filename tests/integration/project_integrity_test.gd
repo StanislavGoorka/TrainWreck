@@ -15,14 +15,8 @@ const EXCLUDED_DIRS: Array[String] = ["res://addons", "res://tests", "res://repo
 const KNOWN_BROKEN_SCRIPTS := {
 	"res://Placeholders/Scripts/enemy_shoot.gd": "preloads res://Placeholders/Scenes/Enemies/laser_bullet.tscn, which does not exist",
 }
-const KNOWN_BROKEN_SCENES := {
-	"res://Placeholders/Scenes/Rooms/testing_room.tscn": "instances Placeholders/Scenes/Enemies/*.tscn and Placeholders/Scenes/Items/coin.tscn, which do not exist",
-}
 const KNOWN_BAD_CONNECTIONS := {
 	"res://Placeholders/Scenes/Characters/character_1.tscn": "DashTimer.timeout -> _on_dash_timer_timeout, which character.gd does not define",
-}
-const KNOWN_MISSING_PATHS := {
-	"res://Placeholders/Scenes/UI/main_menu.tscn": "credits.gd sends the player to a main menu that does not exist (the credits Back button breaks)",
 }
 
 
@@ -77,8 +71,6 @@ func test_known_broken_scripts_compile(
 func test_all_scenes_load_and_instantiate() -> void:
 	var broken := []
 	for path in project_files(["tscn"]):
-		if KNOWN_BROKEN_SCENES.has(path):
-			continue
 		var scene := load_pinned(path) as PackedScene
 		if scene == null or not scene.can_instantiate():
 			broken.append(path)
@@ -91,13 +83,8 @@ func test_all_scenes_load_and_instantiate() -> void:
 	assert_array(broken).override_failure_message("Scenes that cannot be loaded:" + _report(broken)).is_empty()
 
 
-func test_known_broken_scenes_are_fixed(
-		do_skip := true,
-		skip_reason := "KNOWN BUG: see KNOWN_BROKEN_SCENES (testing_room.tscn depends on deleted scenes)") -> void:
-	# Godot still loads a scene whose sub-scenes are gone, so check the dependencies.
-	var missing := []
-	for path: String in KNOWN_BROKEN_SCENES:
-		missing.append_array(_missing_dependencies(path))
+func test_testing_room_no_longer_references_deleted_scenes() -> void:
+	var missing := _missing_dependencies("res://Placeholders/Scenes/Rooms/testing_room.tscn")
 	assert_array(missing).override_failure_message("Missing dependencies:" + _report(missing)).is_empty()
 
 
@@ -112,8 +99,7 @@ func test_all_resources_load() -> void:
 func test_scene_and_resource_dependencies_exist() -> void:
 	var missing := []
 	for path in project_files(["tscn", "tres"]):
-		if not KNOWN_BROKEN_SCENES.has(path):
-			missing.append_array(_missing_dependencies(path))
+		missing.append_array(_missing_dependencies(path))
 	assert_array(missing).override_failure_message("Missing dependencies:" + _report(missing)).is_empty()
 
 
@@ -130,7 +116,7 @@ static func _missing_dependencies(path: String) -> Array:
 func test_scene_signal_connections_reach_existing_methods() -> void:
 	var problems := []
 	for path in project_files(["tscn"]):
-		if KNOWN_BROKEN_SCENES.has(path) or KNOWN_BAD_CONNECTIONS.has(path):
+		if KNOWN_BAD_CONNECTIONS.has(path):
 			continue
 		problems.append_array(_connection_problems(path))
 	assert_array(problems).override_failure_message("Broken signal connections:" + _report(problems)).is_empty()
@@ -197,18 +183,9 @@ static func _path_exists(path: String) -> bool:
 func test_res_paths_in_scripts_exist() -> void:
 	var missing := []
 	for ref: Dictionary in _script_paths():
-		if KNOWN_MISSING_PATHS.has(ref["path"]):
-			continue
 		if not _path_exists(ref["path"]):
 			missing.append("%s:%d -> %s" % [ref["file"], ref["line"], ref["path"]])
 	assert_array(missing).override_failure_message("Paths that do not exist:" + _report(missing)).is_empty()
-
-
-func test_known_missing_paths_exist(
-		do_skip := true,
-		skip_reason := "KNOWN BUG: see KNOWN_MISSING_PATHS (credits.gd main menu path)") -> void:
-	for path: String in KNOWN_MISSING_PATHS:
-		assert_bool(_path_exists(path)).override_failure_message(path).is_true()
 
 
 func test_input_actions_used_in_code_exist() -> void:
@@ -246,6 +223,7 @@ func test_autoloads_are_running_the_expected_scripts() -> void:
 		"GameState": "res://Test/Scripts/Miscellaneous/game_state.gd",
 		"Audio": "res://Test/Scripts/Miscellaneous/Audio Related/audio_manager.gd",
 		"GameSettings": "res://Test/Scripts/Settings/game_settings.gd",
+		"SceneLoader": "res://Test/Scripts/UIElements/scene_loader.gd",
 	}
 	for autoload_name: String in expected:
 		var node := get_tree().root.get_node_or_null(autoload_name)

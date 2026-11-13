@@ -6,7 +6,7 @@ const ONE_ENEMY_ROOM := preload("res://Test/Scenes/Rooms/IntermediateRooms/room_
 const EMPTY_ROOM := preload("res://Test/Scenes/Rooms/IntermediateRooms/room_03.tscn")
 const THREE_ENEMY_ROOM := preload("res://Test/Scenes/Rooms/IntermediateRooms/room_05.tscn")
 const PEDESTAL_SCENE := preload("res://Test/Scenes/InGameElements/pedestal.tscn")
-const BossHealthBar := preload("res://Test/Scripts/UIElements/BossHealthBar.gd")
+const BossHealthBar := preload("res://Test/Scripts/UIElements/InRunUI/BossHealthBar.gd")
 
 var player: Player
 
