@@ -54,21 +54,12 @@ func _ready() -> void:
 	_spawn_floor(GameState.current_floor)
 
 func _load_room_scenes(folder_path: String, target_array: Array) -> void:
-	var dir := DirAccess.open(folder_path)
-	if dir == null:
-		push_error("❌ Failed to open folder: " + folder_path)
-		return
-	dir.list_dir_begin()
-	var file_name := dir.get_next()
-	while file_name != "":
-		if file_name.ends_with(".tscn") and not dir.current_is_dir():
-			var scene = load(folder_path + file_name)
-			if scene:
-				target_array.append(scene)
-			else:
-				push_warning("⚠️ Failed to load room scene: " + folder_path + file_name)
-		file_name = dir.get_next()
-	dir.list_dir_end()
+	for path in ResourceFolder.list(folder_path, "tscn"):
+		var scene = load(path)
+		if scene:
+			target_array.append(scene)
+		else:
+			push_warning("⚠️ Failed to load room scene: " + path)
 
 # --- Floors --------------------------------------------------------------
 

@@ -163,7 +163,7 @@ stats = ExtResource("2_wrj5c")
 position = Vector2(1.9073486e-06, 1.9073486e-06)
 scale = Vector2(5.333333, 5.333333)
 sprite_frames = SubResource("SpriteFrames_oey34")
-animation = &"Death"
+animation = &"Attack"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=501045389]
 shape = SubResource("CapsuleShape2D_oey34")

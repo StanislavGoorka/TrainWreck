@@ -131,7 +131,7 @@ stats = ExtResource("2_xcw82")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1754313837]
 scale = Vector2(12, 12)
 sprite_frames = SubResource("SpriteFrames_6oee7")
-animation = &"Death"
+animation = &"SpinAttack"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=434637230]
 shape = SubResource("CapsuleShape2D_4milh")

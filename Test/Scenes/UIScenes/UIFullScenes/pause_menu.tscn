@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cg2c0duker602" path="res://Test/Assets/UI Elements/PauseMenu/SPRITE-UI-PAUSE-TAB.png" id="5_t2kmu"]
 [ext_resource type="Script" uid="uid://dm08uo12kcnww" path="res://Test/Scripts/Settings/SettingsPanel.gd" id="6_d4dcs"]
 [ext_resource type="Script" uid="uid://pb2akwxumdwq" path="res://Test/Scripts/UIElements/PauseMenu/BookMenu.gd" id="7_h0x1p"]
-[ext_resource type="Script" uid="uid://cssytpnlyc5a3" path="res://Test/Scripts/UIElements/MainSpread.gd" id="8_dsota"]
+[ext_resource type="Script" uid="uid://cssytpnlyc5a3" path="res://Test/Scripts/UIElements/PauseMenu/MainSpread.gd" id="8_dsota"]
 [ext_resource type="Script" uid="uid://ccr6udi1ul6be" path="res://Test/Scripts/UIElements/PauseMenu/BookSpread.gd" id="9_8i1i2"]
 [ext_resource type="Script" uid="uid://dc2otgx5dxe5a" path="res://Test/Scripts/UIElements/PauseMenu/InventorySpread.gd" id="9_h0x1p"]
 [ext_resource type="Theme" uid="uid://d365fbynytqx2" path="res://Test/Themes/BasicTextInGame.tres" id="10_wy0pb"]

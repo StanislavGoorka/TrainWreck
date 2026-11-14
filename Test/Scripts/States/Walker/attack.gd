@@ -31,7 +31,7 @@ func _player_in_range() -> bool:
 
 func _swing() -> void:
 	cooldown_timer = actor.stats.attack_cooldown
-	anim.play("attack")
+	anim.play("Attack")
 	for body in hitbox.get_overlapping_bodies():
 		if body.is_in_group("Players") and body.has_method("take_damage"):
 			body.take_damage(actor.stats.damage)

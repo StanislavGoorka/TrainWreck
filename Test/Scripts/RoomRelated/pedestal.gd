@@ -67,21 +67,10 @@ func _load_eligible_items() -> Array[ItemData]:
 		for owned in player.inventory:
 			owned_names.append(owned.item_name)
 
-	var dir := DirAccess.open(ITEM_RESOURCE_FOLDER)
-	if dir == null:
-		push_error("❌ Failed to open folder: " + ITEM_RESOURCE_FOLDER)
-		return pool
-
-	dir.list_dir_begin()
-	var file_name := dir.get_next()
-	while file_name != "":
-		if file_name.ends_with(".tres") and not dir.current_is_dir():
-			var item := load(ITEM_RESOURCE_FOLDER + file_name) as ItemData
-			if item and not owned_names.has(item.item_name) and (item.pools & draw_from_pools) != 0:
-				pool.append(item)
-		file_name = dir.get_next()
-	dir.list_dir_end()
-
+	for path in ResourceFolder.list(ITEM_RESOURCE_FOLDER, "tres"):
+		var item := load(path) as ItemData
+		if item and not owned_names.has(item.item_name) and (item.pools & draw_from_pools) != 0:
+			pool.append(item)
 	return pool
 
 func _on_body_entered(body: Node) -> void:

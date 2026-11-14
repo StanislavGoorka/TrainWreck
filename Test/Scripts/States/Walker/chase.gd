@@ -5,7 +5,7 @@ var attack_area: Area2D
 func enter(_msg := {}) -> void:
 	if not attack_area:
 		attack_area = actor.get_node("AttackHitbox")
-	actor.get_node("AnimatedSprite2D").play("run")
+	actor.get_node("AnimatedSprite2D").play("Chase")
 	if not attack_area.body_entered.is_connected(_on_attack_range_entered):
 		attack_area.body_entered.connect(_on_attack_range_entered)
 

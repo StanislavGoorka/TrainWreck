@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dpp6s3hpomufj"]
 
-[ext_resource type="Script" uid="uid://cwxei3q2w38eb" path="res://Test/Scripts/UIElements/Timer.gd" id="1_fv7ha"]
+[ext_resource type="Script" uid="uid://cwxei3q2w38eb" path="res://Test/Scripts/UIElements/InRunUI/Timer.gd" id="1_fv7ha"]
 [ext_resource type="FontFile" uid="uid://dxe5eyqewwpab" path="res://Test/Assets/UI Elements/Fonts/Stepalange-x3BLm.otf" id="2_hu3f3"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_fv7ha"]

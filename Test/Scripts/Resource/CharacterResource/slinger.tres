@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="CharacterDefinition" format=3 uid="uid://b35pudsxgr3ec"]
 
 [ext_resource type="Texture2D" uid="uid://dly7ng78fabto" path="res://Test/Assets/Characters/Gunslinger/headwip2.png" id="1_6eajt"]
-[ext_resource type="Script" uid="uid://xcgspuob3fen" path="res://Test/Scripts/Miscellaneous/CharacterDefinition.gd" id="1_iv0vm"]
+[ext_resource type="Script" uid="uid://xcgspuob3fen" path="res://Test/Scripts/Miscellaneous/SavefileRelated/CharacterDefinition.gd" id="1_iv0vm"]
 [ext_resource type="Script" uid="uid://dt4uqd0oigesc" path="res://Test/Scripts/Resource/ResourceData/ItemData.gd" id="2_m78jd"]
 [ext_resource type="Resource" uid="uid://clc5l7dw64djs" path="res://Test/Scripts/Resource/CharacterResource/SlingerStats.tres" id="4_tyldx"]
 [ext_resource type="Resource" uid="uid://dxtyibfhdgmdo" path="res://Test/Scripts/Resource/WeaponResource/SlingerWeaponStats.tres" id="5_vpaib"]

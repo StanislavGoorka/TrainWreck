@@ -52,19 +52,10 @@ func _ready() -> void:
 	selected_character = characters.get(selected_id)
 
 func _load_characters() -> void:
-	var dir := DirAccess.open(CHARACTER_FOLDER)
-	if dir == null:
-		push_error("❌ Failed to open folder: " + CHARACTER_FOLDER)
-		return
-	dir.list_dir_begin()
-	var file_name := dir.get_next()
-	while file_name != "":
-		if file_name.ends_with(".tres") and not dir.current_is_dir():
-			var def := load(CHARACTER_FOLDER + file_name) as CharacterDefinition
-			if def:
-				characters[def.id] = def
-		file_name = dir.get_next()
-	dir.list_dir_end()
+	for path in ResourceFolder.list(CHARACTER_FOLDER, "tres"):
+		var def := load(path) as CharacterDefinition
+		if def:
+			characters[def.id] = def
 
 # --- Progression ---------------------------------------------------------
 

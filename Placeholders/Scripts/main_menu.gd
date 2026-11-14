@@ -6,7 +6,13 @@ extends Control
 var offset_x: float = 50.0
 
 func _ready() -> void:
-	var settings_button := find_child("Settings", true, false) as BaseButton
+	var settings_button: BaseButton = null
+	for node in find_children("*", "BaseButton", true, false):
+		var label := String(node.name).to_lower()
+		var caption: String = node.text.to_lower() if "text" in node else ""
+		if "settings" in label or "options" in label or "settings" in caption or "options" in caption:
+			settings_button = node
+			break
 	if settings_button and not settings_button.pressed.is_connected(_on_settings_pressed):
 		settings_button.pressed.connect(_on_settings_pressed)
 	else:
