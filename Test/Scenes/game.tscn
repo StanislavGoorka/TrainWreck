@@ -34,6 +34,7 @@ base_speed = 300.0
 [node name="Rooms" type="Node2D" parent="." unique_id=1612187204]
 position = Vector2(0, 540)
 script = ExtResource("2_udv4l")
+num_levels = 15
 
 [node name="Camera" type="Camera2D" parent="." unique_id=2137095995]
 position = Vector2(960, 540)

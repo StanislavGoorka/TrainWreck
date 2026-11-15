@@ -13,8 +13,10 @@ var spawned: bool = false
 var alive_enemies: Array[Node] = []
 
 func _ready():
-	detect_area.body_entered.connect(_on_player_detector_body_entered)
-	detect_area.body_exited.connect(_on_player_detector_body_exited)
+	if not detect_area.body_entered.is_connected(_on_player_detector_body_entered):
+		detect_area.body_entered.connect(_on_player_detector_body_entered)
+	if not detect_area.body_exited.is_connected(_on_player_detector_body_exited):
+		detect_area.body_exited.connect(_on_player_detector_body_exited)
 	_set_doors(true)
 
 func _get_spawn_points() -> Array[EnemySpawnPoint]:
