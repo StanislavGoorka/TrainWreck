@@ -9,7 +9,6 @@ item_name = "Conductor's Nametag"
 description = "Wow...I feel so...powerful"
 rarity = 4
 icon_sheet = ExtResource("1_i2dmq")
-icon_sheet_ui = ExtResource("1_i2dmq")
 icon_grid_pos = Vector2i(2, 1)
 damage_mult = 2.0
 fire_rate_mult = 1.25

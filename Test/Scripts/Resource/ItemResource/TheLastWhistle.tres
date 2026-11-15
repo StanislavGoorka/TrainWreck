@@ -10,7 +10,6 @@ item_name = "The Last Whistle"
 description = "Last chance to board the train!"
 rarity = 1
 icon_sheet = ExtResource("1_kwol3")
-icon_sheet_ui = ExtResource("1_kwol3")
 icon_grid_pos = Vector2i(3, 2)
 speed_add = 100.0
 dash_distance_add = 50.0

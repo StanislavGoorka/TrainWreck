@@ -10,7 +10,6 @@ item_name = "Cat In A Bag"
 description = "Ma'am, does this \"baggage\" has its own ticket?"
 rarity = 2
 icon_sheet = ExtResource("1_3njbn")
-icon_sheet_ui = ExtResource("1_3njbn")
 icon_grid_pos = Vector2i(1, 1)
 speed_add = -50.0
 status_effect = 4

@@ -10,7 +10,6 @@ item_name = "Bag Of Jelly Beans"
 description = " I wonder what will I get!"
 rarity = 1
 icon_sheet = ExtResource("1_e6mur")
-icon_sheet_ui = ExtResource("1_e6mur")
 icon_grid_pos = Vector2i(2, 0)
 special_effect = &"Spawn 10 Coins"
 metadata/_custom_type_script = "uid://dt4uqd0oigesc"

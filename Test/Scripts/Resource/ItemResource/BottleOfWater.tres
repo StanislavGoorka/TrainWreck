@@ -9,7 +9,6 @@ pools = 5
 item_name = "Bottle Of Water"
 description = "No, I'm not British and won't spell it like that."
 icon_sheet = ExtResource("1_nv0gr")
-icon_sheet_ui = ExtResource("1_nv0gr")
 icon_grid_pos = Vector2i(1, 2)
 max_health_add = 2.0
 metadata/_custom_type_script = "uid://dt4uqd0oigesc"

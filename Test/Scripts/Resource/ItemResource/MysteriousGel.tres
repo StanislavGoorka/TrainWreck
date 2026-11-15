@@ -10,7 +10,6 @@ item_name = "Mysterious Gel"
 description = "I won't drink that...Let Me Pour It On My Weapon"
 rarity = 1
 icon_sheet = ExtResource("1_64vdt")
-icon_sheet_ui = ExtResource("1_64vdt")
 icon_grid_pos = Vector2i(2, 2)
 fire_rate_add = -0.25
 metadata/_custom_type_script = "uid://dt4uqd0oigesc"

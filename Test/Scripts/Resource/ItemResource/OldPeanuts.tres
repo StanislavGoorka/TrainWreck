@@ -9,7 +9,6 @@ item_name = "Old Peanuts"
 description = "These were laying here for a while..."
 rarity = 1
 icon_sheet = ExtResource("1_th40y")
-icon_sheet_ui = ExtResource("1_th40y")
 icon_grid_pos = Vector2i(3, 1)
 max_health_add = 2.0
 speed_add = -100.0

@@ -9,7 +9,6 @@ pools = 2
 item_name = "Silent Runners"
 description = "Best shoes in the whole world!"
 icon_sheet = ExtResource("1_88bet")
-icon_sheet_ui = ExtResource("1_88bet")
 icon_grid_pos = Vector2i(3, 0)
 bullet_speed_add = 50.0
 speed_add = 50.0
