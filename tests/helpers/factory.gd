@@ -7,7 +7,8 @@ extends RefCounted
 const RecordingState := preload("res://tests/helpers/recording_state.gd")
 
 const PLAYER_ANIMATIONS: Array[StringName] = [&"Idle", &"NewRun", &"Dash"]
-const ENEMY_ANIMATIONS: Array[StringName] = [&"idle", &"run", &"attack", &"Fly"]
+## Walker states play "Idle", "Chase" and "Attack"; the spin boss and the summoner still ask for "idle" and "run".
+const ENEMY_ANIMATIONS: Array[StringName] = [&"Idle", &"Chase", &"Attack", &"idle", &"run", &"Fly"]
 
 
 # --- Resources ---------------------------------------------------------------------

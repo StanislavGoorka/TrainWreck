@@ -3,7 +3,7 @@
 extends "res://tests/helpers/tw_test_suite.gd"
 
 const GameStateDouble := preload("res://tests/helpers/game_state_double.gd")
-const GameStateScript := preload("res://Test/Scripts/Miscellaneous/game_state.gd")
+const GameStateScript := preload("res://Test/Scripts/Miscellaneous/SavefileRelated/game_state.gd")
 const SAVE_PATH := "user://save.json"
 
 

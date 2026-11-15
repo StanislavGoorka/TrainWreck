@@ -83,11 +83,6 @@ func test_all_scenes_load_and_instantiate() -> void:
 	assert_array(broken).override_failure_message("Scenes that cannot be loaded:" + _report(broken)).is_empty()
 
 
-func test_testing_room_no_longer_references_deleted_scenes() -> void:
-	var missing := _missing_dependencies("res://Placeholders/Scenes/Rooms/testing_room.tscn")
-	assert_array(missing).override_failure_message("Missing dependencies:" + _report(missing)).is_empty()
-
-
 func test_all_resources_load() -> void:
 	var broken := []
 	for path in project_files(["tres"]):
@@ -220,10 +215,10 @@ func test_every_custom_input_action_has_a_binding() -> void:
 
 func test_autoloads_are_running_the_expected_scripts() -> void:
 	var expected := {
-		"GameState": "res://Test/Scripts/Miscellaneous/game_state.gd",
+		"GameState": "res://Test/Scripts/Miscellaneous/SavefileRelated/game_state.gd",
 		"Audio": "res://Test/Scripts/Miscellaneous/Audio Related/audio_manager.gd",
 		"GameSettings": "res://Test/Scripts/Settings/game_settings.gd",
-		"SceneLoader": "res://Test/Scripts/UIElements/scene_loader.gd",
+		"SceneLoader": "res://Test/Scripts/Miscellaneous/ExportAndFilesConnected/scene_loader.gd",
 	}
 	for autoload_name: String in expected:
 		var node := get_tree().root.get_node_or_null(autoload_name)
@@ -259,13 +254,29 @@ func _tile_errors(path: String) -> Array:
 
 
 func test_room_tileset_fits_inside_its_texture() -> void:
-	# Fixed with clean_tilesets.gd; this keeps the room TileSet clean.
+	# testing_room.tres is the TileSet shared by the template rooms (room_short, starting_room, ending_room).
 	var errors := _tile_errors(ROOM_TILESET_PATH)
 	assert_array(errors).override_failure_message("%s: %d tile errors" % [ROOM_TILESET_PATH, errors.size()]).is_empty()
 
 
-func test_hub_tileset_fits_inside_its_texture(
-		do_skip := true,
-		skip_reason := "KNOWN BUG: the TileSet embedded in hub.tscn defines tiles outside its atlas texture; Godot logs thousands of 'Cannot create tile' / 'no tile at' errors (clean_tilesets.gd only cleans it when hub.tscn is open in the editor)") -> void:
+func test_hub_tileset_fits_inside_its_texture() -> void:
 	var errors := _tile_errors(HUB_SCENE_PATH)
 	assert_array(errors).override_failure_message("%s: %d tile errors" % [HUB_SCENE_PATH, errors.size()]).is_empty()
+
+
+func test_room_scenes_build_their_tile_maps_without_errors() -> void:
+	# Every room instances a template room with TileMapLayers; building the scene must not
+	# log tile errors (tiles outside the atlas, missing tiles in the layer data).
+	var problems := []
+	for path in project_files(["tscn"], "res://Test/Scenes/Rooms"):
+		var capture := ErrorCapture.new()
+		capture.start()
+		var scene := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP) as PackedScene
+		if scene:
+			var room := scene.instantiate()
+			if room:
+				room.free()
+		var errors := Array(capture.stop()).filter(func(e: String) -> bool: return e.to_lower().contains("tile"))
+		if not errors.is_empty():
+			problems.append("%s: %d tile errors, first: %s" % [path, errors.size(), errors[0]])
+	assert_array(problems).override_failure_message("Rooms with tile errors:" + _report(problems)).is_empty()

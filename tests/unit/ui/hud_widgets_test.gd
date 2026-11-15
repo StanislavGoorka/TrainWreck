@@ -2,15 +2,15 @@
 ## item icons, item pickup popup, map placeholder, boss health bar and HUD layout.
 extends "res://tests/helpers/tw_test_suite.gd"
 
-const HealthUI := preload("res://Test/Scripts/UIElements/HealthUI.gd")
+const HealthUI := preload("res://Test/Scripts/UIElements/InRunUI/HealthUI.gd")
 const StatsUI := preload("res://Test/Scripts/UIElements/InRunUI/StatsUI.gd")
 const CurrencyUI := preload("res://Test/Scripts/UIElements/InRunUI/CurrencyUI.gd")
 const TimerUI := preload("res://Test/Scripts/UIElements/InRunUI/TimerUI.gd")
 const ActiveItemsUI := preload("res://Test/Scripts/UIElements/InRunUI/ActiveItemsUI.gd")
-const ItemPopup := preload("res://Test/Scripts/UIElements/ItemPopup.gd")
+const ItemPopup := preload("res://Test/Scripts/UIElements/InRunUI/ItemPopup.gd")
 const MapUI := preload("res://Test/Scripts/UIElements/InRunUI/MapUI.gd")
 const BossHealthBar := preload("res://Test/Scripts/UIElements/InRunUI/BossHealthBar.gd")
-const HUD := preload("res://Test/Scripts/UIElements/HUD.gd")
+const HUD := preload("res://Test/Scripts/UIElements/InRunUI/HUD.gd")
 const COUNTDOWN_SCENE := preload("res://Test/Scenes/UIScenes/UIElements/timer.tscn")
 
 var player: Player

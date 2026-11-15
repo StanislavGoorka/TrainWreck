@@ -45,7 +45,7 @@ func test_idle_stands_still_and_plays_idle() -> void:
 	enemy.velocity = Vector2(30, 0)
 	_state("Idle").enter()
 	assert_vector(enemy.velocity).is_equal(Vector2.ZERO)
-	assert_str(String(enemy.get_node("AnimatedSprite2D").animation)).is_equal("idle")
+	assert_str(String(enemy.get_node("AnimatedSprite2D").animation)).is_equal("Idle")
 
 
 func test_idle_waits_without_a_target() -> void:
@@ -61,12 +61,12 @@ func test_idle_starts_chasing_a_target() -> void:
 
 # --- Chase -------------------------------------------------------------------------
 
-func test_chase_plays_run_and_listens_to_its_attack_range_once() -> void:
+func test_chase_plays_chase_and_listens_to_its_attack_range_once() -> void:
 	var chase := _state("Chase")
 	chase.enter()
 	chase.enter()
 	var hitbox: Area2D = enemy.get_node("AttackHitbox")
-	assert_str(String(enemy.get_node("AnimatedSprite2D").animation)).is_equal("run")
+	assert_str(String(enemy.get_node("AnimatedSprite2D").animation)).is_equal("Chase")
 	assert_bool(hitbox.body_entered.is_connected(chase._on_attack_range_entered)).is_true()
 	chase.exit()
 	assert_bool(hitbox.body_entered.is_connected(chase._on_attack_range_entered)).is_false()
@@ -115,7 +115,7 @@ func test_attack_swings_immediately_and_hits_players_in_range() -> void:
 	var attack := _state("Attack")
 	attack.enter()
 	assert_vector(enemy.velocity).is_equal(Vector2.ZERO)
-	assert_str(String(enemy.get_node("AnimatedSprite2D").animation)).is_equal("attack")
+	assert_str(String(enemy.get_node("AnimatedSprite2D").animation)).is_equal("Attack")
 	assert_float(player.health).is_equal(100.0 - 1.5)
 	assert_float(attack.cooldown_timer).is_equal(0.5)
 
