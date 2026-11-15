@@ -1,8 +1,8 @@
 ## Run HUD visibility and the floor label, without loading image files.
 extends "res://tests/helpers/tw_test_suite.gd"
 
-const HoldToShow := preload("res://Test/Scripts/Miscellaneous/HoldToShow.gd")
-const FloorUI := preload("res://Test/Scripts/UIElements/FloorUI.gd")
+const HoldToShow := preload("res://Test/Scripts/UIElements/InRunUI/HoldToShow.gd")
+const FloorUI := preload("res://Test/Scripts/UIElements/InRunUI/FloorUI.gd")
 
 
 func _panel(action: StringName = &"Show") -> Control:

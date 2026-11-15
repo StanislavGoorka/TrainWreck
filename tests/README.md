@@ -7,7 +7,7 @@ Na GitHubie odpalają się przy każdym pushu i pull requeście (`.github/workfl
 
 | Katalog | Co testuje |
 |---|---|
-| `unit/resources` | `StatusEffect`, `ItemData` (ikony, opisy statystyk), `DialogueData`, domyślne wartości statystyk |
+| `unit/resources` | `StatusEffect`, `ItemData` (ikony, opisy statystyk), `DialogueData`, domyślne wartości statystyk, `ResourceFolder` (listowanie zasobów także w eksporcie, pliki `.remap`) |
 | `unit/player` | `Player` (przedmioty, statystyki, obrażenia, pickupy), stany Idle/Move/Dash, stany broni i odrzut |
 | `unit/enemy` | `Enemy`, `StatusComponent` (burn/poison/freeze/bleed), AI walkera, latający wróg, boss (SpinBossChase/SpinAttack), boss Summoner (okno podatności, limit obrażeń, fale, stany) |
 | `unit/state_machine` | `StateMachine` i `State` |
@@ -16,7 +16,7 @@ Na GitHubie odpalają się przy każdym pushu i pull requeście (`.github/workfl
 | `unit/ui` | HUD (serca, statystyki, waluta, wspólny zegar runu, piętro, przytrzymanie Tab, przedmioty, popup, pasek bossa), dialogi, prompt interakcji, Game Over, ekran zwycięstwa, menu-książka, wybór postaci, credits (dane, przewijanie, pomijanie), asynchroniczny loader scen (sukces, błąd, ponowienie, blokada kolejnych żądań) |
 | `unit/interactables` | `Interactable`, `NPC`, `CharacterStation`, `TrainDoor`, `Portal` |
 | `unit/world` | pickupy, piedestały, pociski, pokoje i pokój bossa (także zwycięstwo na ostatnim piętrze), generator poziomu i przejścia między piętrami, kamera |
-| `integration` | integralność projektu (kompilacja, sceny, zasoby, ścieżki `res://`, sygnały, akcje wejścia, autoloady), dane `.tres`, testy dymne prawdziwych scen |
+| `integration` | integralność projektu (kompilacja, sceny, zasoby, ścieżki `res://`, sygnały, akcje wejścia, autoloady, TileSety pokoi i huba, błędy kafli w scenach pokoi), dane `.tres`, testy dymne prawdziwych scen |
 | `helpers` | klasa bazowa, fabryka fixture'ów, dublery testowe |
 
 ## Uruchamianie lokalnie
@@ -30,7 +30,7 @@ addons\gdUnit4\runtest.cmd --godot_binary "C:\...\Godot_v4.7.2-stable_win64_cons
 ```
 
 Na Linux/macOS użyj `addons/gdUnit4/runtest.sh`. `-c` uruchamia wszystkie suity zamiast zatrzymać się na pierwszym błędzie. Raport trafia do `reports/` (katalog jest w `.gitignore`).
-Przekierowanie wyjścia do pliku (`> wynik.txt 2>&1`) wyraźnie przyspiesza przebieg, bo TileSety pokoi i huba wypisują tysiące błędów (patrz znane bugi).
+Przekierowanie wyjścia do pliku (`> wynik.txt 2>&1`) przyspiesza przebieg, bo silnik wypisuje dużo komunikatów.
 
 Testy nie ruszają Twojego zapisu: `user://save.json` i `user://settings.cfg` są odkładane przed suitą i przywracane po niej.
 
@@ -59,9 +59,7 @@ W środowisku z ograniczeniami zapisu można odizolować dane użytkownika dla p
 
 ## Znane bugi
 
-Po przywróceniu skanowania `testing_room.tscn` aktywny test `test_scene_signal_connections_reach_existing_methods` wykrywa dwa połączenia `EnemyArea.body_entered/body_exited` do nieistniejących metod `_on_enemy_area_body_entered/_on_enemy_area_body_exited`. Zależności tej sceny są już poprawne, więc scena nie jest wykluczana z kontroli. Błąd sygnałów pozostaje raportowany przez test.
-
-Pozostałe, wcześniej zarejestrowane bugi mają pominięte testy (`do_skip := true` z opisem `KNOWN BUG` w `skip_reason`). Ich lista jest poniżej. Nowo wykryte problemy pozostają aktywnymi niepowodzeniami; aktualizacja testów nie dodaje nowych pominięć.
+Zarejestrowane bugi mają pominięte testy (`do_skip := true` z opisem `KNOWN BUG` w `skip_reason`). Ich lista jest poniżej. Nowo wykryte problemy pozostają aktywnymi niepowodzeniami; aktualizacja testów nie dodaje nowych pominięć.
 Po naprawieniu buga usuń `do_skip`/`skip_reason` z testu (a dla skanów integralności także wpis z tabeli `KNOWN_*`), żeby test pilnował poprawki.
 
 | Bug | Test |
@@ -72,8 +70,6 @@ Po naprawieniu buga usuń `do_skip`/`skip_reason` z testu (a dla skanów integra
 | `SlingerStats.tres` ma stare nazwy pól (statystyki ignorowane) | `resource_data_test` › `test_known_stale_resources_are_fixed` |
 | Gracz: `DashTimer` → nieistniejące `_on_dash_timer_timeout` | `project_integrity_test` › `test_known_bad_connections_are_fixed` |
 | `enemy_shoot.gd` preloaduje usuniętą scenę | `project_integrity_test` › `test_known_broken_scripts_compile` |
-| TileSet huba ma kafle poza atlasem (tysiące błędów przy ładowaniu) | `project_integrity_test` › `test_hub_tileset_fits_inside_its_texture` |
-| Stany walkera grają `idle`/`run`/`attack`, a sceny mają `Idle`/`Chase`/`Attack` | `scenes_test` › `test_walker_state_animations_exist` |
 | Boss prosi o `idle`/`run`/`spin`, a ma `Idle`/`Chase`/`SpinAttack` | `scenes_test` › `test_spin_boss_animations_exist` |
 | Stany Summonera proszą o `idle`/`summon`, a `boris.tscn` ma `Idle`/`Summon`/`Vulnerable` | `scenes_test` › `test_summoner_boss_animations_exist` |
 | `SummonerBoss.spawn_wave()` nie zwalnia instancji z `enemy_pool`, która nie jest `Enemy` (wyciek węzłów) | `summoner_boss_test` › `test_pool_entries_that_are_not_enemies_are_skipped_without_leaking` |

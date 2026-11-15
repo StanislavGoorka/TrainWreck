@@ -114,10 +114,8 @@ func test_flying_enemies_have_their_flying_animation() -> void:
 			assert_array(Array(_animation_names(enemy))).override_failure_message(path + " misses " + anim).contains(String(anim))
 
 
-func test_walker_state_animations_exist(
-		do_skip := true,
-		skip_reason := "KNOWN BUG: Walker states play 'idle', 'run' and 'attack' but the enemy SpriteFrames are named 'Idle', 'Chase' and 'Attack' (Godot logs 'There is no animation' and the sprite freezes)") -> void:
-	var needed := {WalkerIdle: "idle", WalkerChase: "run", WalkerAttack: "attack"}
+func test_walker_state_animations_exist() -> void:
+	var needed := {WalkerIdle: "Idle", WalkerChase: "Chase", WalkerAttack: "Attack"}
 	for path in ENEMY_SCENES:
 		var enemy: Node = _spawn(path)
 		var states := _states_by_script(enemy)

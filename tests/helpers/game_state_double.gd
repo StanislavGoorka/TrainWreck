@@ -2,7 +2,7 @@
 ## - characters come from [member injected_characters] instead of the characters folder,
 ## - go_to_hub() is recorded instead of changing the scene (a scene change would
 ##   replace the test runner).
-extends "res://Test/Scripts/Miscellaneous/game_state.gd"
+extends "res://Test/Scripts/Miscellaneous/SavefileRelated/game_state.gd"
 
 var injected_characters: Dictionary = {}
 var hub_requests := 0

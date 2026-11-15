@@ -1,7 +1,7 @@
 ## Exercise real asynchronous loading against a disposable current scene.
 extends "res://tests/helpers/tw_test_suite.gd"
 
-const LoaderScript := preload("res://Test/Scripts/UIElements/scene_loader.gd")
+const LoaderScript := preload("res://Test/Scripts/Miscellaneous/ExportAndFilesConnected/scene_loader.gd")
 const ErrorCapture := preload("res://tests/helpers/error_capture.gd")
 const TARGET := "res://tests/fixtures/loader_target.tscn"
 const MISSING := "res://tests/fixtures/missing_scene.tscn"
