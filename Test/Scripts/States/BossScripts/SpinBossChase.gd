@@ -14,11 +14,12 @@ func physics_update(delta: float) -> void:
 		return
 
 	var s := actor.stats as SpinBossStats
-	var to_target: Vector2 = target.global_position - actor.global_position
-	actor.velocity = to_target.normalized() * s.speed
+	var dir: Vector2 = actor.get_chase_direction(target.global_position, delta)
+	actor.velocity = dir * s.speed * actor.speed_mult
 	actor.move_and_slide()
-	actor.face_direction(to_target.x)
+	actor.face_direction(dir.x)
 
 	cooldown_left -= delta
-	if cooldown_left <= 0.0 and to_target.length() <= s.spin_trigger_range:
+	var distance: float = actor.global_position.distance_to(target.global_position)
+	if cooldown_left <= 0.0 and distance <= s.spin_trigger_range and actor.can_see(target.global_position):
 		transition_requested.emit(&"SpinAttack")

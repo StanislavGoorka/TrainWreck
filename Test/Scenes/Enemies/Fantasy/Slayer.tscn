@@ -156,6 +156,7 @@ radius = 32.0
 height = 128.0
 
 [node name="MeleeGrunt" type="CharacterBody2D" unique_id=1065179710 groups=["Enemies"]]
+collision_mask = 97
 script = ExtResource("1_ab6r3")
 stats = ExtResource("2_wrj5c")
 

@@ -4,6 +4,7 @@ extends Node2D
 @export var spawn_delay: float = 0.6   # seconds enemies take to fade in (harmless during this time)
 @export var clamp_camera_horizontally: bool = false
 
+@export var debug_navigation: bool = false   # tints blocked cells red, for tuning
 @onready var detect_area = $PlayerDetector
 @onready var top_boundary: Node2D = $Top
 @onready var bottom_boundary: Node2D = $Bottom
@@ -18,6 +19,10 @@ func _ready():
 	if not detect_area.body_exited.is_connected(_on_player_detector_body_exited):
 		detect_area.body_exited.connect(_on_player_detector_body_exited)
 	_set_doors(true)
+	var nav := RoomNav.new()
+	nav.name = "RoomNav"
+	nav.debug_draw = debug_navigation
+	add_child(nav)
 
 func _get_spawn_points() -> Array[EnemySpawnPoint]:
 	var points: Array[EnemySpawnPoint] = []

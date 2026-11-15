@@ -4,6 +4,7 @@ extends State
 @export var animation: StringName = &"Fly"
 
 func enter(_msg := {}) -> void:
+	print("[Chase] ", actor.name, " entered Chase, has get_chase_direction: ", actor.has_method("get_chase_direction"))
 	actor.get_node("AnimatedSprite2D").play(animation)
 
 func physics_update(delta: float) -> void:
@@ -12,9 +13,9 @@ func physics_update(delta: float) -> void:
 		transition_requested.emit(&"Idle")
 		return
 
-	# Steer toward the target instead of snapping to full speed. After
-	# overshooting, the enemy has to brake and turn, so it slides past.
-	var desired: Vector2 = (target.global_position - actor.global_position).normalized() * actor.stats.speed
+	# Steer toward the way around, instead of snapping to full speed, so it still slides like on ice.
+	var dir: Vector2 = actor.get_chase_direction(target.global_position, delta)
+	var desired: Vector2 = dir * actor.stats.speed * actor.speed_mult
 	actor.velocity = actor.velocity.move_toward(desired, acceleration * delta)
 	actor.move_and_slide()
 

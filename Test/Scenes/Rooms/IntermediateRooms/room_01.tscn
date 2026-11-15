@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://4wohkakfhby0" path="res://Test/Scenes/Rooms/TemplateRooms/room_short.tscn" id="1_bcoou"]
 [ext_resource type="Script" uid="uid://cpewumyy3ucgl" path="res://Test/Scripts/RoomRelated/EnemySpawnPoint.gd" id="2_i0bwm"]
-[ext_resource type="PackedScene" uid="uid://ddg40s5k5o81y" path="res://Test/Scenes/Enemies/Fantasy/rage_fairy.tscn" id="3_i0bwm"]
+[ext_resource type="PackedScene" uid="uid://cbdjegwutnsfa" path="res://Test/Scenes/Enemies/Fantasy/Slayer.tscn" id="3_imvph"]
 
 [node name="Room_Short" unique_id=389382859 instance=ExtResource("1_bcoou")]
 
@@ -21,7 +21,7 @@ y_sort_origin = 2
 [node name="EnemySpawnPoint" type="Marker2D" parent="EnemiesSpawn" parent_id_path=PackedInt32Array(1607287628) index="0" unique_id=2073616110]
 position = Vector2(1380, 500)
 script = ExtResource("2_i0bwm")
-enemy_scene = ExtResource("3_i0bwm")
+enemy_scene = ExtResource("3_imvph")
 metadata/_custom_type_script = "uid://cpewumyy3ucgl"
 
 [node name="PlayerDetector" parent="." index="3" unique_id=156692257]
