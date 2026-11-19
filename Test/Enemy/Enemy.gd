@@ -11,6 +11,7 @@ var health: float
 var is_dead: bool = false
 var target: Node2D = null
 
+var _explained := false
 var _probed := false
 
 # Driven by StatusComponent. States read the two multipliers.
@@ -112,6 +113,9 @@ func get_chase_direction(target_pos: Vector2, delta: float) -> Vector2:
 				_path_index = i
 				break
 	if _path.is_empty():
+		if debug_navigation and not _explained:
+			_explained = true
+			_nav.explain(global_position, target_pos, mask, radius)
 		_report("NO PATH (falling back to a straight line)")
 		return straight
 
@@ -139,11 +143,14 @@ func _report(mode: String) -> void:
 		print("[Nav] %s | %s | radius %.0f | path points %d | mask %d" % [name, mode, nav_radius if nav_radius > 0.0 else _radius, _path.size(), nav_mask()])
 
 func _draw() -> void:
-	if not debug_navigation or _path.size() < 2:
+	if not debug_navigation:
 		return
-	for i in range(_path_index, _path.size() - 1):
-		draw_line(to_local(_path[i]), to_local(_path[i + 1]), Color.YELLOW, 2.0)
-	draw_line(Vector2.ZERO, to_local(_path[_path_index]), Color.GREEN, 2.0)
+	var font := ThemeDB.fallback_font
+	draw_string(font, Vector2(-40, -56), _mode.get_slice(" (", 0), HORIZONTAL_ALIGNMENT_LEFT, -1.0, 18, Color.WHITE)
+	if _path.size() >= 2:
+		for i in range(_path_index, _path.size() - 1):
+			draw_line(to_local(_path[i]), to_local(_path[i + 1]), Color.YELLOW, 3.0)
+		draw_line(Vector2.ZERO, to_local(_path[_path_index]), Color.GREEN, 3.0)
 
 func _ready() -> void:
 	status = get_node_or_null("StatusComponent") as StatusComponent

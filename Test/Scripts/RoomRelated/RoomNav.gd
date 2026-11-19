@@ -1,7 +1,14 @@
 class_name RoomNav
 extends Node2D
 
-const CELL := 64.0   # keep this equal to your TileSet's tile size
+
+const ALLOW_TIGHT_FALLBACK := false   # true = retry with a smaller clearance when no path fits
+const CELL := 64.0              # keep this equal to your TileSet's tile size
+const WALL_WEIGHT := 5.0        # cost multiplier for open cells next to a wall or the room edge
+const NEIGHBORS: Array[Vector2i] = [
+	Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1),
+	Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1),
+]
 
 var debug_draw := false
 
@@ -12,8 +19,13 @@ var rect_room_pos := Vector2.INF
 var grids := {}                 # "mask_extra" -> NavGrid
 var warned := false
 
+# AStarGrid2D with the heuristic switched off is Dijkstra's algorithm.
+class DijkstraGrid extends AStarGrid2D:
+	func _estimate_cost(_from_id: Vector2i, _end_id: Vector2i) -> float:
+		return 0.0
+
 class NavGrid:
-	var astar := AStarGrid2D.new()
+	var astar := DijkstraGrid.new()
 	var origin := Vector2.ZERO
 	var cell := 64.0
 	var cols := 0
@@ -40,7 +52,7 @@ class NavGrid:
 				for dx in range(-r, r + 1):
 					if maxi(absi(dx), absi(dy)) != r:
 						continue
-					var n := c + Vector2i(dx, dy)
+					var n := Vector2i(c.x + dx, c.y + dy)
 					if not is_solid(n) and float(dx * dx + dy * dy) < best_d:
 						best_d = float(dx * dx + dy * dy)
 						best = n
@@ -62,7 +74,8 @@ static func find_for(tree: SceneTree, pos: Vector2) -> RoomNav:
 func contains(pos: Vector2) -> bool:
 	return _update_rect() and rect.has_point(pos)
 
-# The room's bounds come from the same markers the camera uses.
+# --- Room bounds ---------------------------------------------------------
+
 func _update_rect() -> bool:
 	if room == null:
 		return false
@@ -80,11 +93,27 @@ func _update_rect() -> bool:
 	rect_room_pos = room.global_position
 
 	# Align the cells with the tiles, using the tile layer's own position.
+	rect = _tile_bounds()
+	if not rect.has_area():
+		rect = _marker_bounds()
+	if not rect.has_area():
+		if not warned:
+			warned = true
+			var layers := _tile_layers()
+			print("[NavWhy] %s has no bounds. Tile layers found: %d | Connector/Left: %s | Connector/Right: %s | Top: %s | Bottom: %s" % [
+				room.name, layers.size(),
+				room.get_node_or_null("Connector/Left") != null, room.get_node_or_null("Connector/Right") != null,
+				room.get_node_or_null("Top") != null, room.get_node_or_null("Bottom") != null])
+			for child in room.get_children():
+				print("    child: %s (%s)" % [child.name, child.get_class()])
+		return false
+	rect_room_pos = room.global_position
+
+	# Align the cells with the tiles, using the first tile layer's own position.
 	anchor = room.global_position
-	for child in room.get_children():
-		if child.is_class("TileMapLayer") or child.is_class("TileMap"):
-			anchor = (child as Node2D).global_position
-			break
+	var layers_for_anchor := _tile_layers()
+	if not layers_for_anchor.is_empty():
+		anchor = (layers_for_anchor[0] as Node2D).global_position
 
 	grids.clear()   # the room moved, so any old grid is stale
 	return true
@@ -93,10 +122,8 @@ func _update_rect() -> bool:
 func _tile_bounds() -> Rect2:
 	var result := Rect2()
 	var found := false
-	for child in room.get_children():
-		if not (child.is_class("TileMapLayer") or child.is_class("TileMap")):
-			continue
-		var tm = child   # untyped on purpose, both node types have these methods
+	for layer in _tile_layers():
+		var tm = layer   # untyped on purpose, both node types have these members
 		if tm.tile_set == null:
 			continue
 		var used: Rect2i = tm.get_used_rect()
@@ -122,11 +149,7 @@ func _marker_bounds() -> Rect2:
 	var y2 := maxf(top.global_position.y, bottom.global_position.y)
 	return Rect2(x1, y1, x2 - x1, y2 - y1)
 
-func _grid(mask: int, extra: int) -> NavGrid:
-	var key := "%d_%d" % [mask, extra]
-	if not grids.has(key):
-		grids[key] = _build(mask, extra)
-	return grids[key]
+# --- Grid ----------------------------------------------------------------
 
 # Builds the grid for an enemy type right away, so the report prints on the first chase.
 func prepare(mask: int, radius: float) -> void:
@@ -135,18 +158,24 @@ func prepare(mask: int, radius: float) -> void:
 	var extra: int = maxi(ceili((radius - CELL * 0.5) / CELL), 0)
 	_grid(mask, extra)
 
+func _grid(mask: int, extra: int) -> NavGrid:
+	var key := "%d_%d" % [mask, extra]
+	if not grids.has(key):
+		grids[key] = _build(mask, extra)
+	return grids[key]
+
 func _build(mask: int, extra: int) -> NavGrid:
 	var g := NavGrid.new()
 	g.cell = CELL
 	var rel: Vector2 = rect.position - anchor
 	g.origin = anchor + Vector2(floorf(rel.x / CELL), floorf(rel.y / CELL)) * CELL
-	g.cols = ceili((rect.end.x - g.origin.x) / CELL)
-	g.rows = ceili((rect.end.y - g.origin.y) / CELL)
+	g.cols = maxi(ceili((rect.end.x - g.origin.x) / CELL), 1)
+	g.rows = maxi(ceili((rect.end.y - g.origin.y) / CELL), 1)
 	g.astar.region = Rect2i(0, 0, g.cols, g.rows)
 	g.astar.cell_size = Vector2(CELL, CELL)
 	g.astar.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	g.astar.default_compute_heuristic = AStarGrid2D.HEURISTIC_OCTILE
-	g.astar.default_estimate_heuristic = AStarGrid2D.HEURISTIC_OCTILE
+	g.astar.jumping_enabled = false   # jump-point search ignores weights, so it stays off
 	g.astar.update()
 
 	# A cell is blocked if anything touches it. The square is 2 px smaller than the cell,
@@ -174,38 +203,50 @@ func _build(mask: int, extra: int) -> NavGrid:
 				var n := Vector2i(c.x + dx, c.y + dy)
 				if g.astar.is_in_boundsv(n):
 					g.astar.set_point_solid(n, true)
-	_print_report(g, mask, blocked.size())
+
+	# Open cells next to a wall (or the room edge) cost more to enter, so routes keep away from corners.
+	var solid_count := 0
+	var weighted := 0
+	for y in g.rows:
+		for x in g.cols:
+			var c := Vector2i(x, y)
+			if g.astar.is_point_solid(c):
+				solid_count += 1
+				continue
+			for d in NEIGHBORS:
+				if g.is_solid(Vector2i(c.x + d.x, c.y + d.y)):
+					g.astar.set_point_weight_scale(c, WALL_WEIGHT)
+					weighted += 1
+					break
+
+	print("[RoomNav] %s | grid %dx%d | blocked cells %d | wall-adjacent cells %d | mask %d | bounds %s" % [
+		room.name, g.cols, g.rows, solid_count, weighted, mask, rect])
 	if debug_draw:
 		queue_redraw()
 	return g
 
 # World-space waypoints (cell centers), or an empty array if there is no way through.
+# World-space waypoints (cell centers), or an empty array if there is no way through.
 func find_path(from: Vector2, to: Vector2, mask: int, radius: float) -> PackedVector2Array:
 	var result := PackedVector2Array()
 	if not _update_rect():
 		return result
-	var extra: int = maxi(ceili((radius - CELL * 0.5) / CELL), 0)
-	var g: NavGrid = _grid(mask, extra)
-	var a: Vector2i = g.nearest_open(g.world_to_cell(from))
-	var b: Vector2i = g.nearest_open(g.world_to_cell(to))
-	if a == Vector2i(-1, -1) or b == Vector2i(-1, -1):
+	var full: int = maxi(ceili((radius - CELL * 0.5) / CELL), 0)
+	# Full clearance first, then tighter ones, so a narrow gap still gives a route.
+	var lowest: int = 0 if ALLOW_TIGHT_FALLBACK else full
+	for extra in range(full, lowest - 1, -1):
+		var g: NavGrid = _grid(mask, extra)
+		var a: Vector2i = g.nearest_open(g.world_to_cell(from))
+		var b: Vector2i = g.nearest_open(g.world_to_cell(to))
+		if a == Vector2i(-1, -1) or b == Vector2i(-1, -1):
+			continue
+		var ids: Array[Vector2i] = g.astar.get_id_path(a, b)
+		if ids.is_empty():
+			continue
+		for cell_id in ids:
+			result.append(g.cell_center(cell_id))
 		return result
-	for cell_id in g.astar.get_id_path(a, b):
-		result.append(g.cell_center(cell_id))
 	return result
-
-func _print_report(g: NavGrid, mask: int, blocked_count: int) -> void:
-	print("[RoomNav] %s | grid %dx%d | blocked cells %d | mask %d | origin %s | rect %s" % [room.name, g.cols, g.rows, blocked_count, mask, g.origin, rect])
-	for child in room.get_children():
-		if child.is_class("TileMapLayer"):
-			var layer := child as TileMapLayer
-			var set_info := "NO TILESET"
-			if layer.tile_set:
-				var parts: Array[String] = []
-				for i in layer.tile_set.get_physics_layers_count():
-					parts.append("physics layer %d -> collision layer bits %d" % [i, layer.tile_set.get_physics_layer_collision_layer(i)])
-				set_info = ", ".join(parts)
-			print("    %s | enabled %s | collision_enabled %s | %s" % [layer.name, layer.enabled, layer.collision_enabled, set_info])
 
 # True when the enemy's real collision shape can slide from one point to the other without touching anything.
 func line_clear(shape: Shape2D, shape_offset: Vector2, from: Vector2, to: Vector2, mask: int) -> bool:
@@ -227,6 +268,53 @@ func _draw() -> void:
 	var g: NavGrid = grids.values()[0]   # only the first grid, so the red doesn't stack
 	for y in g.rows:
 		for x in g.cols:
-			if g.astar.is_point_solid(Vector2i(x, y)):
-				var top_left: Vector2 = g.origin + Vector2(x, y) * CELL
-				draw_rect(Rect2(to_local(top_left), Vector2(CELL, CELL)), Color(1, 0, 0, 0.25))
+			var c := Vector2i(x, y)
+			var top_left: Vector2 = g.origin + Vector2(x, y) * CELL
+			var cell_rect := Rect2(to_local(top_left), Vector2(CELL, CELL))
+			if g.astar.is_point_solid(c):
+				draw_rect(cell_rect, Color(1, 0, 0, 0.25))
+			elif g.astar.get_point_weight_scale(c) > 1.0:
+				draw_rect(cell_rect, Color(1, 0.8, 0, 0.15))   # open, but next to a wall
+
+# Prints why no path was found, one line per clearance level.
+func explain(from: Vector2, to: Vector2, mask: int, radius: float) -> void:
+	if not _update_rect():
+		print("[NavWhy] the room has no bounds")
+		return
+	var full: int = maxi(ceili((radius - CELL * 0.5) / CELL), 0)
+	for extra in range(full, -1, -1):
+		var g: NavGrid = _grid(mask, extra)
+		var sc: Vector2i = g.world_to_cell(from)
+		var gc: Vector2i = g.world_to_cell(to)
+		var a: Vector2i = g.nearest_open(sc)
+		var b: Vector2i = g.nearest_open(gc)
+		var line := "[NavWhy] clearance %d cells | grid %dx%d | start cell %s solid=%s -> open cell %s" % [extra, g.cols, g.rows, sc, g.is_solid(sc), a]
+		line += " | goal cell %s solid=%s -> open cell %s" % [gc, g.is_solid(gc), b]
+		if a != Vector2i(-1, -1) and b != Vector2i(-1, -1):
+			var flood: Vector2i = _flood(g, a, b)
+			line += " | start pocket %d cells, reaches goal: %s" % [flood.x, flood.y == 1]
+		print(line)
+
+# Counts the open cells connected to a start cell, and whether they include the goal.
+func _flood(g: NavGrid, start: Vector2i, goal: Vector2i) -> Vector2i:
+	var seen := {start: true}
+	var queue: Array[Vector2i] = [start]
+	var head := 0
+	while head < queue.size():
+		var c: Vector2i = queue[head]
+		head += 1
+		for i in 4:
+			var n := Vector2i(c.x + NEIGHBORS[i].x, c.y + NEIGHBORS[i].y)
+			if not seen.has(n) and not g.is_solid(n):
+				seen[n] = true
+				queue.append(n)
+	return Vector2i(queue.size(), 1 if seen.has(goal) else 0)
+
+# Every TileMapLayer or TileMap anywhere inside the room, however deep.
+func _tile_layers() -> Array[Node]:
+	var layers: Array[Node] = []
+	for node in room.find_children("*", "TileMapLayer", true, false):
+		layers.append(node)
+	for node in room.find_children("*", "TileMap", true, false):
+		layers.append(node)
+	return layers
