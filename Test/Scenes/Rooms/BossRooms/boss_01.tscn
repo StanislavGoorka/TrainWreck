@@ -9,6 +9,7 @@
 script = ExtResource("2_jx1hf")
 reward_pedestal_scene = null
 reward_spawn_delay = 0.8
+victory_delay = 2.5
 
 [node name="EnemySpawnPoint" type="Marker2D" parent="EnemiesSpawn" parent_id_path=PackedInt32Array(1607287628) index="0" unique_id=475027805]
 position = Vector2(1300, 512)

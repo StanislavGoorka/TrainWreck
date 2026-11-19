@@ -1,6 +1,13 @@
 [gd_resource type="TileSet" format=3 uid="uid://jwyvg81gu4qv"]
 
+[ext_resource type="Texture2D" uid="uid://0e5sii3rc642" path="res://Test/Assets/Tilesets/hole.png" id="1_gkenw"]
 [ext_resource type="Texture2D" uid="uid://5fu6eoc26uhm" path="res://Test/Assets/Tilesets/TILESET-royalcar-0-3.png" id="3_q8bnr"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q8bnr"]
+texture = ExtResource("1_gkenw")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/physics_layer_1/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_a7a3s"]
 resource_name = "RoyalTileSet"
@@ -343,3 +350,4 @@ physics_layer_1/collision_priority = 2.0
 physics_layer_2/collision_layer = 64
 physics_layer_2/collision_priority = 3.0
 sources/3 = SubResource("TileSetAtlasSource_a7a3s")
+sources/0 = SubResource("TileSetAtlasSource_q8bnr")

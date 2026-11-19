@@ -401,6 +401,7 @@ height = 42.666668
 [node name="Character1" type="CharacterBody2D" unique_id=117572523 groups=["Players"]]
 z_index = 1
 collision_layer = 2
+collision_mask = 97
 up_direction = Vector2(0, 1)
 script = ExtResource("1_h3pem")
 stats = ExtResource("2_gipwc")
@@ -444,15 +445,12 @@ metadata/_custom_type_script = "uid://27p2yw820ads"
 
 [node name="Idle" type="Node" parent="StateMachine" unique_id=392321023]
 script = ExtResource("14_r2syo")
-metadata/_custom_type_script = "uid://b3wcbduq6le24"
 
 [node name="Move" type="Node" parent="StateMachine" unique_id=1395551522]
 script = ExtResource("15_r2syo")
-metadata/_custom_type_script = "uid://b3wcbduq6le24"
 
 [node name="Dash" type="Node" parent="StateMachine" unique_id=853976739]
 script = ExtResource("16_ut4w2")
-metadata/_custom_type_script = "uid://b3wcbduq6le24"
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1512862341]
 
