@@ -2,9 +2,12 @@
 extends "res://tests/helpers/tw_test_suite.gd"
 
 const RecordingRoom := preload("res://tests/helpers/recording_room.gd")
-const ONE_ENEMY_ROOM := preload("res://Test/Scenes/Rooms/IntermediateRooms/room_01.tscn")
-const EMPTY_ROOM := preload("res://Test/Scenes/Rooms/IntermediateRooms/room_03.tscn")
-const THREE_ENEMY_ROOM := preload("res://Test/Scenes/Rooms/IntermediateRooms/room_05.tscn")
+const ErrorCapture := preload("res://tests/helpers/error_capture.gd")
+# Fixture rooms: the real template room (room_short.tscn) with a fixed number of spawn
+# points for tests/fixtures/dummy_enemy.tscn, so edits to the game's rooms cannot break these tests.
+const ONE_ENEMY_ROOM := preload("res://tests/fixtures/rooms/one_enemy_room.tscn")
+const EMPTY_ROOM := preload("res://tests/fixtures/rooms/empty_room.tscn")
+const THREE_ENEMY_ROOM := preload("res://tests/fixtures/rooms/three_enemy_room.tscn")
 const PEDESTAL_SCENE := preload("res://Test/Scenes/InGameElements/pedestal.tscn")
 const BossHealthBar := preload("res://Test/Scripts/UIElements/InRunUI/BossHealthBar.gd")
 
@@ -109,7 +112,7 @@ func test_killing_every_enemy_opens_the_doors() -> void:
 
 func test_room_hook_receives_all_spawned_enemies_once(
 		do_skip := true,
-		skip_reason := "KNOWN BUG: room.gd _spawn_enemies() calls _on_enemies_spawned() inside the spawn loop (line 86), once per enemy with a partial list") -> void:
+		skip_reason := "KNOWN BUG: room.gd _spawn_enemies() calls _on_enemies_spawned() inside the spawn loop (line 93), once per enemy with a partial list") -> void:
 	var room := _room(THREE_ENEMY_ROOM, RecordingRoom)
 	room._on_player_detector_body_entered(player)
 	assert_array(room.spawned_calls).has_size(1)
@@ -205,6 +208,64 @@ func test_horizontal_camera_clamp_uses_the_connectors() -> void:
 	var camera: Camera2D = player.get_node("Camera2D")
 	assert_int(camera.limit_left).is_equal(int(room.get_node("Connector/Left").global_position.x))
 	assert_int(camera.limit_right).is_equal(int(room.get_node("Connector/Right").global_position.x))
+
+
+# --- Navigation and detector wiring ------------------------------------------------
+
+func _connections_to(sig: Signal, target: Object, method: String) -> int:
+	var count := 0
+	for connection: Dictionary in sig.get_connections():
+		var callable: Callable = connection["callable"]
+		if callable.get_object() == target and callable.get_method() == method:
+			count += 1
+	return count
+
+
+func test_room_adds_one_navigation_grid_for_its_enemies() -> void:
+	var room := _room(EMPTY_ROOM)
+	var navs := room.get_children().filter(func(n: Node) -> bool: return n is RoomNav)
+	assert_array(navs).has_size(1)
+	assert_str(String(navs[0].name)).is_equal("RoomNav")
+	assert_object(navs[0].room).is_same(room)
+	assert_bool(navs[0].debug_draw).is_false()
+
+
+func test_room_debug_navigation_switches_on_the_grid_overlay() -> void:
+	var room: Room = auto_free(EMPTY_ROOM.instantiate())
+	room.debug_navigation = true
+	add_child(room)
+	assert_bool(room.get_node("RoomNav").debug_draw).is_true()
+
+
+func test_player_detector_signals_are_connected_once() -> void:
+	# room_short.tscn already connects both signals; room.gd must not connect them again
+	# (that used to print an "already connected" error for every room).
+	var capture := ErrorCapture.new()
+	capture.start()
+	var room := _room(EMPTY_ROOM)
+	var errors := Array(capture.stop()).filter(func(e: String) -> bool: return e.contains("already connected"))
+	assert_array(errors).is_empty()
+	var detector: Area2D = room.get_node("PlayerDetector")
+	assert_int(_connections_to(detector.body_entered, room, "_on_player_detector_body_entered")).is_equal(1)
+	assert_int(_connections_to(detector.body_exited, room, "_on_player_detector_body_exited")).is_equal(1)
+
+
+func test_room_without_scene_connections_still_listens_to_its_detector() -> void:
+	var room: Room = auto_free(EMPTY_ROOM.instantiate())
+	var detector: Area2D = room.get_node("PlayerDetector")
+	detector.body_entered.disconnect(room._on_player_detector_body_entered)
+	detector.body_exited.disconnect(room._on_player_detector_body_exited)
+	add_child(room)
+	assert_int(_connections_to(detector.body_entered, room, "_on_player_detector_body_entered")).is_equal(1)
+	assert_int(_connections_to(detector.body_exited, room, "_on_player_detector_body_exited")).is_equal(1)
+
+
+func test_spawned_enemies_find_the_room_navigation() -> void:
+	var room := _room(ONE_ENEMY_ROOM)
+	room._on_player_detector_body_entered(player)
+	var enemy: Enemy = _enemies(room)[0]
+	enemy._find_nav()   # enemies sit under EnemiesSpawn, so RoomNav is found on an ancestor
+	assert_object(enemy._nav).is_same(room.get_node("RoomNav"))
 
 
 # --- BossRoom ----------------------------------------------------------------------

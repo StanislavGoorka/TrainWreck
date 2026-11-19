@@ -9,15 +9,15 @@ Na GitHubie odpalają się przy każdym pushu i pull requeście (`.github/workfl
 |---|---|
 | `unit/resources` | `StatusEffect`, `ItemData` (ikony, opisy statystyk), `DialogueData`, domyślne wartości statystyk, `ResourceFolder` (listowanie zasobów także w eksporcie, pliki `.remap`) |
 | `unit/player` | `Player` (przedmioty, statystyki, obrażenia, pickupy), stany Idle/Move/Dash, stany broni i odrzut |
-| `unit/enemy` | `Enemy`, `StatusComponent` (burn/poison/freeze/bleed), AI walkera, latający wróg, boss (SpinBossChase/SpinAttack), boss Summoner (okno podatności, limit obrażeń, fale, stany) |
+| `unit/enemy` | `Enemy`, `StatusComponent` (burn/poison/freeze/bleed), AI walkera, latający wróg, boss (SpinBossChase/SpinAttack, spin tylko przy linii wzroku), boss Summoner (okno podatności, limit obrażeń, fale, stany), nawigacja wrogów (`nav_mask`, pomiar ciała, omijanie ścian i dziur, powrót do linii prostej, spowolnienie statusem w stanach Chase) |
 | `unit/state_machine` | `StateMachine` i `State` |
 | `unit/game_state` | progresja, odblokowywanie postaci, zapis/odczyt, koniec runu, piętra, zegar runu |
 | `unit/audio`, `unit/settings` | `Audio` (głośności, crossfade, SFX), `GameSettings`, panel i overlay ustawień |
 | `unit/ui` | HUD (serca, statystyki, waluta, wspólny zegar runu, piętro, przytrzymanie Tab, przedmioty, popup, pasek bossa), dialogi, prompt interakcji, Game Over, ekran zwycięstwa, menu-książka, wybór postaci, credits (dane, przewijanie, pomijanie), asynchroniczny loader scen (sukces, błąd, ponowienie, blokada kolejnych żądań) |
 | `unit/interactables` | `Interactable`, `NPC`, `CharacterStation`, `TrainDoor`, `Portal` |
-| `unit/world` | pickupy, piedestały, pociski, pokoje i pokój bossa (także zwycięstwo na ostatnim piętrze), generator poziomu i przejścia między piętrami, kamera |
-| `integration` | integralność projektu (kompilacja, sceny, zasoby, ścieżki `res://`, sygnały, akcje wejścia, autoloady, TileSety pokoi i huba, błędy kafli w scenach pokoi), dane `.tres`, testy dymne prawdziwych scen |
-| `helpers` | klasa bazowa, fabryka fixture'ów, dublery testowe |
+| `unit/world` | pickupy, piedestały, pociski, pokoje i pokój bossa (także zwycięstwo na ostatnim piętrze, jednokrotne podłączenie `PlayerDetector`, `RoomNav` w pokoju), `RoomNav` (granice z kafli i markerów, ścieżki, dziury, odstęp dużych wrogów, koszt przy ścianach, cache siatek, przesunięcie pokoju, `line_clear`), generator poziomu i przejścia między piętrami, kamera |
+| `integration` | integralność projektu (kompilacja, sceny, zasoby, ścieżki `res://`, sygnały, akcje wejścia, autoloady, nazwy warstw fizyki, TileSety pokoi i huba, warstwy fizyki TileSetu pokoi i kafle dziur, błędy kafli w scenach pokoi), dane `.tres` (także arkusze ikon UI), testy dymne prawdziwych scen (także warstwy i maski kolizji wrogów i gracza) |
+| `helpers` | klasa bazowa, fabryka fixture'ów (także pokoje do nawigacji: `nav_room`, `nav_block`, `nav_cell`), dublery testowe |
 
 ## Uruchamianie lokalnie
 
@@ -55,6 +55,8 @@ W środowisku z ograniczeniami zapisu można odizolować dane użytkownika dla p
 - Tweeny przesuwaj ręcznie `tween.custom_step(czas)`. W trybie headless jedna klatka potrafi trwać dłużej niż cała animacja. Callback na końcu tweena wykona się dopiero w kroku, w którym zostaje nadwyżka czasu (`czas + 0.01`).
 - Timery ręczne kroku z krokiem `0.125` (dokładnym w binarnym float), a nie `0.1`.
 - Sceny hub i pokoi ładuj przez `load_pinned(...)`, żeby wczytywały się raz na cały przebieg.
+- `room_test` używa pokoi z `tests/fixtures/rooms/` (szablon `room_short.tscn` z ustaloną liczbą punktów spawnu wroga-atrapy `tests/fixtures/dummy_enemy.tscn`), a nie pokoi z `IntermediateRooms/`. Zmiany w pokojach gry nie psują więc testów logiki pokoju.
+- Testy nawigacji budują pokój przez `Factory.nav_room()` i ściany przez `Factory.nav_block()` daleko od początku układu (np. `(20000, 20000)`). Przed zapytaniem o ścieżkę odczekaj 2 klatki fizyki (`wait_physics_frames(2)`), bo zapytania fizyki widzą nowe ciała dopiero po kroku serwera fizyki. `RoomNav` buduje siatkę przy pierwszym zapytaniu, więc ściany dodawaj przed nim.
 - Jeśli test wciska akcję (`Input.action_press`), klasa bazowa ją zwolni i odczeka klatkę, bo `is_action_just_pressed` zostaje `true` do końca klatki.
 
 ## Znane bugi
@@ -75,6 +77,6 @@ Po naprawieniu buga usuń `do_skip`/`skip_reason` z testu (a dla skanów integra
 | `SummonerBoss.spawn_wave()` nie zwalnia instancji z `enemy_pool`, która nie jest `Enemy` (wyciek węzłów) | `summoner_boss_test` › `test_pool_entries_that_are_not_enemies_are_skipped_without_leaking` |
 | `Dash.gd` gra `Dash`, a Body ma `Roll` | `scenes_test` › `test_player_body_has_a_dash_animation` |
 | `boss_01.tscn` i `boss_02.tscn` nie dają nagrody przed ostatnim piętrem (`reward_pedestal_scene = null`) | `scenes_test` › `test_boss_rooms_reward_the_player` |
-| `room.gd:86` woła `_on_enemies_spawned()` raz na każdego wroga | `room_test` › `test_room_hook_receives_all_spawned_enemies_once` |
+| `room.gd:93` woła `_on_enemies_spawned()` raz na każdego wroga | `room_test` › `test_room_hook_receives_all_spawned_enemies_once` |
 | `InventorySpread` gubi węzły ukrytych stron (wyciek) | `book_menu_test` › `test_freeing_the_inventory_frees_hidden_pages` |
 | Godot 4.7: prompt pokazuje `[E - Physical]` zamiast `[E]` | `dialogue_and_prompts_test` › `test_key_name_is_the_bare_key_of_the_interact_binding` |

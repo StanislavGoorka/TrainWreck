@@ -88,6 +88,15 @@ func test_chase_moves_toward_the_target() -> void:
 	assert_vector(boss.velocity).is_equal_approx(Vector2(200, 0), Vector2.ONE * 0.01)
 
 
+func test_chase_speed_follows_the_status_slow() -> void:
+	var chase := _state("Chase")
+	chase.enter()
+	boss.target = player
+	boss.speed_mult = 0.5
+	chase.physics_update(0.1)
+	assert_vector(boss.velocity).is_equal_approx(Vector2(100, 0), Vector2.ONE * 0.01)
+
+
 func test_chase_does_not_spin_before_the_cooldown_ends() -> void:
 	var chase := _state("Chase")
 	chase.enter()
@@ -113,6 +122,37 @@ func test_chase_keeps_chasing_when_too_far_to_spin() -> void:
 	player.global_position = boss.global_position + Vector2(800, 0)
 	chase.physics_update(3.0)
 	assert_array(requests).is_empty()
+
+
+## Chase state of a boss standing in a Factory.nav_room(), 128 px (in spin range) left of the player.
+## Returns the transitions the chase asks for after its cooldown is over.
+func _spin_requests_in_room(with_wall: bool) -> Array:
+	var room: Node2D = auto_free(Factory.nav_room(Vector2i(8, 5)))
+	add_child(room)
+	room.global_position = Vector2(40000, 40000)
+	if with_wall:
+		Factory.nav_block(room, Vector2i(3, 0), Vector2i(3, 3))   # between the boss and the player
+	var room_boss := _make_boss(stats)
+	room.get_node("EnemiesSpawn").add_child(room_boss)
+	room_boss.get_node("StateMachine").process_mode = Node.PROCESS_MODE_DISABLED
+	room_boss.global_position = room.global_position + Factory.nav_cell(Vector2i(2, 2))
+	player.global_position = room.global_position + Factory.nav_cell(Vector2i(4, 2))
+	await wait_physics_frames(2)
+	var chase: State = room_boss.get_node("StateMachine/Chase")
+	var result := []
+	chase.transition_requested.connect(func(state_name: StringName, _msg := {}) -> void: result.append(state_name))
+	chase.enter()
+	room_boss.target = player
+	chase.physics_update(2.0)
+	return result
+
+
+func test_chase_spins_at_a_player_in_plain_sight_inside_a_room() -> void:
+	assert_array(await _spin_requests_in_room(false)).contains_exactly(&"SpinAttack")
+
+
+func test_chase_does_not_spin_at_a_player_behind_a_wall() -> void:
+	assert_array(await _spin_requests_in_room(true)).is_empty()
 
 
 # --- SpinAttack --------------------------------------------------------------------

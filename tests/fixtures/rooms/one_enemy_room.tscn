@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Test/Scenes/Rooms/TemplateRooms/room_short.tscn" id="1_template"]
+[ext_resource type="Script" path="res://Test/Scripts/RoomRelated/EnemySpawnPoint.gd" id="2_point"]
+[ext_resource type="PackedScene" path="res://tests/fixtures/dummy_enemy.tscn" id="3_enemy"]
+
+[node name="Room_Short" instance=ExtResource("1_template")]
+
+[node name="EnemySpawnPoint" type="Marker2D" parent="EnemiesSpawn"]
+position = Vector2(1380, 500)
+script = ExtResource("2_point")
+enemy_scene = ExtResource("3_enemy")

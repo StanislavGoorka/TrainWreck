@@ -99,6 +99,27 @@ func test_chase_attacks_when_the_player_is_in_range() -> void:
 	assert_array(requests).contains_exactly(&"Attack")
 
 
+func test_chase_speed_follows_the_status_slow() -> void:
+	var chase := _state("Chase")
+	chase.enter()
+	enemy.target = player
+	enemy.speed_mult = 0.5   # set by StatusComponent while frozen
+	chase.physics_update(0.016)
+	assert_vector(enemy.velocity).is_equal_approx(Vector2(60, 0), Vector2.ONE * 0.01)
+
+
+func test_chase_turns_to_the_player_before_attacking() -> void:
+	var chase := _state("Chase")
+	chase.enter()
+	enemy.target = player
+	player.global_position = enemy.global_position + Vector2(10, 0)   # inside the attack hitbox, to the right
+	await wait_physics_frames(3)
+	requests.clear()
+	chase.physics_update(0.016)
+	assert_array(requests).contains_exactly(&"Attack")
+	assert_bool(enemy.get_node("AnimatedSprite2D").flip_h).is_true()   # the sprite faces left, so right = flipped
+
+
 func test_entering_the_attack_range_triggers_an_attack() -> void:
 	var chase := _state("Chase")
 	chase._on_attack_range_entered(player)

@@ -21,6 +21,9 @@ const GAME_SCENE := "res://Test/Scenes/game.tscn"
 const BOSS_ROOMS_FOLDER := "res://Test/Scenes/Rooms/BossRooms/"
 const ENDING_ROOMS_FOLDER := "res://Test/Scenes/Rooms/EndingRooms/"
 const SUMMONER_SCENE := "res://Test/Scenes/Enemies/Fantasy/Boss/boris.tscn"
+const ENEMY_LAYER := 4      # layer 3, "enemies"
+const GROUND_LAYER := 32    # layer 6, "ground": holes
+const WALKER_MASK := 97     # walls + ground + objects
 ## Boss room -> name shown on the boss health bar.
 const BOSS_ROOMS := {
 	"res://Test/Scenes/Rooms/BossRooms/boss_01.tscn": "Laureth, Doom Of All Scales",
@@ -94,6 +97,32 @@ func test_enemies_are_on_the_enemy_layer_so_bullets_hit_them() -> void:
 	for path in ENEMY_SCENES:
 		var enemy: CollisionObject2D = _spawn(path)
 		assert_int(enemy.collision_layer & bullet_mask).override_failure_message(path + " cannot be hit by bullets").is_not_zero()
+		# The bullet mask also has the walls layer, so the check above alone passes for an enemy
+		# left on the default layer 1. Dash.gd, the hurtboxes and Enemy.nav_mask() need layer 3.
+		assert_int(enemy.collision_layer & ENEMY_LAYER).override_failure_message(path + " is not on the enemies layer (value 4)").is_not_zero()
+
+
+func test_walking_enemies_stop_at_holes_and_objects() -> void:
+	var checked := 0
+	for path in ENEMY_SCENES:
+		var enemy: CollisionObject2D = _spawn(path)
+		var states := _states_by_script(enemy)
+		if states.has(WalkerChase) or states.has(SpinBossChase):
+			checked += 1
+			assert_int(enemy.collision_mask & WALKER_MASK).override_failure_message(
+				"%s: collision_mask %d must include walls, ground and objects (97)" % [path, enemy.collision_mask]).is_equal(WALKER_MASK)
+	assert_int(checked).is_greater(0)
+
+
+func test_flying_enemies_fly_over_holes() -> void:
+	var checked := 0
+	for path in ENEMY_SCENES:
+		var enemy: CollisionObject2D = _spawn(path)
+		if _states_by_script(enemy).has(FlyingChase):
+			checked += 1
+			assert_int(enemy.collision_mask & GROUND_LAYER).override_failure_message(path + " collides with holes").is_zero()
+			assert_int(enemy.collision_mask & 1).override_failure_message(path + " flies through walls").is_not_zero()
+	assert_int(checked).is_greater(0)
 
 
 func test_enemies_have_a_one_shot_death_animation() -> void:
@@ -182,6 +211,12 @@ func test_player_scene_comes_up_ready_to_play() -> void:
 	assert_str(String(machine.current_state.name)).is_equal("Idle")
 	var weapon: StateMachine = player.get_node("Aim/WeaponStateMachine")
 	assert_array(weapon.states.keys()).contains_exactly_in_any_order(&"WeaponIdle", &"WeaponCooldown")
+
+
+func test_player_scene_stops_at_walls_holes_and_objects() -> void:
+	var player: Player = _spawn(PLAYER_SCENE)
+	assert_int(player.collision_layer).is_equal(2)
+	assert_int(player.collision_mask & WALKER_MASK).override_failure_message("collision_mask %d" % player.collision_mask).is_equal(WALKER_MASK)
 
 
 func test_player_sprites_have_the_animations_the_states_play() -> void:
