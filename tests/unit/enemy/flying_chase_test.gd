@@ -43,6 +43,14 @@ func test_accelerates_toward_the_target_instead_of_snapping() -> void:
 	assert_vector(enemy.velocity).is_equal_approx(Vector2(100, 0), Vector2.ONE * 0.01)
 
 
+func test_status_slow_lowers_the_top_speed() -> void:
+	enemy.target = target
+	enemy.speed_mult = 0.5
+	for i in 3:
+		chase.physics_update(0.1)
+	assert_vector(enemy.velocity).is_equal_approx(Vector2(50, 0), Vector2.ONE * 0.01)
+
+
 func test_overshooting_makes_it_brake_and_turn_gradually() -> void:
 	enemy.target = target
 	enemy.velocity = Vector2(100, 0)

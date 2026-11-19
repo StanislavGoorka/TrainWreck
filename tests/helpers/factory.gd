@@ -173,3 +173,60 @@ static func enemy(stats: EnemyStats = null, states := {}, enemy_script: GDScript
 		state.name = state_name
 		machine.add_child(state)
 	return result
+
+
+# --- Navigation --------------------------------------------------------------------
+
+## A bare room for RoomNav: Connector/Left, Connector/Right, Top and Bottom markers frame
+## [param cells] grid cells (RoomNav.CELL px each) from the room's origin, plus an
+## "EnemiesSpawn" node and a RoomNav child named "RoomNav", as room.gd adds it. It has no
+## tiles, so RoomNav takes its bounds from the markers. Not added to the tree.
+static func nav_room(cells := Vector2i(10, 6)) -> Node2D:
+	var room := Node2D.new()
+	room.name = "NavRoom"
+	var size := Vector2(cells) * RoomNav.CELL
+	var connector := Node2D.new()
+	connector.name = "Connector"
+	room.add_child(connector)
+	connector.add_child(_marker("Left", Vector2(0.0, size.y / 2.0)))
+	connector.add_child(_marker("Right", Vector2(size.x, size.y / 2.0)))
+	room.add_child(_marker("Top", Vector2(size.x / 2.0, 0.0)))
+	room.add_child(_marker("Bottom", Vector2(size.x / 2.0, size.y)))
+	var spawn := Node2D.new()
+	spawn.name = "EnemiesSpawn"
+	room.add_child(spawn)
+	var nav := RoomNav.new()
+	nav.name = "RoomNav"
+	room.add_child(nav)
+	return room
+
+
+static func _marker(marker_name: String, pos: Vector2) -> Marker2D:
+	var marker := Marker2D.new()
+	marker.name = marker_name
+	marker.position = pos
+	return marker
+
+
+## The centre of grid cell [param cell] of a nav_room(), in the room's local coordinates.
+static func nav_cell(cell: Vector2i) -> Vector2:
+	return (Vector2(cell) + Vector2(0.5, 0.5)) * RoomNav.CELL
+
+
+## A StaticBody2D on [param layer] that exactly fills the cells [param from_cell] to
+## [param to_cell] (inclusive) of a nav_room(). Layer 1 = walls, 32 = ground (holes),
+## 64 = objects.
+static func nav_block(room: Node2D, from_cell: Vector2i, to_cell: Vector2i, layer := 1) -> StaticBody2D:
+	var body := StaticBody2D.new()
+	body.name = "Block"
+	body.collision_layer = layer
+	body.collision_mask = 0
+	var cells := Vector2(to_cell - from_cell + Vector2i.ONE)
+	var rect := RectangleShape2D.new()
+	rect.size = cells * RoomNav.CELL
+	var shape := CollisionShape2D.new()
+	shape.shape = rect
+	body.add_child(shape)
+	body.position = (Vector2(from_cell) + cells / 2.0) * RoomNav.CELL
+	room.add_child(body)
+	return body

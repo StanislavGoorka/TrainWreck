@@ -237,8 +237,13 @@ func test_main_scene_is_the_main_menu() -> void:
 func test_physics_layers_match_the_layers_used_in_code() -> void:
 	# Interactable and character_1.tscn use layer 2 for the player; Dash.gd uses
 	# layer 3 for enemies; enemy scenes use layer value 4 (= layer 3).
+	# The player and walking enemies use collision_mask 97 = walls (1) + ground (32, holes)
+	# + objects (64); Enemy.nav_mask() drops the player and enemy layers (values 2 and 4).
+	assert_str(ProjectSettings.get_setting("layer_names/2d_physics/layer_1")).is_equal("walls")
 	assert_str(ProjectSettings.get_setting("layer_names/2d_physics/layer_2")).is_equal("player")
 	assert_str(ProjectSettings.get_setting("layer_names/2d_physics/layer_3")).is_equal("enemies")
+	assert_str(ProjectSettings.get_setting("layer_names/2d_physics/layer_6")).is_equal("ground")
+	assert_str(ProjectSettings.get_setting("layer_names/2d_physics/layer_7")).is_equal("objects")
 
 
 func test_audio_bus_layout_has_the_buses_the_game_uses() -> void:
@@ -257,6 +262,30 @@ func test_room_tileset_fits_inside_its_texture() -> void:
 	# testing_room.tres is the TileSet shared by the template rooms (room_short, starting_room, ending_room).
 	var errors := _tile_errors(ROOM_TILESET_PATH)
 	assert_array(errors).override_failure_message("%s: %d tile errors" % [ROOM_TILESET_PATH, errors.size()]).is_empty()
+
+
+func test_room_tileset_physics_layers_are_walls_ground_and_objects() -> void:
+	var tile_set := load_pinned(ROOM_TILESET_PATH) as TileSet
+	assert_int(tile_set.get_physics_layers_count()).is_greater_equal(3)
+	assert_int(tile_set.get_physics_layer_collision_layer(0)).override_failure_message("walls").is_equal(1)
+	assert_int(tile_set.get_physics_layer_collision_layer(1)).override_failure_message("ground (holes)").is_equal(32)
+	assert_int(tile_set.get_physics_layer_collision_layer(2)).override_failure_message("objects").is_equal(64)
+
+
+func test_room_tileset_has_hole_tiles_on_the_ground_layer() -> void:
+	# Hole tiles collide on TileSet physics layer 1 (= "ground"): walkers (mask 97) stop
+	# at them and RoomNav routes walkers around them, flyers (mask 1) cross them.
+	var tile_set := load_pinned(ROOM_TILESET_PATH) as TileSet
+	var ground_tiles := 0
+	for i in tile_set.get_source_count():
+		var source := tile_set.get_source(tile_set.get_source_id(i)) as TileSetAtlasSource
+		if source == null:
+			continue
+		for t in source.get_tiles_count():
+			var data := source.get_tile_data(source.get_tile_id(t), 0)
+			if data and data.get_collision_polygons_count(1) > 0:
+				ground_tiles += 1
+	assert_int(ground_tiles).is_greater(0)
 
 
 func test_hub_tileset_fits_inside_its_texture() -> void:

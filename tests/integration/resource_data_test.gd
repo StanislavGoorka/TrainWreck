@@ -93,6 +93,14 @@ func test_items_are_complete() -> void:
 		assert_object(item.get_icon()).override_failure_message(where + " has no icon").is_not_null()
 
 
+func test_ui_icon_sheets_are_not_the_32px_sheet() -> void:
+	# get_icon_ui() cuts icon_sheet_ui into 16 px cells; pointing it at the 32 px icon_sheet
+	# shows a quarter of the wrong icon. Leave icon_sheet_ui empty to reuse the 32 px icon.
+	for item: ItemData in _resources_in(ITEM_FOLDER):
+		if item.icon_sheet_ui and item.icon_sheet:
+			assert_bool(item.icon_sheet_ui == item.icon_sheet or item.icon_sheet_ui.resource_path == item.icon_sheet.resource_path) 				.override_failure_message(item.resource_path + ": icon_sheet_ui is the same sheet as icon_sheet").is_false()
+
+
 func test_item_names_are_unique() -> void:
 	# Pedestals skip items by name, so two items with one name would hide each other.
 	var seen := {}
