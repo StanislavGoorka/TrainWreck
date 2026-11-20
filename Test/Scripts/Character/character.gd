@@ -49,6 +49,12 @@ func _setup_stats() -> void:
 	current_weapon_stats = base_weapon_stats.duplicate()
 	inventory.clear()
 	active_effects.clear()
+	status_items.clear()
+
+	# A starting value above a limit is clamped before the first pickup.
+	current_stats.max_health = minf(current_stats.max_health, StatLimits.MAX_HEALTH)
+	current_weapon_stats.fire_rate = maxf(current_weapon_stats.fire_rate, StatLimits.MIN_FIRE_INTERVAL)
+
 	health = current_stats.max_health
 	health_changed.emit(health, current_stats.max_health)
 	stats_changed.emit()
@@ -109,35 +115,62 @@ func take_damage(amount: float) -> void:
 		is_dead = true
 		died.emit()
 
-
 func _recalculate_stats() -> void:
-	var old_max_health := current_stats.max_health if current_stats else base_stats.max_health
+	var old_max := current_stats.max_health
 
 	current_stats = base_stats.duplicate()
 	current_weapon_stats = base_weapon_stats.duplicate()
+	status_items.clear()
+
+	# Pass 1: collect every item's modifiers. Flat bonuses add up, multipliers multiply together.
+	var health_flat := 0.0
+	var speed_flat := 0.0
+	var speed_mult := 1.0
+	var dash_flat := 0.0
+	var luck_flat := 0.0
+	var special_flat := 0.0
+	var damage_flat := 0.0
+	var damage_mult := 1.0
+	var interval_flat := 0.0
+	var interval_mult := 1.0
+	var bullet_flat := 0.0
+	var bullet_mult := 1.0
+	var range_flat := 0.0
 
 	for item in inventory:
-		current_stats.max_health += item.max_health_add
-		current_stats.speed = (current_stats.speed + item.speed_add) * item.speed_mult
-		current_stats.dash_distance += item.dash_distance_add
-		current_stats.luck += item.luck_add
-		current_stats.special_chance += item.special_chance_add
-		
-		current_weapon_stats.damage = (current_weapon_stats.damage + item.damage_add) * item.damage_mult
-		current_weapon_stats.fire_rate = (current_weapon_stats.fire_rate + item.fire_rate_add) * item.fire_rate_mult
-		current_weapon_stats.bullet_speed = (current_weapon_stats.bullet_speed + item.bullet_speed_add) * item.bullet_speed_mult
-		current_weapon_stats.shoot_range += item.shoot_range_add
-		current_stats.dash_distance += item.dash_distance_add
-		
-	status_items.clear()
-	for item in inventory:
+		health_flat += item.max_health_add
+		speed_flat += item.speed_add
+		speed_mult *= item.speed_mult
+		dash_flat += item.dash_distance_add
+		luck_flat += item.luck_add
+		special_flat += item.special_chance_add
+		damage_flat += item.damage_add
+		damage_mult *= item.damage_mult
+		interval_flat += item.fire_rate_add
+		interval_mult *= item.fire_rate_mult
+		bullet_flat += item.bullet_speed_add
+		bullet_mult *= item.bullet_speed_mult
+		range_flat += item.shoot_range_add
 		if item.status_effect != StatusEffect.Type.NONE:
 			status_items.append(item)
-		
-	var health_gain := current_stats.max_health - old_max_health
-	health += health_gain
+
+	# Pass 2: base + all flat bonuses, then the multipliers on that whole total, then the limits.
+	current_stats.max_health = minf(base_stats.max_health + health_flat, StatLimits.MAX_HEALTH)
+	current_stats.speed = (base_stats.speed + speed_flat) * speed_mult
+	current_stats.dash_distance = base_stats.dash_distance + dash_flat
+	current_stats.luck = base_stats.luck + luck_flat
+	current_stats.special_chance = base_stats.special_chance + special_flat
+
+	current_weapon_stats.damage = (base_weapon_stats.damage + damage_flat) * damage_mult
+	var interval := (base_weapon_stats.fire_rate + interval_flat) * interval_mult   # seconds between shots
+	current_weapon_stats.fire_rate = maxf(interval, StatLimits.MIN_FIRE_INTERVAL)
+	current_weapon_stats.bullet_speed = (base_weapon_stats.bullet_speed + bullet_flat) * bullet_mult
+	current_weapon_stats.shoot_range = base_weapon_stats.shoot_range + range_flat
+
+	# A health up heals by the gain, and a capped one gains nothing beyond the cap.
+	health += current_stats.max_health - old_max
+	health = minf(health, current_stats.max_health)
 	health_changed.emit(health, current_stats.max_health)
-	
 	stats_changed.emit()
 
 func roll_bullet_statuses() -> Dictionary:

@@ -94,11 +94,8 @@ func get_stat_lines(base_weapon: WeaponStats = null) -> Array[String]:
 	if damage_mult != 1.0: lines.append("Damage x%s" % String.num(damage_mult, 2))
 	if fire_rate_add != 0.0 or fire_rate_mult != 1.0:
 		if base_weapon and base_weapon.fire_rate > 0.0:
-			var new_interval := (base_weapon.fire_rate + fire_rate_add) * fire_rate_mult
-			if new_interval <= 0.0:
-				lines.append("Fire Rate MAX")
-			else:
-				lines.append("%s Fire Rate" % _signed(1.0 / new_interval - 1.0 / base_weapon.fire_rate))
+			var new_interval := maxf((base_weapon.fire_rate + fire_rate_add) * fire_rate_mult, StatLimits.MIN_FIRE_INTERVAL)
+			lines.append("%s Fire Rate" % _signed(1.0 / new_interval - 1.0 / base_weapon.fire_rate))
 		else:
 			lines.append("Fire Rate changed")
 	if bullet_speed_add != 0.0: lines.append("%s Bullet Speed" % _signed(bullet_speed_add))
