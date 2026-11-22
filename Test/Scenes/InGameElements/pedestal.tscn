@@ -1,7 +1,34 @@
 [gd_scene format=3 uid="uid://krl3o4aw3ff8"]
 
 [ext_resource type="Script" uid="uid://c3446x7r5mwdb" path="res://Test/Scripts/RoomRelated/pedestal.gd" id="1_c57jg"]
-[ext_resource type="Texture2D" uid="uid://b2sfixhpuu8mt" path="res://Test/Assets/Characters/Gunslinger/standwip2.png" id="2_rqxq7"]
+[ext_resource type="Texture2D" uid="uid://dt0xaqd677ryg" path="res://Test/Assets/Objects/SPRITE-GENERAL-suitcasepedestal.png" id="2_0qhck"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fc12h"]
+atlas = ExtResource("2_0qhck")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2rp2u"]
+atlas = ExtResource("2_0qhck")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_s1fef"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fc12h")
+}],
+"loop": 1,
+"name": &"Closed",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2rp2u")
+}],
+"loop": 1,
+"name": &"Open",
+"speed": 5.0
+}]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_s1fef"]
 radius = 32.0
@@ -10,12 +37,13 @@ radius = 32.0
 collision_mask = 2
 script = ExtResource("1_c57jg")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=169367104]
+[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=680635133]
 position = Vector2(0, -16)
-texture = ExtResource("2_rqxq7")
+sprite_frames = SubResource("SpriteFrames_s1fef")
+animation = &"Open"
 
 [node name="ItemSprite2D" type="Sprite2D" parent="." unique_id=760614545]
-position = Vector2(0, -8)
+position = Vector2(0, -20)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=998635955]
 shape = SubResource("CircleShape2D_s1fef")

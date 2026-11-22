@@ -168,6 +168,7 @@ scale = Vector2(2, 2)
 collision_layer = 4
 script = ExtResource("1_vwgg0")
 stats = ExtResource("2_ccf2o")
+debug_navigation = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1902261154]
 sprite_frames = SubResource("SpriteFrames_s1fef")

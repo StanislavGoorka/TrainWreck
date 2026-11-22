@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://cgeffdr5v3hr2"]
+
+[ext_resource type="PackedScene" uid="uid://b6d7j4qluiun4" path="res://Test/Scenes/Rooms/TemplateRooms/starting_room.tscn" id="1_ok4c7"]
+[ext_resource type="Texture2D" uid="uid://d3kqbldp6n3o" path="res://Test/Assets/Enemies/SPRITE-ENEMY-FANTASY-LAURETH.png" id="2_1413u"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_clsuh"]
+atlas = ExtResource("2_1413u")
+region = Rect2(0, 0, 192, 192)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ok4c7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_clsuh")
+}],
+"loop": 1,
+"name": &"Idle",
+"speed": 5.0
+}]
+
+[node name="Start" unique_id=978621589 instance=ExtResource("1_ok4c7")]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." index="4" unique_id=673485362]
+position = Vector2(1280, 512)
+sprite_frames = SubResource("SpriteFrames_ok4c7")
+animation = &"Idle"
