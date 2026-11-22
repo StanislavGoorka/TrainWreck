@@ -7,17 +7,19 @@ signal closed          # fully faded out
 @export var chars_per_second: float = 30.0
 @export var hold_time: float = 2.0          # seconds the line stays after it finishes typing
 @export var fade_time: float = 0.25
-@export var max_width: float = 480.0
+@export var max_width: float = 360.0
 @export var sound: AudioStream
 @export var sound_volume_db: float = 0.0
 @export var sound_pitch_variation: float = 0.06
 
 const MAX_SOUNDS_PER_FRAME := 2   # protects against stacked sounds at very high speeds
 
-var anchor := Vector2(0, -60)   # bottom-center of the text, relative to the owner
+var anchor := Vector2(0, -80)   # bottom-center of the text, relative to the owner
+var text_size := Vector2.ZERO   # the measured size of the current line, used for positioning
 var typing := false
 var shown_f := 0.0
 var last_count := 0
+var serial := 0                 # identifies the current line, so a late correction can't hit a newer one
 var hold_tween: Tween
 var fade_tween: Tween
 
@@ -25,15 +27,16 @@ func _init() -> void:
 	# Style it in your Theme with a "DialogueLabel" type (base type Label).
 	theme_type_variation = &"DialogueLabel"
 	horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	z_index = 101
 	visible = false
 	set_process(false)
-	resized.connect(_reposition)
 
 func show_line(line: String) -> void:
 	_kill_tweens()
+	serial += 1
 	text = line
 	_fit_size()
 	visible_characters = 0
@@ -44,6 +47,7 @@ func show_line(line: String) -> void:
 	typing = true
 	set_process(true)
 	_reposition()
+	_refine_size(serial)   # corrects the height once the label has laid itself out
 
 func is_typing() -> bool:
 	return typing
@@ -99,16 +103,28 @@ func _kill_tweens() -> void:
 		if t:
 			t.kill()
 
-# Measures the wrapped text with the real font, so long lines get the right height at once.
+# Estimates the wrapped size with the real font, so the first frame is already close.
 func _fit_size() -> void:
 	var font := get_theme_font("font")
 	var font_size := get_theme_font_size("font_size")
 	var single_line := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size)
-	var width := max_width if single_line.x > max_width else single_line.x + 16.0
+	var width := minf(single_line.x + 16.0, max_width)
 	var wrapped := font.get_multiline_string_size(text, HORIZONTAL_ALIGNMENT_CENTER, width, font_size)
-	custom_minimum_size = Vector2(width, wrapped.y + font_size * 0.5)   # a little extra, so the last line is never cut
-	size = custom_minimum_size
+	text_size = Vector2(width, wrapped.y + font_size * 0.5)
+	custom_minimum_size = Vector2(width, 0.0)   # no stale height left over from an earlier line
+	size = Vector2(width, text_size.y)          # the width is what the wrapping uses
 
-# The text grows upward, so the bottom stays just above the head.
+# One frame later the label has wrapped at the right width, so its own minimum height is exact.
+func _refine_size(id: int) -> void:
+	await get_tree().process_frame
+	if id != serial or not visible:
+		return
+	var natural := get_minimum_size().y
+	if natural > 0.0:
+		text_size.y = natural
+		_reposition()
+
+# The bottom of the text sits at the anchor. This uses the measured height, never the
+# label's own size, which can stay stale from a previous line.
 func _reposition() -> void:
-	position = anchor - Vector2(size.x / 2.0, size.y)
+	position = anchor - Vector2(text_size.x / 2.0, text_size.y)

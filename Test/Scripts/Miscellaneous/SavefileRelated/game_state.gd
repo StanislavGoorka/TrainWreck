@@ -41,15 +41,7 @@ var clock_paused: bool = false
 func _ready() -> void:
 	_load_characters()
 	load_game()
-	for def in characters.values():
-		if def.unlocked_by_default and not unlocked_characters.has(def.id):
-			unlocked_characters.append(def.id)
-	# Safety net: the default character is always available.
-	if characters.has(DEFAULT_CHARACTER_ID) and not unlocked_characters.has(DEFAULT_CHARACTER_ID):
-		unlocked_characters.append(DEFAULT_CHARACTER_ID)
-	if not characters.has(selected_id) or not is_unlocked(selected_id):
-		selected_id = DEFAULT_CHARACTER_ID if characters.has(DEFAULT_CHARACTER_ID) else ""
-	selected_character = characters.get(selected_id)
+	_ensure_defaults()
 
 func _load_characters() -> void:
 	for path in ResourceFolder.list(CHARACTER_FOLDER, "tres"):
@@ -215,3 +207,34 @@ func load_game() -> void:
 	unlocks = parsed.get("unlocks", {})
 	lifetime_stats.merge(parsed.get("lifetime_stats", {}), true)
 	dialogue_progress = parsed.get("dialogue_progress", {})
+
+# Wipes all saved progress and returns to a fresh save. Settings (audio, fullscreen) are kept.
+func reset_save() -> void:
+	if FileAccess.file_exists(SAVE_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+	meta_currency = 0
+	unlocks = {}
+	dialogue_progress = {}
+	lifetime_stats = {"runs": 0, "wins": 0, "deaths": 0, "abandoned": 0}
+	unlocked_characters.clear()
+	selected_id = ""
+	last_run = {}
+	_ensure_defaults()
+	meta_currency_changed.emit(meta_currency)
+	print("🗑️ Save reset.")
+
+# The default character is always available, and a valid one is always selected.
+func _ensure_defaults() -> void:
+	for def in characters.values():
+		if def.unlocked_by_default and not unlocked_characters.has(def.id):
+			unlocked_characters.append(def.id)
+	if characters.has(DEFAULT_CHARACTER_ID) and not unlocked_characters.has(DEFAULT_CHARACTER_ID):
+		unlocked_characters.append(DEFAULT_CHARACTER_ID)
+	if not characters.has(selected_id) or not is_unlocked(selected_id):
+		selected_id = DEFAULT_CHARACTER_ID if characters.has(DEFAULT_CHARACTER_ID) else ""
+	selected_character = characters.get(selected_id)
+
+# Editor-only shortcut: F9 resets the save while testing. It doesn't exist in exported builds.
+func _unhandled_input(event: InputEvent) -> void:
+	if OS.has_feature("editor") and event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F9:
+		reset_save()
