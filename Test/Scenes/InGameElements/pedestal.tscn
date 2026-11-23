@@ -3,44 +3,18 @@
 [ext_resource type="Script" uid="uid://c3446x7r5mwdb" path="res://Test/Scripts/RoomRelated/pedestal.gd" id="1_c57jg"]
 [ext_resource type="Texture2D" uid="uid://dt0xaqd677ryg" path="res://Test/Assets/Objects/SPRITE-GENERAL-suitcasepedestal.png" id="2_0qhck"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_fc12h"]
-atlas = ExtResource("2_0qhck")
-region = Rect2(0, 0, 64, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_2rp2u"]
-atlas = ExtResource("2_0qhck")
-region = Rect2(64, 0, 64, 64)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_s1fef"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_fc12h")
-}],
-"loop": 1,
-"name": &"Closed",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_2rp2u")
-}],
-"loop": 1,
-"name": &"Open",
-"speed": 5.0
-}]
-
 [sub_resource type="CircleShape2D" id="CircleShape2D_s1fef"]
 radius = 32.0
 
-[node name="Pedestal" type="Area2D" unique_id=1550913540]
+[node name="Pedestal" type="Area2D" unique_id=501985522]
 collision_mask = 2
 script = ExtResource("1_c57jg")
 
-[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=680635133]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=462043126]
 position = Vector2(0, -16)
-sprite_frames = SubResource("SpriteFrames_s1fef")
-animation = &"Open"
+texture = ExtResource("2_0qhck")
+hframes = 2
+frame = 1
 
 [node name="ItemSprite2D" type="Sprite2D" parent="." unique_id=760614545]
 position = Vector2(0, -20)
