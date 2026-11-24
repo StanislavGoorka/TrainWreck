@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://dt7blt2kvah0d"]
+
+[ext_resource type="Script" uid="uid://ul0s1iwhx6eo" path="res://Test/Scripts/Resource/ResourceData/DialogueData.gd" id="1_upxu1"]
+
+[resource]
+script = ExtResource("1_upxu1")
+id = "Lime"
+lines = Array[String](["Oh", "Hello", "Do you like...", "Need anything?"])
+metadata/_custom_type_script = "uid://ul0s1iwhx6eo"

@@ -2,6 +2,11 @@
 
 [ext_resource type="PackedScene" uid="uid://b6d7j4qluiun4" path="res://Test/Scenes/Rooms/TemplateRooms/starting_room.tscn" id="1_ok4c7"]
 [ext_resource type="Texture2D" uid="uid://d3kqbldp6n3o" path="res://Test/Assets/Enemies/SPRITE-ENEMY-FANTASY-LAURETH.png" id="2_1413u"]
+[ext_resource type="Script" uid="uid://gx7igrbwyur1" path="res://Test/Scripts/NPCsAndInteractables/NPC.gd" id="3_kimxd"]
+[ext_resource type="Resource" uid="uid://dt7blt2kvah0d" path="res://Test/Scripts/Resource/DialogueResource/Lime.tres" id="4_r2u8r"]
+[ext_resource type="AudioStream" uid="uid://oepydj8fq6do" path="res://Test/Assets/Audio/drop_002.ogg" id="5_u2hhy"]
+[ext_resource type="Texture2D" uid="uid://dhwesmrbdvk7s" path="res://Test/Assets/UI Elements/Tiles (Black)/tile_0087.png" id="6_4b3lx"]
+[ext_resource type="Texture2D" uid="uid://dntnr77kp20ef" path="res://Test/Assets/NPCs/SPRITE-npc.png" id="7_70do0"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_clsuh"]
 atlas = ExtResource("2_1413u")
@@ -17,6 +22,13 @@ animations = [{
 "name": &"Idle",
 "speed": 5.0
 }]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_s1fef"]
+radius = 17.0
+height = 34.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_khhxn"]
+radius = 129.98846
 
 [node name="Start" unique_id=978621589 instance=ExtResource("1_ok4c7")]
 
@@ -39,3 +51,30 @@ position = Vector2(704, 416)
 position = Vector2(1344, 256)
 sprite_frames = SubResource("SpriteFrames_ok4c7")
 animation = &"Idle"
+
+[node name="Lime" type="Area2D" parent="." index="5" unique_id=1639012461]
+position = Vector2(350, 512)
+script = ExtResource("3_kimxd")
+dialogue = ExtResource("4_r2u8r")
+talk_sound = ExtResource("5_u2hhy")
+prompt_text = "Talk To"
+prompt_icon = ExtResource("6_4b3lx")
+metadata/_custom_type_script = "uid://gx7igrbwyur1"
+
+[node name="Sprite2D" type="Sprite2D" parent="Lime" index="0" unique_id=1606090464]
+texture = ExtResource("7_70do0")
+hframes = 4
+frame = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Lime/Sprite2D" index="0" unique_id=1385553758]
+texture = ExtResource("7_70do0")
+hframes = 4
+frame = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Lime" index="1" unique_id=1170332975]
+position = Vector2(0, 16)
+shape = SubResource("CapsuleShape2D_s1fef")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Lime" index="2" unique_id=1440486368]
+position = Vector2(1, 16)
+shape = SubResource("CircleShape2D_khhxn")
