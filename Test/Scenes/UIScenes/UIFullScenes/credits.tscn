@@ -5,7 +5,7 @@
 [ext_resource type="Resource" uid="uid://0u8060g81vha" path="res://Test/Scripts/Resource/CreditsResource/MainTeam.tres" id="2_qqq4x"]
 [ext_resource type="Theme" uid="uid://8hobcx0vqyfr" path="res://Test/Themes/MenuButton.tres" id="3_kft4w"]
 [ext_resource type="Texture2D" uid="uid://p1e0g5nnv4po" path="res://Placeholders/Assets/Backgrounds/Steampunk/1.png" id="3_qdf6u"]
-[ext_resource type="AudioStream" uid="uid://rm3vg2erbje8" path="res://Placeholders/Assets/Audio/Bus Ride.mp3" id="4_4bhxk"]
+[ext_resource type="AudioStream" uid="uid://ctjt0vul4sj82" path="res://Test/Assets/Audio/TS6.mp3" id="4_4bhxk"]
 [ext_resource type="Texture2D" uid="uid://c317o2fh62o60" path="res://Placeholders/Assets/Backgrounds/Steampunk/2.png" id="4_btduk"]
 [ext_resource type="Texture2D" uid="uid://e88wnj7wx6or" path="res://Placeholders/Assets/Backgrounds/Steampunk/3.png" id="5_4bhxk"]
 [ext_resource type="Texture2D" uid="uid://bnn1beklip8l4" path="res://Placeholders/Assets/Backgrounds/Steampunk/4.png" id="6_x8epj"]

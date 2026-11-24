@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b6vymaoscta1d"
+path="res://.godot/imported/FNAF Security Breach OST Fazer Blast Downsampled Version (Unused).mp3-7e94eeec2ee8444bfbdf4a27d0d2f77f.mp3str"
+
+[deps]
+
+source_file="res://Test/Assets/Audio/FNAF Security Breach OST Fazer Blast Downsampled Version (Unused).mp3"
+dest_files=["res://.godot/imported/FNAF Security Breach OST Fazer Blast Downsampled Version (Unused).mp3-7e94eeec2ee8444bfbdf4a27d0d2f77f.mp3str"]
+
+[params]
+
+loop=true
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4

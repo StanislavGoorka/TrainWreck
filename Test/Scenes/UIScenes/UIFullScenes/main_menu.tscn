@@ -5,7 +5,7 @@
 [ext_resource type="Theme" uid="uid://8hobcx0vqyfr" path="res://Test/Themes/MenuButton.tres" id="2_pwgb3"]
 [ext_resource type="Texture2D" uid="uid://xqkddq5ep7kx" path="res://Test/Assets/Backgrounds/3.png" id="3_w315b"]
 [ext_resource type="Script" uid="uid://bai22cyrhldcb" path="res://Test/Scripts/Miscellaneous/Audio Related/MusicTrigger.gd" id="5_7d2hl"]
-[ext_resource type="AudioStream" uid="uid://x64bpxtxskp" path="res://Placeholders/Assets/Audio/Crystal Of Nostalgia.mp3" id="6_0se4w"]
+[ext_resource type="AudioStream" uid="uid://6ds2fltn4quv" path="res://Test/Assets/Audio/japan_coffee.mp3" id="6_0se4w"]
 
 [node name="MainMenu" type="Control" unique_id=1457749989]
 layout_mode = 3

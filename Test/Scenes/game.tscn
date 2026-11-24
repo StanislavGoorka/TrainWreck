@@ -24,7 +24,7 @@
 [ext_resource type="Theme" uid="uid://ctf2qg1d64lx" path="res://Test/Themes/ItemDescription.tres" id="17_8cdps"]
 [ext_resource type="Script" uid="uid://c4jyuf1cwjbd3" path="res://Test/Scripts/UIElements/InRunUI/ItemPopup.gd" id="18_2ljph"]
 [ext_resource type="Script" uid="uid://bai22cyrhldcb" path="res://Test/Scripts/Miscellaneous/Audio Related/MusicTrigger.gd" id="19_bvoat"]
-[ext_resource type="AudioStream" uid="uid://d3terakjvmawt" path="res://Placeholders/Assets/Audio/MUZYKOWO  Experience My Balls  Overwatch Song.mp3" id="20_pklxe"]
+[ext_resource type="AudioStream" uid="uid://b6vymaoscta1d" path="res://Test/Assets/Audio/FNAF Security Breach OST Fazer Blast Downsampled Version (Unused).mp3" id="25_cc1mx"]
 
 [node name="Game" type="Node" unique_id=1869221073]
 
@@ -149,6 +149,6 @@ desc_font_size = 24
 
 [node name="MusicTrigger" type="Node" parent="." unique_id=723991552]
 script = ExtResource("19_bvoat")
-track = ExtResource("20_pklxe")
+track = ExtResource("25_cc1mx")
 fade_time = 0.5
 metadata/_custom_type_script = "uid://bai22cyrhldcb"
